@@ -48,7 +48,7 @@ exports.updateAuth = async (req, res, next) =>{
         var id = req.params.id
         var auth = req.body
         await Auth.findByIdAndUpdate(id, auth)
-        res.status(200).json("sửa thành công");
+        res.status(200).json("sửa thành công2");
     }catch(err){
         res.status(400).json("sửa thất bại");
     }
