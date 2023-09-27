@@ -12,6 +12,9 @@ const passport = require("passport");
 var configApp = require('./src/config/configApp')
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
+var productsRouter= require('./src/routes/products');
+var commentsRouter= require('./src/routes/comments');
+
 
 
 var app = express();
@@ -34,6 +37,10 @@ const io = new Server(httpServer, { /* options */ });
 
 app.use('/', indexRouter);
 app.use('/api', authRouter);
+app.use('/api', productsRouter);
+app.use('/api', commentsRouter);
+
+
 
 app.listen(configApp.PORT, async () =>{
   await mongoose.connect(configApp.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
