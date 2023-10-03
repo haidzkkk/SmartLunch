@@ -14,6 +14,8 @@ var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
 var productsRouter= require('./src/routes/products');
 var commentsRouter= require('./src/routes/comments');
+var statusRouter= require('./src/routes/status');
+
 
 
 
@@ -39,6 +41,8 @@ app.use('/', indexRouter);
 app.use('/api', authRouter);
 app.use('/api', productsRouter);
 app.use('/api', commentsRouter);
+app.use('/api', statusRouter);
+
 
 
 
