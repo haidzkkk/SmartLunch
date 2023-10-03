@@ -12,6 +12,8 @@ const passport = require("passport");
 var configApp = require('./src/config/configApp')
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
+var cartrouter = require('./src/routes/cart');
+
 
 
 var app = express();
@@ -34,6 +36,7 @@ const io = new Server(httpServer, { /* options */ });
 
 app.use('/', indexRouter);
 app.use('/api', authRouter);
+app.use('/cart', cartrouter);
 
 app.listen(configApp.PORT, async () =>{
   await mongoose.connect(configApp.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
