@@ -12,6 +12,8 @@ var session = require('express-session')
 var configApp = require('./src/config/configApp')
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
+var cartrouter = require('./src/routes/cart');
+
 var roomRouter = require('./src/routes/room');
 var messageRouter = require('./src/routes/message');
 
@@ -48,6 +50,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/api', authRouter);
+app.use('/cart', cartrouter);
 app.use('/api', roomRouter);
 app.use('/api', messageRouter);
 
