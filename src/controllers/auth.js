@@ -261,26 +261,6 @@ exports.verifyOTP = async (req, res) => {
     }
 }
 
-//gửi lại mã otp
-exports.sendNewOtp = async (req, res) => {
-    try {
-        let { userId, email } = req.body
-        if (!email || !userId) {
-            throw Error('Empty user details are not allowed')
-        } else {
-            await UserOTPVerification.deleteMany({ userId })
-            const otpResponse = await sendOTPVerificationEmail({ _id: userId, email })
-            return res.status(201).json({
-                message: "Gửi lại mã opt thành công",
-                otpResponse // Thêm thông tin về OTP vào phản hồi
-            });
-        }
-    } catch (error) {
-        res.status(400).json({
-            message: error.message
-        })
-    }
-}
 
 //dang nhap
 exports.signin = async (req, res) => {
