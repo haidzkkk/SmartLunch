@@ -4,16 +4,20 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-const { createServer } = require("http");
-const { Server } = require("socket.io");
 const passport = require("passport");
 var cors = require("cors");
 var dotenv = require("dotenv");
 var session = require('express-session')
 
-var configApp = require('./src/config/configApp.js')
-var indexRouter = require('./src/routes/index.js');
-var authRouter = require('./src/routes/auth.js');
+var configApp = require('./src/config/configApp')
+var indexRouter = require('./src/routes/index');
+var authRouter = require('./src/routes/auth');
+var roomRouter = require('./src/routes/room');
+var messageRouter = require('./src/routes/message');
+
+const socketController = require('./src/controllers/socket');
+
+
 
 dotenv.config();
 var app = express();
@@ -42,12 +46,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// socket io
-const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
-
 app.use('/', indexRouter);
 app.use('/api', authRouter);
+app.use('/api', roomRouter);
+app.use('/api', messageRouter);
+
+
+socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{
   await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
