@@ -5,13 +5,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-const { createServer } = require("http");
-const { Server } = require("socket.io");
 const passport = require("passport");
 
 var configApp = require('./src/config/configApp')
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
+var roomRouter = require('./src/routes/room');
+var messageRouter = require('./src/routes/message');
+
+const socketController = require('./src/controllers/socket');
 
 
 var app = express();
@@ -28,12 +30,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// socket io
-const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
-
 app.use('/', indexRouter);
 app.use('/api', authRouter);
+app.use('/api', roomRouter);
+app.use('/api', messageRouter);
+
+
+socketController.initializeSocketServer()
 
 app.listen(configApp.PORT, async () =>{
   await mongoose.connect(configApp.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
