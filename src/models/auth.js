@@ -51,6 +51,9 @@ const authSchema = new mongoose.Schema ({
         enum: ['local','google', 'facebook'],
         default: 'local'
     },
+    tokenFcm:{
+        type:String
+    },
     passwordResetToken:{
         type:String
     },
