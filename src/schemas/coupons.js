@@ -1,6 +1,6 @@
 var  Joi = ("joi")
 
-export const CouponSchema = Joi.object({
+exports.CouponSchema = Joi.object({
     _id: Joi.string(),
     coupon_name: Joi.string().required().messages({
         "string.empty": "Tên mã giảm giá bắt buộc nhập",
