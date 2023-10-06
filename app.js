@@ -11,7 +11,6 @@ var cors = require("cors");
 var dotenv = require("dotenv");
 var session = require('express-session')
 
-var configApp = require('./src/config/configApp.js')
 var indexRouter = require('./src/routes/index.js');
 var authRouter = require('./src/routes/auth.js');
 
