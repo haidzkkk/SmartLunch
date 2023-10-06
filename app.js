@@ -9,19 +9,18 @@ var cors = require("cors");
 var dotenv = require("dotenv");
 var session = require('express-session')
 
-var configApp = require('./src/config/configApp')
+var indexRouter = require('./src/routes/index.js');
+var authRouter = require('./src/routes/auth.js');
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
 var productsRouter= require('./src/routes/products');
 var commentsRouter= require('./src/routes/comments');
 var statusRouter= require('./src/routes/status');
 var cartrouter = require('./src/routes/cart');
-
 var roomRouter = require('./src/routes/room');
 var messageRouter = require('./src/routes/message');
 
 const socketController = require('./src/controllers/socket');
-
 
 
 dotenv.config();
