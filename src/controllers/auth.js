@@ -5,6 +5,7 @@ var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
+var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 let refreshTokens = [];
 
 
@@ -370,7 +371,7 @@ exports.signin = async (req, res) => {
                 sameSite: "strict"
             })
             const { password, ...users } = user._doc
-
+            // sendNotificationToUser(users._id, `${user.email} đã đăng nhập`)
             return res.status(200).json({
                 message: "Đăng nhập thành công",
                 ...users,
