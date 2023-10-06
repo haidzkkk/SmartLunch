@@ -5,7 +5,7 @@ const {query}= require('express');
 exports.list = async(req, res, next)=>{
   let dieu_kien_loc= null;
   // if(typeof(req.query.))
-let list=await(myMD.spModel.find().populate('id_category'));
+let list=await(myMD.productModel.find().populate('id_category'));
 console.log(list);
 
 
@@ -22,7 +22,7 @@ exports.categoryAdd =  async(req,res,next)=>{
   if(req.method =='POST'){
       // kiểm tra hợp lệ dữ liệu nếu có....
       // tạo model để gán dữ liệu
-      let objSP = new myMD.theloaiModel();
+      let objSP = new myMD.categoryModel();
       objSP.name = req.body.name;
       // ghi vào CSDL
       try {
@@ -40,7 +40,7 @@ exports.categoryAdd =  async(req,res,next)=>{
 }
 exports.listCategory = async (req, res, next) => {
   try {
-    let list = await myMD.theloaiModel.find();
+    let list = await myMD.categoryModel.find();
     console.log(list);
     //res.render('products/add_theloai', { listSP: list });
     
@@ -56,7 +56,7 @@ exports.deleteCategory=async (req,res,next)=>{
   let idsp = req.params.idsp;
   let objSP = await (myMD.categoryModel.findById(idsp));
   if(req.method=='POST'){
-    let objSP= new myMD.theloaiModel();
+    let objSP= new myMD.categoryModel();
     objSP.name = req.body.name;
     objSP._id=idsp;
     try{
@@ -99,7 +99,7 @@ exports.editCategory = async (req,res,next)=>{
 //  res.render('products/edit_the_loai',{msg: msg, objSP: objSP});
 }
 
-exports.locCategory = async (req,res,next) => {
+exports.editCategory = async (req,res,next) => {
 
   var listLoai = await myMD.categoryModel.find();
   let id = req.params.id;

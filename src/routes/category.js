@@ -1,19 +1,19 @@
 var express = require("express");
 var router = express.Router();
-var categoryController = require("../controller/category");
+var categoryController = require("../controllers/category");
 
 //Lấy danh sách;
 
-router.get('/category', categoryController.listtl);
+router.get('/category', categoryController.categoryAdd);
 
-router.get('/category', categoryController.tladd);
-router.post('/category', categoryController.tladd);
+router.get('/category', categoryController.listCategory);
+router.post('/category', categoryController.listCategory);
 
-router.get('/deletetl/:idsp', categoryController.deletetl);
-router.post('/deletetl/:idsp', categoryController.deletetl);
+router.get('/deletetl/:idsp', categoryController.deleteCategory);
+router.post('/deletetl/:idsp', categoryController.deleteCategory);
 
-router.get('/edittl/:idsp', categoryController.edittl);
-router.post('/edittl/:idsp', categoryController.edittl);
+router.get('/edit/:idsp', categoryController.editCategory);
+router.post('/edit/:idsp', categoryController.editCategory);
 
-router.get('/sanpham.ejs/:id',categoryController.loctheoLoai);
+
 module.exports = router;
