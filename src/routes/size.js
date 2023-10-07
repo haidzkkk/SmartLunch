@@ -1,13 +1,13 @@
-var express = ("express")
-var createSize, getSize, getSizeById, removeSize, updateSize = ("../controllers/size.js")
+var express = require("express")
+var sizeController = require("../controllers/size.js")
 
-const routerSize = express.Router();
+var router = express.Router();
 
-routerSize.get("/size", getSize);
-routerSize.get("/size/:id", getSizeById);
-routerSize.delete("/size/:id", removeSize);
-routerSize.post("/size", createSize);
-routerSize.patch("/size/:id", updateSize);
+router.get("/size", sizeController.getSize);
+router.get("/size/:id", sizeController.getSizeById);
+router.delete("/size/:id", sizeController.removeSize);
+router.post("/size", sizeController.createSize);
+router.put("/size/:id", sizeController.updateSize);
 
 
-export default routerSize;
+module.exports = router;

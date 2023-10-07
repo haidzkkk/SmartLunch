@@ -1,13 +1,13 @@
-var express = ('express')
-var { createCoupons, getAllCoupons, getOneCoupons, removeCoupons, updateCoupons } = ('../controllers/coupons.js')
+var express = require('express')
+var  couponController = require('../controllers/coupons.js')
 
-const routerCoupons = express.Router();
+var router = express.Router();
 
-routerCoupons.post("/coupons", createCoupons);
-routerCoupons.get("/coupons", getAllCoupons);
-routerCoupons.get("/coupons/:id", getOneCoupons);
-routerCoupons.delete("/coupons/:id", removeCoupons);
-routerCoupons.patch("/coupons/:id", updateCoupons);
+router.post("/coupons", couponController.createCoupons);
+router.get("/coupons", couponController.getAllCoupons);
+router.get("/coupons/:id", couponController.getOneCoupons);
+router.delete("/coupons/:id", couponController.removeCoupons);
+router.patch("/coupons/:id", couponController.updateCoupons);
 
 
-export default routerCoupons;
+module.exports = router;

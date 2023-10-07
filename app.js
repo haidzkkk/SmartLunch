@@ -11,14 +11,15 @@ var session = require('express-session')
 
 var indexRouter = require('./src/routes/index.js');
 var authRouter = require('./src/routes/auth.js');
-var indexRouter = require('./src/routes/index');
-var authRouter = require('./src/routes/auth');
 var productsRouter= require('./src/routes/products');
 var commentsRouter= require('./src/routes/comments');
 var statusRouter= require('./src/routes/status');
 var cartrouter = require('./src/routes/cart');
 var roomRouter = require('./src/routes/room');
 var messageRouter = require('./src/routes/message');
+var sizeRouter = require('./src/routes/size');
+var couponRouter = require('./src/routes/coupons');
+
 
 const socketController = require('./src/controllers/socket');
 
@@ -58,13 +59,13 @@ app.use('/api', statusRouter);
 app.use('/cart', cartrouter);
 app.use('/api', roomRouter);
 app.use('/api', messageRouter);
-
-
+app.use('/api', sizeRouter);
+app.use('/api', couponRouter);
 socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{
   await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
-  console.log(`server running on: http://localhost:${process.env.PORT}`)
+  console.log(`server running on: http://localhost:3000}`)
 })
 
 module.exports = app;
