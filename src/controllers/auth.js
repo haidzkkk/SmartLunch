@@ -59,31 +59,32 @@ exports.removeByAdmin = async (req, res) => {
     }
 };
 
-// Cập nhật thông tin người dùng
-exports.updateUser = async (req, res) => {
+// Update user by Admin (Admin có thể cập nhật thông tin người dùng)
+exports.updateUserByAdmin = async (req, res) => {
     try {
-        const id = req.user;
+        const id = req.params.id
         const body = req.body;
-        const { error } = authSchema.updateUserSchema.validate(req.body, { abortEarly: false });
+        const { error } = updateUserSchema.validate(body, { abortEarly: false })
         if (error) {
-            const errors = error.details.map((err) => err.message);
+            const errors = error.details.map((err) => err.message)
             return res.status(400).json({
                 message: errors
-            });
+            })
         }
-        const user = await Auth.findByIdAndUpdate(id, body, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+        const user = await Auth.findByIdAndUpdate(id, body, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v')
         if (!user) {
-            return res.status(400).json({
-                message: "Cập nhật thông tin người dùng thất bại"
-            });
+            return res.status(404).json({
+                message: "Admin cập nhật thông tin người dùng tất cả"
+            })
         }
         return res.status(200).json({
+            message: "Admin cập nhật thông tin người dùng thành công",
             user
-        });
+        })
     } catch (error) {
         return res.status(400).json({
             message: error.message
-        });
+        })
     }
 };
 
@@ -212,28 +213,6 @@ exports.sendNewOtp = async (req, res) => {
         });
     }
 };
-
-
-//gửi lại mã otp
-exports.sendNewOtp = async (req, res) => {
-    try {
-        let { userId, email } = req.body
-        if (!email || !userId) {
-            throw Error('Empty user details are not allowed')
-        } else {
-            await UserOTPVerification.deleteMany({ userId })
-            const otpResponse = await sendOTPVerificationEmail({ _id: userId, email })
-            return res.status(201).json({
-                message: "Gửi lại mã opt thành công",
-                otpResponse // Thêm thông tin về OTP vào phản hồi
-            });
-        }
-    } catch (error) {
-        res.status(400).json({
-            message: error.message
-        })
-    }
-}
 
 exports.updateAuth = async (req, res, next) =>{
     try{
@@ -454,7 +433,8 @@ exports.refreshToken = async (req, res) => {
             })
             return res.status(200).json({
                 message: "Tạo Access Token mới thành công",
-                accessToke: newAccessToken
+                accessToke: newAccessToken,
+                refreshToken: newRefreshToken
             })
         })
     } catch (error) {

@@ -1,6 +1,6 @@
 exports.authorization = async(req,res,next)=>{
     try{
-        if(req.auth.id === req.params.id||req.auth.role === "admin"){
+        if(req.user.id === req.params.id||req.user.role === "admin"){
           return next()  
         }else{
             return res.status(203).json({

@@ -73,3 +73,25 @@ exports.updateUserSchema = joi.object({
         "any.required": 'Trường "Địa chỉ" là bắt buộc',
     })
 });
+
+exports.changePasswordUserSchema = joi.object({
+    currentPassword: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu hiện tại không được để trống",
+        "any.required": "Trường mật khẩu hiện tại là bắt buộc",
+        "string.min": "Mật khẩu hiện tại phải có ít nhất {#limit} ký tự",
+    }),
+    newPassword: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu mới không được để trống",
+        "any.required": "Trường mật khẩu mới là bắt buộc",
+        "string.min": "Mật khẩu mới phải có ít nhất {#limit} ký tự",
+    })
+});
+
+
+exports.resetPasswordUserSchema = joi.object({
+    password: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu không được để trống",
+        "any.required": "Trường mật khẩu là bắt buộc",
+        "string.min": "Mật khẩu phải có ít nhất {#limit} ký tự",
+    }),
+});
