@@ -1,4 +1,4 @@
-var mongoose = ('mongoose')
+var mongoose = require('mongoose')
 
 const couponSchema = new mongoose.Schema(
     {
@@ -23,7 +23,7 @@ const couponSchema = new mongoose.Schema(
             required: true
         },
         expiration_date: {
-            type: Date,
+            type: String,
             required: true
         },
         min_purchase_amount: {
@@ -31,8 +31,11 @@ const couponSchema = new mongoose.Schema(
             required: true
         }
     },
+    {
+        collection: 'coupons'
+    },
     { timestamps: true, versionKey: false }
 );
 
-let couponModel = mongoose.model('Coupon', couponSchema)
+let couponModel = mongoose.model('coupon', couponSchema)
 module.exports = couponModel
