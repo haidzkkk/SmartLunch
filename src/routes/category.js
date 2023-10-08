@@ -1,19 +1,17 @@
-var express = require("express");
+var express = require('express');
+var categoryController= require('../controllers/category');
+const authorization  = require('../middlewares/authorization').authorization;
+const authenticate = require('../middlewares/authenticate').authenticate;
+
 var router = express.Router();
-var categoryController = require("../controller/category");
 
-//Lấy danh sách;
+router.get("/category", categoryController.getAllCategory)
+router.get("/category/delete", categoryController.getAllDelete)
+router.get("/category/:id", categoryController.getCategoryById)
+router.delete("/category/:id", authenticate, authorization, categoryController.removeCategory)
+router.delete("/category/force/:id", authenticate, authorization, categoryController.removeForce)
+router.post("/category", authenticate, authorization, categoryController.addCategory)
+router.patch("/category/:id", authenticate, authorization, categoryController.updateCategory)
+router.patch("/category/restore/:id", authenticate, authorization, categoryController.restoreCategory)
 
-router.get('/category', categoryController.listtl);
-
-router.get('/category', categoryController.tladd);
-router.post('/category', categoryController.tladd);
-
-router.get('/deletetl/:idsp', categoryController.deletetl);
-router.post('/deletetl/:idsp', categoryController.deletetl);
-
-router.get('/edittl/:idsp', categoryController.edittl);
-router.post('/edittl/:idsp', categoryController.edittl);
-
-router.get('/sanpham.ejs/:id',categoryController.loctheoLoai);
 module.exports = router;

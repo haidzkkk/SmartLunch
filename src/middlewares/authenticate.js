@@ -1,5 +1,6 @@
 var jwt = require('jsonwebtoken')
 var Auth = require('../models/auth')
+var category= require('../models/category')
 
 exports.authenticate = async(req,res,next)=>{
     try{
