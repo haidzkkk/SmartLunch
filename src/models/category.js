@@ -2,7 +2,6 @@ var mongoose = require('mongoose')
 
  const productSchema= new mongoose.Schema(
     {   
-       
         id_theloai:{type: mongoose.Schema.Types.ObjectId, ref:'categoryModel'}
     },
     {
