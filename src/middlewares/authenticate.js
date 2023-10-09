@@ -1,5 +1,6 @@
 var jwt = require('jsonwebtoken')
 var Auth = require('../models/auth')
+var category= require('../models/category')
 
 exports.authenticate = async(req,res,next)=>{
     try{
@@ -8,8 +9,8 @@ exports.authenticate = async(req,res,next)=>{
                 message:"Bạn chưa đăng nhập!"
             })
         }
-        const token = req.headers.authorization.split(" ")
-        const {id} = jwt.verify(token[0],process.env.JWT_REFRESH_KEY)
+        const token = req.headers.authorization.split(" ")[1]
+        const {id} = jwt.verify(token,process.env.JWT_REFRESH_KEY)
         const auth = await Auth.findById(id)
         if(!auth){
             return res.status(203).json({

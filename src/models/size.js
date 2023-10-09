@@ -11,6 +11,9 @@ const sizeSchema = new mongoose.Schema(
         required: true
     }
   },
+  {
+    collection: 'sizes'
+},
   { timestamps: true, versionKey: false }
 );
 

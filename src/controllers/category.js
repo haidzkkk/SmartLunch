@@ -1,6 +1,7 @@
 var categorySchema = require("../schemas/category.js").categorySchema;
 var Category = require("../models/category.js");
 
+
 exports.getAllCategory = async (req, res) => {
   const {
     _limit = 10,
@@ -65,6 +66,7 @@ exports.getCategoryById = async (req, res) => {
     return res.status(200).json( 
       category,
     );
+
   } catch (error) {
     return res.status(400).json({
       message: error.message,

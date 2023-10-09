@@ -5,34 +5,35 @@ var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
+var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 let refreshTokens = [];
 
 
 
-//lấy tất cả user
+// Lấy tất cả người dùng
 exports.getAll = async (req, res) => {
     try {
         const data = await Auth.find();
         return res.status(200).json({
-            message: "lấy tất cả người dùng thành công",
+            message: "Lấy tất cả người dùng thành công",
             data
-        })
+        });
     } catch (error) {
         return res.status(400).json({
             message: error.message || "Lỗi xảy ra"
-        })
+        });
     }
-}
+};
 
-//lấy 1 user
+// Lấy một người dùng theo ID
 exports.getOneById = async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Auth.findById(id);
-        if (data.length === 0) {
+        if (!data) {
             return res.status(404).json({
-                message: "Không có ID này"
-            })
+                message: "Không có người dùng với ID này"
+            });
         }
         return res.status(200).json({
             data
@@ -40,26 +41,26 @@ exports.getOneById = async (req, res) => {
     } catch (error) {
         return res.status(400).json({
             message: error.message
-        })
+        });
     }
-}
+};
 
-//xoas user by Admin
+// Xóa người dùng bởi Admin
 exports.removeByAdmin = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await Auth.findByIdAndDelete(id);
         return res.status(200).json({
             user
-        })
+        });
     } catch (error) {
         return res.status(400).json({
             message: error.message
-        })
+        });
     }
-}
+};
 
-//Update user (người dùng có thể tự cập nhật thông tin của chính mình)
+// Cập nhật thông tin người dùng
 exports.updateUser = async (req, res) => {
     try {
         const id = req.user;
@@ -71,43 +72,47 @@ exports.updateUser = async (req, res) => {
                 message: errors
             });
         }
-        const user = await Auth.findByIdAndUpdate(id, body, { new: true }).select('-password -role -refreshToken - passwordChangeAt -__v')
+        const user = await Auth.findByIdAndUpdate(id, body, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "Cập nhật thông tin người dùng thất bại"
-            })
+            });
         }
         return res.status(200).json({
             user
-        })
+        });
     } catch (error) {
         return res.status(400).json({
             message: error.message
-        })
+        });
     }
-}
+};
 
-// Đăng ký
+// Đăng ký người dùng
 exports.signup = async (req, res) => {
     try {
         const { first_name, last_name, email, phone, address, avatar, password } = req.body;
-        // Validate
+
+        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
         const { error } = authSchema.signupSchema.validate(req.body, { abortEarly: false });
         if (error) {
-            const errors = error.details.map(( error ) => error.message);
+            const errors = error.details.map((err) => err.message);
             return res.status(400).json({
                 message: errors
             });
         }
-        // Kiểm tra email
+
+        // Kiểm tra xem email đã được sử dụng chưa
         const userExist = await Auth.findOne({ email });
         if (userExist) {
             return res.status(400).json({
                 message: "Email đã được sử dụng!"
             });
         }
-        // Hash mật khẩu
+
+        // Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(password, 10);
+
         // Tạo tài khoản
         const user = await Auth.create({
             first_name,
@@ -188,6 +193,27 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
     }
 };
 
+// Gửi lại mã OTP
+exports.sendNewOtp = async (req, res) => {
+    try {
+        const { userId, email } = req.body;
+        if (!email || !userId) {
+            throw new Error('Không được để trống thông tin người dùng');
+        } else {
+            await UserOTPVerification.deleteMany({ userId });
+            const otpResponse = await sendOTPVerificationEmail({ _id: userId, email });
+            return res.status(201).json({
+                message: "Gửi lại mã OTP thành công",
+                otpResponse // Thêm thông tin về OTP vào phản hồi
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 
 //gửi lại mã otp
 exports.sendNewOtp = async (req, res) => {
@@ -223,65 +249,34 @@ exports.updateAuth = async (req, res, next) =>{
 
 exports.verifyOTP = async (req, res) => {
     try {
-        let { userId, otp } = req.body;
+        const { userId, otp } = req.body;
         if (!userId || !otp) {
-            throw Error("Empty otp details are not allowed")
+            throw new Error("Không được để trống mã OTP");
         } else {
-            const UserOTPVerificationRecords = await UserOTPVerification.find({
-                userId
-            })
-            if (UserOTPVerification.length <= 0) {
-                //no record found
-                throw new Error("Account record doesn't exit or has been verfied already. Please sign up")
-
+            const UserOTPVerificationRecords = await UserOTPVerification.find({ userId });
+            if (UserOTPVerificationRecords.length <= 0) {
+                throw new Error("Không tìm thấy bản ghi tài khoản hoặc tài khoản đã được xác minh. Vui lòng đăng ký");
             } else {
-                const { expiresAt } = UserOTPVerificationRecords[0].expiresAt
-                const hashedOTP = UserOTPVerificationRecords[0].otp
+                const { expiresAt } = UserOTPVerificationRecords[0];
+                const hashedOTP = UserOTPVerificationRecords[0].otp;
+
                 if (expiresAt < Date.now()) {
-                    await UserOTPVerification.deleteMany({ userId })
-                    throw new Error("Code has expired. Please request again.")
+                    await UserOTPVerification.deleteMany({ userId });
+                    throw new Error("Mã đã hết hạn. Vui lòng yêu cầu lại.");
                 } else {
-                    const validOTP = await bcrypt.compare(otp, hashedOTP)
+                    const validOTP = await bcrypt.compare(otp, hashedOTP);
+
                     if (!validOTP) {
-                        throw new Error("Invalid code passed. check your inbox")
+                        throw new Error("Mã không hợp lệ. Kiểm tra hộp thư của bạn.");
                     } else {
-                        //success
-                        //gửi thông báo cho người dùng khi đăng ký thành công
-                        const mailTransporter = nodemailer.createTransport({
-                            service: "gmail",
-                            auth: {
-                                user: process.env.MAIL_USERNAME,
-                                pass: process.env.MAIL_PASSWORD
-                            }
-                        })
-                        const currentUser= await Auth.find({userId})
-                        //soạn nội dung thư
-                        const details = {
-                            from: process.env.MAIL_USERNAME,
-                            to: currentUser.email,
-                            subject: '📲 ĐĂNG KÝ THÀNH CÔNG ỨNG DỤNG SMART LUNCH',
-                            html: `
-                    <h1>Chúc mừng bạn đã đăng ký thành công Ứng dụng Smart Lunch!</h1>
-                    <p>Xin chào ${currentUser.first_name} ${currentUser.last_name},</p>
-                    <p>Chúc mừng bạn đã đăng ký thành công vào Ứng dụng Smart Lunch. Chúng tôi rất vui mừng chào đón bạn vào cộng đồng của chúng tôi.</p>
-                    <img src="https://s3-alpha.figma.com/thumbnails/27c9e084-27b0-4504-a185-99d6ff07d40b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZDMGHAUS%2F20230924%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230924T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8e17ad0692b05ecda466f0a577b79d19143fa16a3dd462853d609743dc1766e8" alt="Smart Lunch Logo">
-                    <p>Chúc bạn có một trải nghiệm tuyệt vời với phiên bản hoàn toàn mới này!</p>
-                `,
-                        }
-                        // gửi mail
-                       await mailTransporter.sendMail(details, (err) => {
-                            if (err) {
-                                console.log("err", err);
-                            } else {
-                                console.log("success");
-                            }
-                        })
-                        await Auth.updateOne({ _id: userId }, { verified: true })
-                        UserOTPVerification.deleteMany({ userId })
-                        
+                        // Thành công
+                        await sendVerificationEmail(userId)
+                        await Auth.updateOne({ _id: userId }, { verified: true });
+                        await UserOTPVerification.deleteMany({ userId });
+
                         res.status(200).json({
-                            message: "user email verified successfully"
-                        })
+                            message: "Xác minh email của người dùng thành công"
+                        });
                     }
                 }
             }
@@ -289,9 +284,45 @@ exports.verifyOTP = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             message: error.message
-        })
+        });
     }
-}
+};
+
+// Hàm gửi email xác minh
+const sendVerificationEmail = async (userId) => {
+    const mailTransporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.MAIL_USERNAME,
+            pass: process.env.MAIL_PASSWORD
+        }
+    });
+
+    const currentUser = await Auth.findById(userId);
+
+    // Soạn nội dung thư
+    const details = {
+        from: process.env.MAIL_USERNAME,
+        to: currentUser.email,
+        subject: '📲 ĐĂNG KÝ THÀNH CÔNG ỨNG DỤNG SMART LUNCH',
+        html: `
+            <h1>Chúc mừng bạn đã đăng ký thành công Ứng dụng Smart Lunch!</h1>
+            <p>Xin chào ${currentUser.first_name} ${currentUser.last_name},</p>
+            <p>Chúc mừng bạn đã đăng ký thành công vào Ứng dụng Smart Lunch. Chúng tôi rất vui mừng chào đón bạn vào cộng đồng của chúng tôi.</p>
+            <img src="https://s3-alpha.figma.com/thumbnails/27c9e084-27b0-4504-a185-99d6ff07d40b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZDMGHAUS%2F20230924%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230924T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8e17ad0692b05ecda466f0a577b79d19143fa16a3dd462853d609743dc1766e8" alt="Smart Lunch Logo">
+            <p>Chúc bạn có một trải nghiệm tuyệt vời với phiên bản hoàn toàn mới này!</p>
+        `,
+    };
+
+    // Gửi email
+    mailTransporter.sendMail(details, (err) => {
+        if (err) {
+            console.log("Lỗi khi gửi email", err);
+        } else {
+            console.log("Thành công");
+        }
+    });
+};
 
 
 //dang nhap
@@ -340,7 +371,7 @@ exports.signin = async (req, res) => {
                 sameSite: "strict"
             })
             const { password, ...users } = user._doc
-
+            // sendNotificationToUser(users._id, `${user.email} đã đăng nhập`)
             return res.status(200).json({
                 message: "Đăng nhập thành công",
                 ...users,
@@ -376,7 +407,7 @@ const generateRefreshToken = (user) => {
 // đăng xuất
 exports.logout = async (req, res) => {
     try {
-        const cookie = req.cookie;
+        const cookie = req.cookies;
         if (!cookie || !cookie.refreshToken) {
             return res.status(400).json({
                 message: "Không thể refresh Token trong cookies"
