@@ -4,7 +4,7 @@ var mongoose = require("mongoose")
 // var Coupon = require("../models/coupons")
 // var order = require("../models/order")
 var cartSchema = require("../schemas/cart")
-var Product = require("../models/products")
+var Product = require("../models/product")
 var Size = require("../models/size")
 
 exports.ressetCart = async (idUser) =>{
