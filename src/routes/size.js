@@ -7,7 +7,7 @@ router.get("/size", sizeController.getSize);
 router.get("/size/:id", sizeController.getSizeById);
 router.delete("/size/:id", sizeController.removeSize);
 router.post("/size", sizeController.createSize);
-router.put("/size/:id", sizeController.updateSize);
+router.patch("/size/:id", sizeController.updateSize);
 
 
 module.exports = router;
