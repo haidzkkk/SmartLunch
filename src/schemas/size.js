@@ -1,6 +1,6 @@
-var Joi = ("joi")
+var Joi = require("joi")
 
-exports.SizeSchema = Joi.object({
+exports.sizeSchema = Joi.object({
     _id: Joi.string(),
     size_name: Joi.string().required().messages({
         "string.empty": "Tên size không được để trống",

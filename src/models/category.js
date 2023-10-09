@@ -1,21 +1,31 @@
 var mongoose = require('mongoose')
+var mongoosePaginate =  require ("mongoose-paginate-v2");
+var mongooseDelete =  require ("mongoose-delete");
+const categorySchema =new mongoose.Schema({
 
- const productSchema= new mongoose.Schema(
-    {   
-       
-        id_theloai:{type: mongoose.Schema.Types.ObjectId, ref:'categoryModel'}
-    },
-    {
-        collection:'product'
-    }
- );
- let  productModel= mongoose.model('productModel', productSchema);
 
- const categoryiSchema= new mongoose.Schema(
+  category_name: {
+    type: String,
+    minLength: 3,
+    maxlength: 50,
+  },
+  category_image: {
+    type: Object,
+    required: true
+  },
+
+  products: [
     {
-        name:{type:String, require:true}
+      type: mongoose.Types.ObjectId,
+      ref: "Product"
     },
-    {collection:'category'}
- );
- let categoryModel= mongoose.model('categoryModel',categoryiSchema);
- module.exports={categoryModel, productModel};
+  ]
+
+},
+  { timestamps: true, versionKey: false });
+
+  categorySchema.plugin(mongoosePaginate);
+  categorySchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
+ 
+let categoryModel = mongoose.model("Category", categorySchema)
+module.exports = categoryModel

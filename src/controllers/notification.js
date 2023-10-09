@@ -1,16 +1,22 @@
+var Auth = require('../models/auth')
 const admin = require('firebase-admin');
-const serviceAccount = require('../androidnetworking-63dfb-firebase-adminsdk-pxqab-1d2c82f49e.json'); // Cần lấy serviceAccountKey từ Firebase Console
+const serviceAccount = require('../config/smart-lunch-44a85-firebase-adminsdk-wspia-5f25e67145.json'); // Cần lấy serviceAccountKey từ Firebase Console
 // Cấu hình Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
-exports.findAndSendFCM = (idUserSend, strMessage) => {
+exports.sendNotificationToUser = async (idUserSend, strMessage)  => {
    // Gửi thông báo FCM đến thiết bị của các tài khoản khác
-    // if(user.tokenFCM != null){
-    //     console.log(user);
-    //     sendFCMNotification(user.tokenFCM, strMessage)  
-    // }
+    try{
+        var user = await Auth.findById(idUserSend);
+        if(user.tokenFcm != null){
+            console.log(user);
+            sendFCMNotification(user.tokenFcm, strMessage)  
+        }
+    }catch(e){
+
+    }
 }
 
 var sendFCMNotification = (fcmToken, message) => {
