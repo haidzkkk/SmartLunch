@@ -1,6 +1,6 @@
-var Product = require("../models/products.js");
+var Product = require("../models/product.js");
 var Category = require("../models/category.js");
-var ProductSchema = require("../schemas/products.js").ProductSchema;
+var ProductSchema = require("../schemas/product.js").ProductSchema;
 
 exports.getAll = async (req, res) => {
   const {

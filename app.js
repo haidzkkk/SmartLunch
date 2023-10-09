@@ -11,7 +11,7 @@ var session = require('express-session')
 
 var indexRouter = require('./src/routes/index.js');
 var authRouter = require('./src/routes/auth.js');
-var productsRouter= require('./src/routes/products');
+var productsRouter= require('./src/routes/product');
 var categoryRouter= require('./src/routes/category.js');
 var commentsRouter= require('./src/routes/comments');
 var statusRouter= require('./src/routes/status');

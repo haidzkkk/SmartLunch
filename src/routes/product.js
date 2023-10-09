@@ -1,5 +1,5 @@
 var express = require('express');
-var productController = require('../controllers/products')
+var productController = require('../controllers/product')
 const authorization  = require('../middlewares/authorization').authorization;
 const authenticate = require('../middlewares/authenticate').authenticate;
 
