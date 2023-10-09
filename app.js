@@ -12,6 +12,7 @@ var session = require('express-session')
 var indexRouter = require('./src/routes/index.js');
 var authRouter = require('./src/routes/auth.js');
 var productsRouter= require('./src/routes/products');
+var categoryRouter= require('./src/routes/category.js');
 var commentsRouter= require('./src/routes/comments');
 var statusRouter= require('./src/routes/status');
 var cartrouter = require('./src/routes/cart');
@@ -54,6 +55,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/api', authRouter);
 app.use('/api', productsRouter);
+app.use('/api', categoryRouter);
 app.use('/api', commentsRouter);
 app.use('/api', statusRouter);
 app.use('/cart', cartrouter);
