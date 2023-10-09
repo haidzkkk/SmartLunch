@@ -1,115 +1,192 @@
-var fs = require('fs');
-var myMD= require('../models/product')
-const {query}= require('express');
+var Product = require("../models/products.js");
+var Category = require("../models/category.js");
+var ProductSchema = require("../schemas/products.js").ProductSchema;
 
-exports.list = async(req, res, next)=>{
-  let dieu_kien_loc= null;
-  // if(typeof(req.query.))
-let list=await(myMD.productModel.find().populate('id_category'));
-console.log(list);
-
-
-//res.render('products/sanpham',{listSP:list});
-}
-
-
-
-
-exports.add =  async(req,res,next)=>{
-  let msg = '';
-  let listTL = await myMD.theloaiModel.find();
-  if(req.method =='POST'){
-      let objSP = new myMD.productModel();
- 
-      objSP.name = req.body.name;
-      objSP.image= req.body.image;
-      objSP.price = req.body.price;
-      objSP.id_theloai = req.body.id_theloai;
-      try {
-          let new_sp = await (objSP.save());
-          console.log(new_sp);
-          msg = 'Thêm mới thành công';
-        //  res.redirect('/product');
-          
-      } catch (error) {
-          msg = 'Lỗi '+ error.message;
-          console.log(error);
-      }
+exports.getAll = async (req, res) => {
+  const {
+    _limit = 10,
+    _sort = "createAt",
+    _order = "asc",
+    _page = 1,
+    q,
+  } = req.query;
+  const options = {
+    page: _page,
+    limit: _limit,
+    sort: {
+      [_sort]: _order == "desc" ? -1 : 1,
+    },
   }
-
-//  res.render('products/add_sanpham', {msg: msg, listTL:listTL });
-}
-
-
-
-
-exports.edit = async (req,res,next)=>{
-  let msg = '';
-  let idsp = req.params.idsp;
-  let objSP = await (myMD.productModel.findById(idsp));
-  let listTL = await (myMD.categoryModel.find());
-  if(req.method =='POST'){
-      let objSP = new myMD.productModel();
-      objSP.name = req.body.name;
-      objSP.price = req.body.price;
-     objSP.image=req.body.image;
-      objSP.id_theloai = req.body.id_theloai;
-      objSP._id = idsp;
-      try {
-          // let new_sp = await objSP.save();
-          // console.log(new_sp);
-          // msg = 'Thêm mới thành công';
-
-          await (myMD.productModel.findByIdAndUpdate(idsp, objSP));
-          msg = 'Đã cập nhật thành công';
-             //  res.redirect('/product');
-      } catch (error) {
-          msg = 'Lỗi '+ error.message;
-          console.log(error);
-      }
+  const searchQuery = q ? { name: { $regex: q, $options: "i" } } : {};
+  try {
+    const product = await Product.paginate(searchQuery, options);
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
   }
- // res.render('products/edit-san-pham',{msg: msg, objSP: objSP, listTL:listTL});
-}
+};
 
-exports.delete=async (req,res,next)=>{
-  let msg = '';
-  let idsp = req.params.idsp;
-  let objSP = await (myMD.productModel.findById(idsp));
-  let listTL = await (myMD.categoryModel.find());
-  if(req.method=='POST'){
-    let objSP= new myMD.productModel();
-    objSP.name = req.body.name;
-    objSP.price = req.body.price;
-    objSP.id_theloai = req.body.id_theloai;
-    objSP.image=req.body.image;
-    objSP._id=idsp;
-    try{
-      await (myMD.productModel.findByIdAndDelete(idsp, objSP));
-      msg = 'Đã xóa thành công';
-      //res.redirect('/product');
-    }catch (error) {
-      msg = 'Lỗi '+ error.message;
-      console.log(error);
-  }
-  }
-  
- // res.render('products/xoa-san-pham',{msg:msg,objSP:objSP,listTL:listTL})
-}
+exports.getAllDelete = async (req, res) => {
+  try {
+    const product = await Product.findWithDeleted({ deleted: true });
 
-exports.show=async (req,res,next)=>{
-  let msg = '';
-  let idsp = req.params.idsp;
-  let objSP = await (myMD.productModel.findById(idsp).populate('id_theloai'));
-  let listTL = await (myMD.categoryModel.find());
-  if(req.method=='POST'){
-    let objSP= new myMD.productModel();
-    objSP.name = req.body.name;
-    objSP.price = req.body.price;
-    objSP.id_theloai = req.body.id_theloai;
-    objSP.image=req.body.image;
-    objSP._id=idsp;
-    
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
   }
-  
- // res.render('products/chi-tiet',{msg:msg,objSP:objSP,listTL:listTL})
-}
+};
+
+exports.restoreProduct = async (req, res) => {
+  try {
+    const restoredProduct = await Product.restore(
+      { _id: req.params.id },
+      { new: true }
+    );
+    if (!restoredProduct) {
+      return res.status(400).json({
+        message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
+      });
+    }
+    return res.status(200).json({
+      product: restoredProduct,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.get = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findById(id);
+    if (product.length === 0) {
+      return res.status(400).json({
+        message: "Không có sản phẩm!",
+      });
+    }
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findById(id);
+    // console.log(product);
+    if (product) {
+      await product.delete();
+    }
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+
+exports.removeForce = async (req, res) => {
+  try {
+    const product = await Product.deleteOne({ _id: req.params.id });
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+
+exports.addProduct = async (req, res) => {
+  try {
+    const body = req.body;
+    const { error } = ProductSchema.validate(body, { abortEarly: false });
+    if (error) {
+      const errors = error.details.map((err) => err.message);
+      return res.status(400).json({
+        message: errors,
+      });
+    }
+    const product = await Product.create(body);
+    await Category.findOneAndUpdate(product.categoryId, {
+      $addToSet: {
+        products: product._id,
+      },
+    });
+    if (product.length === 0) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại",
+      });
+    }
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    const { categoryId } = req.body;
+    const product = await Product.findById(id);
+    const { error } = ProductSchema.validate(body, { abortEarly: false });
+    if (error) {
+      const errors = error.details.map((err) => err.message);
+      return res.status(400).json({
+        message: errors,
+      });
+    }
+    await Category.findByIdAndUpdate(product.categoryId, {
+      $pull: {
+        products: product._id,
+      },
+    });
+    await Category.findByIdAndUpdate(categoryId, {
+      $addToSet: {
+        products: product._id,
+      },
+    });
+    const data = await Product.findByIdAndUpdate({ _id: id }, body, {
+      new: true,
+    });
+    if (data.length === 0) {
+      return res.status(400).json({
+        message: "Cập nhật sản phẩm thất bại",
+      });
+    }
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+
+exports.viewProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: "Sản phẩm không tồn tại." });
+    }
+    product.views += 1;
+    await product.save();
+
+    res.json();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Lỗi trong quá trình xử lý." });
+  }
+};
