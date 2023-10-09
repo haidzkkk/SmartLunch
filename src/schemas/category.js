@@ -8,4 +8,5 @@ exports.categorySchema = Joi.object({
     category_image: Joi.object().required().messages({
         "any.required": "Trường ảnh danh mục bắt buộc nhập"
     }),
+  
 })

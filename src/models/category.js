@@ -29,4 +29,3 @@ const categorySchema =new mongoose.Schema({
  
 let categoryModel = mongoose.model("Category", categorySchema)
 module.exports = categoryModel
-
