@@ -1,5 +1,9 @@
 var mongoose = require('mongoose')
+var mongoosePaginate =  require ("mongoose-paginate-v2");
+var mongooseDelete =  require ("mongoose-delete");
 const categorySchema =new mongoose.Schema({
+
+
   category_name: {
     type: String,
     minLength: 3,
@@ -9,10 +13,7 @@ const categorySchema =new mongoose.Schema({
     type: Object,
     required: true
   },
-  price_increase_percent: {
-    type: Number, // % giá sản phẩm sẽ tăng nếu người dùng tự thiết kế sản phẩm (0-100%)
-    required: true
-  },
+
   products: [
     {
       type: mongoose.Types.ObjectId,
@@ -23,6 +24,9 @@ const categorySchema =new mongoose.Schema({
 },
   { timestamps: true, versionKey: false });
 
-
+  categorySchema.plugin(mongoosePaginate);
+  categorySchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
+ 
 let categoryModel = mongoose.model("Category", categorySchema)
-module.exports =categoryModel
+module.exports = categoryModel
+

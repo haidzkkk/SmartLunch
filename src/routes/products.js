@@ -6,7 +6,7 @@ const authenticate = require('../middlewares/authenticate').authenticate;
 var router = express.Router();
 
 router.get("/products", productController.getAll);
-router.get("/delete/:id",productController.getAllDelete);
+router.get("/products/delete",productController.getAllDelete);
 router.get("/products/:id", productController.get);
 router.delete("/products/:id", authenticate, authorization, productController.remove);
 router.delete("/products/force/:id", authenticate, authorization, productController.removeForce);

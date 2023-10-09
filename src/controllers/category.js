@@ -1,5 +1,5 @@
-var categorySchema=require ('../schemas/category.js')
-var Category = require ('../models/category.js')
+var categorySchema = require("../schemas/category.js").categorySchema;
+var Category = require("../models/category.js");
 
 
 exports.getAllCategory = async (req, res) => {
@@ -26,13 +26,18 @@ exports.getAllCategory = async (req, res) => {
         message: "Không có danh mục!",
       });
     }
-    return res.status(200).json({
-      message: "Lấy tất cả danh mục thành công!",
+    return res.status(200).json(
       category,
-    });
+    );
   } catch (error) {
+    console.error(
+      "Lỗi trong quá trình xử lý yêu cầu hoặc truy vấn cơ sở dữ liệu:",
+      error
+    );
     return res.status(400).json({
-      message: error,
+      message:
+        "Có lỗi xảy ra trong quá trình xử lý yêu cầu hoặc truy vấn cơ sở dữ liệu.",
+      error: error.message, // Trả về thông báo lỗi cụ thể (nếu có)
     });
   }
 };
@@ -40,14 +45,13 @@ exports.getAllCategory = async (req, res) => {
 exports.getAllDelete = async (req, res) => {
   try {
     const category = await Category.findWithDeleted({ deleted: true });
-    return res.status(200).json({
-      message: "Lấy tất cả danh mục đã bị xóa",
-      category
-    });
+    return res.status(200).json(   
+      category,
+    );
   } catch (error) {
     return res.status(400).json({
       message: error,
-    })
+    });
   }
 };
 
@@ -59,10 +63,10 @@ exports.getCategoryById = async (req, res) => {
         message: "Không tìm thấy danh mục",
       });
     }
-    return res.status(200).json({
-      message: "Lấy 1 danh mục thành công",
+    return res.status(200).json( 
       category,
-    });
+    );
+
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -74,10 +78,9 @@ exports.removeCategory = async (req, res) => {
   try {
     const id = req.params.id;
     const category = await Category.deleteById(id);
-    return res.status(200).json({
-      message: "Xoá Danh mục thành công.!",
-      category
-    });
+    return res.status(200).json(  
+      category,
+    );
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -88,14 +91,13 @@ exports.removeCategory = async (req, res) => {
 exports.removeForce = async (req, res) => {
   try {
     const category = await Category.deleteOne({ _id: req.params.id });
-    return res.status(200).json({
-      message: "Xoá sản phẩm vĩnh viễn",
-      category
-    })
+    return res.status(200).json(      
+      category,
+    );
   } catch (error) {
     return res.status(400).json({
       message: error,
-    })
+    });
   }
 };
 
@@ -122,10 +124,9 @@ exports.addCategory = async (req, res) => {
         message: "Không tìm thấy danh mục",
       });
     }
-    return res.status(200).json({
-      message: "Thêm danh mục thành công",
+    return res.status(200).json(
       category,
-    });
+    );
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -135,17 +136,16 @@ exports.addCategory = async (req, res) => {
 
 exports.restoreCategory = async (req, res) => {
   try {
-    const restoredCategory = await Category.restore({ _id: req.params.id }, { new: true });
+    const restoredCategory = await Category.restore(
+      { _id: req.params.id },
+      { new: true }
+    );
     if (!restoredCategory) {
       return res.status(400).json({
         message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
       });
     }
-
-    return res.status(200).json({
-      message: "Khôi phục sản phẩm thành công.",
-      category: restoredCategory,
-    });
+    return res.status(200).json(restoredCategory);
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -172,10 +172,7 @@ exports.updateCategory = async (req, res) => {
         message: "Cập nhật danh mục thất bại",
       });
     }
-    return res.status(200).json({
-      message: "Cập nhật danh mục thành công",
-      category,
-    });
+    return res.status(200).json(category);
   } catch (error) {
     return res.status(400).json({
       message: error.message,
