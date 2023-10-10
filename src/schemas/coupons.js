@@ -1,6 +1,6 @@
-var  Joi = ("joi")
+var  Joi = require("joi")
 
-exports.CouponSchema = Joi.object({
+exports.couponSchema = Joi.object({
     _id: Joi.string(),
     coupon_name: Joi.string().required().messages({
         "string.empty": "Tên mã giảm giá bắt buộc nhập",

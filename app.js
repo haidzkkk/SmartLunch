@@ -11,14 +11,17 @@ var session = require('express-session')
 
 var indexRouter = require('./src/routes/index.js');
 var authRouter = require('./src/routes/auth.js');
-var indexRouter = require('./src/routes/index');
-var authRouter = require('./src/routes/auth');
-var productsRouter= require('./src/routes/products');
+var productsRouter= require('./src/routes/product');
+var categoryRouter= require('./src/routes/category.js');
 var commentsRouter= require('./src/routes/comments');
 var statusRouter= require('./src/routes/status');
 var cartrouter = require('./src/routes/cart');
 var roomRouter = require('./src/routes/room');
 var messageRouter = require('./src/routes/message');
+var sizeRouter = require('./src/routes/size');
+var couponRouter = require('./src/routes/coupons');
+var orderRouter = require('./src/routes/order');
+
 
 const socketController = require('./src/controllers/socket');
 
@@ -53,18 +56,20 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/api', authRouter);
 app.use('/api', productsRouter);
+app.use('/api', categoryRouter);
 app.use('/api', commentsRouter);
 app.use('/api', statusRouter);
-app.use('/cart', cartrouter);
+app.use('/api', cartrouter);
 app.use('/api', roomRouter);
 app.use('/api', messageRouter);
-
-
+app.use('/api', sizeRouter);
+app.use('/api', couponRouter);
+app.use('/api', orderRouter);
 socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{
   await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
-  console.log(`server running on: http://localhost:${process.env.PORT}`)
+  console.log(`server running on: http://localhost:3000}`)
 })
 
 module.exports = app;

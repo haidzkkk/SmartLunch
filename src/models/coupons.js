@@ -1,4 +1,4 @@
-var mongoose = ('mongoose')
+var mongoose = require('mongoose')
 
 const couponSchema = new mongoose.Schema(
     {
@@ -23,13 +23,16 @@ const couponSchema = new mongoose.Schema(
             required: true
         },
         expiration_date: {
-            type: Date,
+            type: String,
             required: true
         },
         min_purchase_amount: {
             type: Number,
             required: true
         }
+    },
+    {
+        collection: 'coupons'
     },
     { timestamps: true, versionKey: false }
 );

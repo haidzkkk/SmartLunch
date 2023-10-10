@@ -11,5 +11,5 @@ const roomSchema = new mongoose.Schema ({
     collection: 'rooms'
 })
 
-let roomModel = mongoose.model('room', roomSchema)
+let roomModel = mongoose.model('Room', roomSchema)
 module.exports = roomModel
