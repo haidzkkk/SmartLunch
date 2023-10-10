@@ -371,7 +371,7 @@ exports.signin = async (req, res) => {
                 sameSite: "strict"
             })
             const { password, ...users } = user._doc
-            // sendNotificationToUser(users._id, `${user.email} đã đăng nhập`)
+            sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
             return res.status(200).json({
                 message: "Đăng nhập thành công",
                 ...users,
@@ -455,7 +455,7 @@ exports.refreshToken = async (req, res) => {
             })
             return res.status(200).json({
                 message: "Tạo Access Token mới thành công",
-                accessToke: newAccessToken
+                accessToke: newAccessToken, refreshTokens
             })
         })
     } catch (error) {
