@@ -4,11 +4,11 @@ var authenticate = require('../middlewares/authenticate').authenticate
 
 var router = express.Router();
 
-router.get('/message/:id', messageController.getMessageById);
-router.get('/message', messageController.getMessage);
-router.post('/message', messageController.postMessage);
-router.put('/message/:id', messageController.updateMessage);
-router.delete('/message/:id', messageController.deleteMessage);
+router.get('/message/:id', authenticate, messageController.getMessageById);
+router.get('/message', authenticate, messageController.getMessage);
+router.post('/message', authenticate, messageController.postMessage);
+router.put('/message/:id', authenticate, messageController.updateMessage);
+router.delete('/message/:id', authenticate, messageController.deleteMessage);
 
 
 module.exports = router;
