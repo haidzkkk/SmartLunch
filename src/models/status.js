@@ -2,7 +2,7 @@ const { number } = require('joi');
 var mongoose = require('mongoose')
 const statusSchema = new mongoose.Schema({
     status_name: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },

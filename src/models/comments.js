@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
 const CommentSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Types.ObjectId,
-    ref: "auth",
+    ref: "Auth",
     required: true
   },
   productId: {
