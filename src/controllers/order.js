@@ -1,7 +1,7 @@
 var Order = require ("../models/order.js");
-var orderSchema = require ("../schemas/order");
+var orderSchema = require ("../schemas/order").orderSchema;
 var Coupon = require ("../models/coupons.js");
-var product = require ("../models/products.js");
+
 
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
@@ -23,46 +23,46 @@ exports.getOrderByUserId = async (req, res) =>{
 }
 
 // lấy đơn hàng
- exports.getOrderById = async (req, res) =>{
+exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
         const order = await Order.findById(id).populate('products.productId status')
-        if(!order|| order.length ===0){
-            return res.status(400).json({
-                message :'đơn hàng không tồn tại'
+        if (!order || order.length === 0) {
+            return res.status(404).json({
+                message: "Đơn hàng không tồn tại"
             })
         }
-        res.status(200).json(order).json({
-            message :"Lấy 1  đơn hàng thành công",
+        return res.status(200).json({
+            message: "Lấy 1 đơn hàng thành công",
             order
-        });
+        })
     } catch (error) {
         return res.status(400).json({
-            message :error.message,
-            
+            message: error.message
         })
-      
     }
- }
+}
+ //lấy tất cả đơn hàng
  exports.getAllOrder = async (req, res) => {
     try {
-        const order = await Order.find().populate('products.productId status')
-        if(!order){
-            return res.status(400).json({
-                message :'lấy tất cả đơn hàng thất bại '
+        const order = await Order.find().populate('products.productId status');
+        if (!order) {
+            return res.status(404).json({
+                error: "Lấy tất cả đơn hàng thất bại"
             })
         }
-        res.status(200).json(order).json({
-            message :"Lấy tất cả đơn hàng thành công",
+        return res.status(200).json({
+            message: "Lấy tất cả đơn hàng thành công",
             order
-        });
+        })
     } catch (error) {
         return res.status(400).json({
-            message :error.message,
-    
+            message: error.message
         })
     }
- }
+}
+
+ // xóa order
  exports.removeOrder = async (req, res) => {
     try {
         // Tìm đơn hàng để lấy thông tin sản phẩm đã mua
@@ -93,7 +93,7 @@ exports.getOrderByUserId = async (req, res) =>{
         })
     }
 }
-
+//tạo order
 exports.createOrder = async (req, res) => {
     try {
         const body = req.body;
@@ -150,7 +150,7 @@ exports.createOrder = async (req, res) => {
 }
 
 
-
+// cập nhật
 exports.updateOrder = async (req, res) => {
     try {
         const id = req.params.id;

@@ -15,6 +15,6 @@ const statusSchema = new mongoose.Schema({
     collection: 'statuss'
 }
 );
-let productModel = mongoose.model('status', statusSchema);
+let productModel = mongoose.model('Status', statusSchema);
 
 module.exports = productModel
