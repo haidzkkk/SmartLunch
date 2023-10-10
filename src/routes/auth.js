@@ -8,7 +8,6 @@ var router = express.Router();
 router.get("/users",authController.getAll)
 router.get("/users/:id",authController.getOneById)
 router.delete("/users/:id",authenticate,authorization,authController.removeByAdmin)
-routerAuth.patch("/user/:id/admin", authenticate, authorization, updateUserByAdmin);
 router.post("/signup",authController.signup)
 router.post('/signin', authController.signin)
 router.post("/logout",authenticate,authController.logout)
