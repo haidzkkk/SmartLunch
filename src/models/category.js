@@ -3,14 +3,6 @@ var mongoosePaginate =  require ("mongoose-paginate-v2");
 var mongooseDelete =  require ("mongoose-delete");
 const categorySchema =new mongoose.Schema({
 
- const productSchema= new mongoose.Schema(
-    {   
-        id_theloai:{type: mongoose.Schema.Types.ObjectId, ref:'categoryModel'}
-    },
-    {
-        collection:'product'
-    }
- );
 
   category_name: {
     type: String,
