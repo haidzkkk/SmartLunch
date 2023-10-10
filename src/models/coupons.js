@@ -37,5 +37,5 @@ const couponSchema = new mongoose.Schema(
     { timestamps: true, versionKey: false }
 );
 
-let couponModel = mongoose.model('coupon', couponSchema)
+let couponModel = mongoose.model('Coupon', couponSchema)
 module.exports = couponModel

@@ -20,22 +20,18 @@ const cartSchema = new mongoose.Schema (
             product_name: String,
             product_price: Number,
             image: String,
-            stock_quantity: Number,
+            purchase_quantity: Number,
+            originalPrice: Number,
             sizeId: String,
-            colorId: String
         },
-
      ],
      total: {
         type: Number,
       }
 
 }, 
-{
-    collection: 'carts'
-},
+
 { timestamps: true, versionKey: false }
 );
-
-let cartModel = mongoose.model('cart', cartSchema)
+let cartModel = mongoose.model('Cart', cartSchema)
 module.exports = cartModel
