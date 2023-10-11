@@ -17,6 +17,7 @@ const orderSchema = mongoose.Schema({
       product_name: String,
       product_price: Number,
       image: String,
+      consignee_name: String,
       purchase_quantity: Number,
       sizeId: String,
    

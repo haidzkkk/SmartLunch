@@ -23,124 +23,6 @@ const ressetCart = async (idUser) =>{
 }
 
 
-// const addProduct = async (cartExist, productAdd, res) => {
-//     try {
-//         const productExist = cartExist.Product.find((product) =>
-//             product.productId === productAdd.productId &&
-//             product.sizeId === productAdd.sizeId 
-//         );
-//         console.log(productExist);
-//         if (productExist) {
-//             const size = await Size.findById(productAdd.sizeId);
-//             const updatedProductPrice = productAdd.product_price + size.size_price;
-//             productExist.purchase_quantity += productAdd.purchase_quantity;
-//             productExist.product_price = updatedProductPrice; // Cập nhật giá sản phẩm
-
-//             cartExist.total = cartExist.products.reduce((total, item) => total + item.product_price * item.purchase_quantity, 0);
-//         } else {
-//             const size = await Size.findById(productAdd.sizeId)
-//             const newProduct = {
-//                 productId: productAdd.productId,
-//                 product_name: productAdd.product_name,
-//                 product_price: productAdd.product_price + size.size_price,
-//                 image: productAdd.image,
-//                 purchase_quantity: productAdd.purchase_quantity,
-//                 sizeId: productAdd.sizeId,
-//             }
-//             console.log(JSON.stringify(newProduct))
-//             cartExist.products.push(newProduct);
-//             cartExist.total = cartExist.products.reduce((total, item) => total + item.product_price * item.purchase_quantity, 0);
-//             // cartExist.total = cartExist.products.reduce((total, item) => total + item.purchase_quantity * item.product_price, 0);
-//             console.log(cartExist.total)
-//         }
-//         for (const item of cartExist.products) {
-//             const product = await Product.findById(item.productId);
-
-//             if (!product || product.purchase_quantity < item.purchase_quantity) {
-//                 return res.status(400).json({ message: `Đã quá số hàng tồn` });
-//             }
-//         }
-   
-        
-//         // Kiểm tra xem phiếu giảm giá đã được áp dụng
-//         if (cartExist.couponId !== null) {
-//             // Tính lại tổng tiền bằng cách cộng với giá của sản phẩm mới
-//             cartExist.products = cartExist.products.map((item) => {
-//                 return {
-//                     ...item,
-//                     product_price: item.originalPrice, // Khôi phục giá của sản phẩm về giá ban đầu
-//                 };
-//             });
-//             cartExist.total = cartExist.products.reduce((total, item) => total + item.product_price * item.purchase_quantity, 0);
-//             cartExist.couponId = null
-//             // Xóa giá ban đầu của sản phẩm
-//             cartExist.products.forEach((item) => {
-//                 item.originalPrice = undefined
-//             });
-//         }
-//         // Lưu giỏ hàng sau khi cập nhật (không có phiếu giảm giá)
-//         const cartUpdated = await Cart.findOneAndUpdate({ _id: cartExist._id }, cartExist, { new: true })
-//         return res.status(200).json({
-//             message: 'Thêm vào giỏ hàng thành công',
-//             data: cartUpdated
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         return res.status(400).json({
-//             message: 'Thêm vào giỏ hàng không thành công'
-//         });
-//     }
-// };
-
-
-
-// exports.createCart = async (req, res) => {
-//     try {
-//         const userId = req.params.id
-//         const productNeedToAdd = req.body
-//         const userExist = await Auth.findById(userId)
-//         if (!userExist) {
-//             return res.status(404).json({
-//                 message: 'Người dùng không tồn tại !'
-//             })
-//         }
-//         const { error } = cartSchema.validate(req.body, { abortEarly: false });
-//         if (error) {
-//             const errors = error.details.map((err) => err.message);
-//             return res.status(400).json({
-//                 message: errors
-//             })
-//         }
-//         const cartExist = await Cart.findOne({ userId: userId })
-//         if (cartExist) {
-//             return addProduct(cartExist, productNeedToAdd, res)
-//         }
-//         const newCart = await Cart.create({
-//             userId,
-//             products: [
-//                 {
-//                     productId: productNeedToAdd._id,
-//                     ...productNeedToAdd
-//                 }
-//             ],
-//             total: productNeedToAdd.product_price * productNeedToAdd.purchase_quantity,
-//         })
-//         if (!newCart) {
-//             return res.status(400).json({
-//                 message: 'Thêm vào giỏ hàng thất bại'
-//             })
-//         }
-//         return res.status(200).json({
-//             message: 'Thêm vào giỏ hàng thành công',
-//             data: newCart
-//         })
-//     } catch (error) {
-//         return res.status(400).json({
-//             message: error.message
-//         })
-//     }
-// }
-
 const addProductToCart = async (cartExist, productToAdd) => {
     try {
         const productExistIndex = cartExist.products.findIndex((product) =>
@@ -151,10 +33,14 @@ const addProductToCart = async (cartExist, productToAdd) => {
         if (productExistIndex !== -1) {
             const size = await Size.findById(productToAdd.sizeId);
             const updatedProductPrice = productToAdd.product_price + size.size_price;
-            cartExist.products[productExistIndex].purchase_quantity += productToAdd.purchase_quantity;
-            cartExist.products[productExistIndex].product_price = updatedProductPrice;
+            const existingProduct = cartExist.products[productExistIndex];
+            existingProduct.purchase_quantity += productToAdd.purchase_quantity;
+            existingProduct.product_price = updatedProductPrice;
+
+
         } else {
             const size = await Size.findById(productToAdd.sizeId);
+            const  name_size = size.size_name
             const newProduct = {
                 productId: productToAdd.productId,
                 product_name: productToAdd.product_name,
@@ -162,11 +48,13 @@ const addProductToCart = async (cartExist, productToAdd) => {
                 image: productToAdd.image,
                 purchase_quantity: productToAdd.purchase_quantity,
                 sizeId: productToAdd.sizeId,
+                 sizeName: name_size,
             };
-
+         console.log(name_size);
             cartExist.products.push(newProduct);
         }
 
+     
         // Tính toán lại tổng giá trị của giỏ hàng sau khi thêm/sửa sản phẩm
         cartExist.total = cartExist.products.reduce((total, item) => total + item.purchase_quantity * item.product_price, 0);
 
@@ -180,7 +68,7 @@ if (cartExist.couponId !== null) {
     cartExist.products = cartExist.products.map((item) => {
         return {
             ...item,
-            product_price: item.originalPrice, // Khôi phục giá của sản phẩm về giá ban đầu
+            product_price: item.purchase_quantity, // Khôi phục giá của sản phẩm về giá ban đầu
         };
     });
     cartExist.total = cartExist.products.reduce((total, item) => total + item.product_price * item.purchase_quantity, 0);
@@ -188,7 +76,7 @@ if (cartExist.couponId !== null) {
 
     // Xóa giá ban đầu của sản phẩm
     cartExist.products.forEach((item) => {
-        item.originalPrice = undefined;
+        item.purchase_quantity = undefined;
     });
 }
         return cartUpdated;
@@ -293,11 +181,7 @@ exports.changeQuantity = async (req, res) => {
                 cart.products[index].purchase_quantity = purchase_quantity;
             }
         });
-    
-        // const productExt = cart.products.findIndex((product) =>
-        // product.productId === idProduct &&
-        // product.sizeId === sizeId
-    
+
         console.log("json+ : "+JSON.stringify(cart))
         console.log("json cart : " + productExists);
         if (productExists) {

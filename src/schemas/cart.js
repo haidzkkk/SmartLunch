@@ -17,9 +17,7 @@ exports.cartSchema = Joi.object({
   purchase_quantity: Joi.number().messages({
     'number.base': 'purchase_quantity phải là một số.',
   }),
-  originalPrice: Joi.number().messages({
-    'number.base': 'originalPrice phải là một số.',
-  }),
+
   sizeId: Joi.string().required().messages({
     'any.required': 'Size không được để trống.',
     'string.base': 'Size phải là một chuỗi.',
