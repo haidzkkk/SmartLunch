@@ -9,7 +9,7 @@ const CommentSchema = new mongoose.Schema({
   },
   productId: {
     type: mongoose.Types.ObjectId,
-    ref: "product",
+    ref: "Product",
     required: true
   },
   description: {
