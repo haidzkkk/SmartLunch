@@ -8,7 +8,6 @@ const io = new Server(httpServer, { /* options */ });
 
 exports.initializeSocketServer = ()=>{
 
-
     io.on("connection", async (socket) => {
         console.log("Socket.io client connected")
         
@@ -17,10 +16,17 @@ exports.initializeSocketServer = ()=>{
         // })
     })
 
-    httpServer.listen(3001);
+    httpServer.listen(process.env.PORT_SOCKET);
 } 
 
 // khi gọi thì client nào lắng nghe "client-listen-message" thì sẽ nhận được được data
-exports.sendMessageToClient = (message) =>{
-    io.emit("client-listen-message", message)
+exports.sendRoomToClient = (userId, room) =>{
+    console.log(`link room socket: client-listen-room-${userId}`);
+    io.emit(`client-listen-room-${userId}`, room)
 } 
+
+exports.sendMessageToClient = (roomId, message) =>{
+    console.log(`link room socket: client-listen-message-${roomId}`);
+    io.emit(`client-listen-message-${roomId}`, message)
+} 
+

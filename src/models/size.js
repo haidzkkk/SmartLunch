@@ -1,4 +1,4 @@
-var mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
 const sizeSchema = new mongoose.Schema(
   {
@@ -17,5 +17,5 @@ const sizeSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-let sizeModel = mongoose.model('size', sizeSchema)
+let sizeModel = mongoose.model('Size', sizeSchema)
 module.exports = sizeModel

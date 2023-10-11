@@ -1,4 +1,6 @@
 var mongoose = require('mongoose')
+var mongoosePaginate =  require ("mongoose-paginate-v2");
+var mongooseDelete =  require ("mongoose-delete");
 
 const productsSchema = new mongoose.Schema({
     product_name: {
@@ -29,18 +31,11 @@ const productsSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "Category",
     },
-    brandId: {
-        type: mongoose.Types.ObjectId,
-        ref: "Brand",
-    },
-    materialId: {
-        type: mongoose.Types.ObjectId,
-        ref: "Material",
-    }
+  
 },
     { timestamps: true, versionKey: false });
-// productsSchema.plugin(mongoosePaginate);
-// productsSchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
+ productsSchema.plugin(mongoosePaginate);
+ productsSchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
 
 
 let productModel= mongoose.model("Product", productsSchema)
