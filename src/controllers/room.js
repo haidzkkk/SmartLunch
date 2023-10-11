@@ -1,6 +1,7 @@
 var Room = require('../models/room')
 var Auth = require('../models/auth')
 var configApp = require('../config/configApp')
+const { el } = require('date-fns/locale')
 
 
 exports.getRoom = async(req, res, next) =>{
@@ -11,10 +12,11 @@ exports.getRoom = async(req, res, next) =>{
                             .populate('userIdSend')
         res.status(200).json(data)
     }catch(err){
-        res.status(400).json(err)   
+        res.status(400).json("Lỗi " + err)   
     }
 }
 
+// lấy room theo id người dùng
 exports.getRoomById = async(req, res, next) =>{
     try{
         var id = req.params.id
@@ -49,18 +51,42 @@ exports.updateRoom = async(req, res, next) => {
     try{
         var id = req.params.id
         var room = req.body
-        var roomUpdate = await Room.findByIdAndUpdate(id, room)
-        res.status(200).json(roomUpdate)  
+        var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true })
+        if(roomUpdate == null){
+            res.status(404).json("not found")  
+        }else{
+            res.status(200).json(roomUpdate)  
+        }
     }catch(err){
         res.status(400).json(err)   
     }
 }
 
+exports.updateRoomSocket = async (id, type, room) =>{
+    try{
+        if(type != 0) room.messSent = "type khác"
+        console.log(room);
+        var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true })
+        if(roomUpdate != null){
+            return roomUpdate
+        }else{
+            return null
+        }
+    }catch(err){
+        return null
+        console.log(err);
+    }
+} 
+
 exports.deleteRoom = async(req, res, next) => {
     try{
         var id = req.params.id
-        var roomDelete = await Room.findByIdAndRemove(id)
-        res.status(200).json(roomDelete)  
+        var roomDelete = await Room.findByIdAndRemove(id, { new: true })
+        if(roomDelete == null){
+            res.status(404).json("not found")  
+        }else{
+            res.status(200).json(roomDelete)  
+        }
     }catch(err){
         res.status(400).json(err)   
     }

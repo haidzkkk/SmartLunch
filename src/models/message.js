@@ -11,5 +11,5 @@ const messageSchema = new mongoose.Schema ({
     collection: 'messages'
 })
 
-let messageModel = mongoose.model('message', messageSchema)
+let messageModel = mongoose.model('Message', messageSchema)
 module.exports = messageModel
