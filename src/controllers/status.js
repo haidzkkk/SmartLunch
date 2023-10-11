@@ -1,26 +1,52 @@
 
 var Status = require('../models/status')
 
+var statusSchema = require("../schemas/status").statusSchema
 
 exports.status = async (req, res, next) =>{
-    try{
-        const data = await Status.find()
-        res.status(200).json(data)
-    }catch(err){
-        res.status(400).json(err)   
+  try {
+    const status = await Status.find();
+    if (status.length === 0) {
+      return res.status(404).json({
+        message: 'Lấy tất cả trạng thái thất bại',
+      });
     }
+    return res.status(200).json({
+      message: " Lấy tất cả trạng thái thành công",
+      status
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
 }
 
 
 
 exports.addstatus= async (req, res, next) =>{
-    try{
-        var status = req.body;
-        await Status.create(status);
-        res.status(200).json("add thành công");
-    }catch(err){
-        res.status(400).json("add thất bại");
+  try {
+    const { error } = statusSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details.map((err) => err.message),
+      });
     }
+    const status = await Status.create(req.body);
+    if (!status) {
+      return res.status(400).json({
+        message: 'Thêm trạng thái thất bại',
+      });
+    }
+    return res.status(200).json({
+      message: 'Thêm trạng thái thành công',
+      status,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
 }
 
 exports.deletestatus = async (req, res, next) =>{
@@ -41,22 +67,30 @@ exports.deletestatus = async (req, res, next) =>{
 
   exports.updatestatus = async (req, res, next) =>{
     try {
-        const id = req.params.id;
-        const { status_name, status_description } = req.body;
-        const status = await Status.findOne({
-          _id: id,
-        });
-        if (!status) {
-          return res.status(404).json({ error: "Status not found" });
-        }
-        status.status_name = status_name;
-        status.status_description = status_description;
-        const updatedStatus = await status.save();
-        res.json(updatedStatus);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error updating status" });
+      const id = req.params.id;
+      const body = req.body;
+      const { error } = statusSchema.validate(body, { abortEarly: false });
+      if (error) {
+        const errors = error.details.map((err) => err.message)
+        return res.status(400).json({
+          message: errors
+        })
       }
+      const status = await Status.findByIdAndUpdate(id, body, { new: true, });
+      if (!status) {
+        return res.status(404).json({
+          message: 'Cập nhật trạng thái thất bại',
+        });
+      }
+      return res.status(200).json({
+        message: "Cập nhật trạng thái thành công",
+        status
+      })
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message
+      })
+    }
 }
   
   

@@ -1,24 +1,18 @@
 var express = require('express');
 var CommentController = require('../controllers/comments')
-// var authenticate = require('../middlewares/authenticate').authenticate
-
+const authorization  = require('../middlewares/authorization').authorization;
+const authenticate = require('../middlewares/authenticate').authenticate
 var router = express.Router();
-//all comment
-router.get('/comment', CommentController.Comment);
 
-// 1 comment
-router.get('/comment/:id', CommentController.OneComment);
-
-//get comment from product
-router.get('/comment/:productId', CommentController.CommentProduct);
-
-//creatcomment from auth id
-router.post('/comment/:userId/:productId', CommentController.addComment);
-
-//update comment 
-router.put('/comment/:id/user/:userId/product/:productId', CommentController.updateComment);
-
-//delete comment
-router.delete('/comment/:id/user/:userId/product/:productId', CommentController.deleteComment);
+router.get("/comment/:productId", CommentController.getCommentFromProduct)
+router.get("/comment/:id/detail", CommentController.getOneComment)
+router.post("/comment", CommentController.create)
+router.patch("/comment/:id", CommentController.updateComment)
+router.delete("/comment/:id", CommentController.removeComment)
+router.get("/comment",CommentController.getAll)
+router.delete("/comment/:id/remove", CommentController.removeCommentByUser);
+router.delete("/comments/:id/admin", authenticate, authorization, CommentController.removeCommentByAdmin);
+router.patch("/comment/:id/update", CommentController.updateCommentByUser);
+router.patch("/comments/:id/admin", authenticate, authorization, CommentController.updateCommentByAdmin);
 
 module.exports = router;

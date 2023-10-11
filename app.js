@@ -24,6 +24,7 @@ var orderRouter = require('./src/routes/order');
 
 
 const socketController = require('./src/controllers/socket');
+const { URL_MONGO, PORT } = require('./src/config/configApp.js');
 
 
 dotenv.config();
@@ -67,9 +68,9 @@ app.use('/api', couponRouter);
 app.use('/api', orderRouter);
 socketController.initializeSocketServer()
 
-app.listen(process.env.PORT, async () =>{
-  await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
-  console.log(`server running on: http://localhost:3000}`)
+app.listen(PORT, async () =>{
+  await mongoose.connect(URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+  console.log(`server running on: http://localhost:3000`)
 })
 
 module.exports = app;
