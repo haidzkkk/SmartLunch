@@ -21,7 +21,7 @@ var messageRouter = require('./src/routes/message');
 var sizeRouter = require('./src/routes/size');
 var couponRouter = require('./src/routes/coupons');
 var orderRouter = require('./src/routes/order');
-
+var uploadRouter = require('./src/routes/upload');
 
 const socketController = require('./src/controllers/socket');
 const { URL_MONGO, PORT } = require('./src/config/configApp.js');
@@ -66,6 +66,8 @@ app.use('/api', messageRouter);
 app.use('/api', sizeRouter);
 app.use('/api', couponRouter);
 app.use('/api', orderRouter);
+app.use('/api', uploadRouter);
+
 socketController.initializeSocketServer()
 
 app.listen(PORT, async () =>{
