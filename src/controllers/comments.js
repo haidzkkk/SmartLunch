@@ -1,7 +1,7 @@
 
-var Comment = require("../models/comments")
-var CommentSchema = require("../schemas/comments").CommentSchema
-var Product = require("../models/products")
+var Comment = require("../models/comment")
+var CommentSchema = require("../schemas/comment").CommentSchema
+var Product = require("../models/product")
 var Auth = require("../models/auth")
 
 
