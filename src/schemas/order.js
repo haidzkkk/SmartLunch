@@ -9,6 +9,11 @@ exports.orderSchema = Joi.object({
     }),
     couponId: Joi.string().allow(null),
     products: Joi.array().required(),
+    consignee_name  : Joi.string().required().messages({
+        "string.empty": "người nhận bắt buộc nhập",
+        "any.required": "người nhận bắt buộc nhập",
+        "string.base": "người nhận phải là string"
+    }),
     total: Joi.number().min(0).required().messages({
         "number.min": "Không được nhập số âm"
     }),

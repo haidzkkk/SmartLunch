@@ -1,6 +1,7 @@
 var Order = require ("../models/order.js");
 var orderSchema = require ("../schemas/order").orderSchema;
 var Coupon = require ("../models/coupons.js");
+var Product = require ("../models/product");
 
 
 
@@ -124,9 +125,9 @@ exports.createOrder = async (req, res) => {
             const product = await Product.findById(item.productId);
             if (product) {
                 // Giảm số lượng sản phẩm tương ứng với số lượng mua
-                product.stock_quantity -= item.stock_quantity; // Giảm số lượng theo số lượng trong giỏ hàng
+                product.purchase_quantity -= item.purchase_quantity; // Giảm số lượng theo số lượng trong giỏ hàng
                 // Tăng số lượng đã bán (view) tương ứng với số lượng mua
-                product.sold_quantity += item.stock_quantity; // Tăng view theo số lượng trong giỏ hàng
+                product.purchase_quantity += item.purchase_quantity; // Tăng view theo số lượng trong giỏ hàng
                 await product.save();
             }
         }
