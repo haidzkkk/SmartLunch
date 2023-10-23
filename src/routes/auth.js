@@ -6,8 +6,9 @@ const authenticate = require('../middlewares/authenticate').authenticate
 
 var router = express.Router();
 
+router.get("/getCurrentUser",authenticate,authController.getCurrentUser)
 router.get("/users",authController.getAll)
-router.get("/users/:id",authController.getOneById)
+router.get("/users/:id",authenticate,authController.getOneById)
 router.delete("/users/:id",authenticate,authorization,authController.removeByAdmin)
 router.patch("/users",authenticate,authController.updateUser)
 router.post("/signup",authController.signup)
@@ -16,4 +17,8 @@ router.post("/logout",authenticate,authController.logout)
 router.post("/refresh", authController.refreshToken)
 router.post("/verifyOTP", authController.verifyOTP)
 router.post("/resendOTPVerificationCode", authController.sendNewOtp)
+router.get("/forgotPassword", authController.forgotPassword)
+router.post("/verifyOTPChangePassword", authController.verifyOTPChangePassword)
+router.post("/resetPassword", authController.resetPassword)
+router.post("/changePassword", authenticate,authController.changePassword)
 module.exports = router;

@@ -38,6 +38,10 @@ const authSchema = new mongoose.Schema ({
         type: Boolean,
         default: false
     },
+    passwordChanged: {
+        type: Boolean,
+        default: false
+    },
     googleId:{
         type: String,
         default: null,
