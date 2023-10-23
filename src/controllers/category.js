@@ -1,4 +1,5 @@
 var categorySchema = require("../schemas/category.js").categorySchema;
+var { uploadImage, updateImage } = require('../controllers/upload');
 var Category = require("../models/category.js");
 
 exports.getAllCategory = async (req, res) => {
@@ -102,6 +103,8 @@ exports.removeForce = async (req, res) => {
 exports.addCategory = async (req, res) => {
   try {
     const { category_name } = req.body;
+    var files = req.files 
+    
     const formData = req.body;
     const data = await Category.findOne({ category_name });
     if (data) {
@@ -116,6 +119,15 @@ exports.addCategory = async (req, res) => {
         message: errors,
       });
     }
+
+    var images = await uploadImage(files)
+    if(images[0] == null){
+      return res.status(400).json({
+        message: "Thêm danh mục thất bại, chưa có ảnh tải lên",
+      });
+    }
+    formData.category_image = images[0]
+
     const category = await Category.create(formData);
     if (!category || category.length === 0) {
       return res.status(404).json({
@@ -155,6 +167,9 @@ exports.updateCategory = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
+    const publicId = req.query.publicId;
+    var files = req.files 
+
     const { error } = categorySchema.validate(body, { abortEarly: false });
     if (error) {
       const errors = error.details.map((err) => err.message);
@@ -162,6 +177,10 @@ exports.updateCategory = async (req, res) => {
         message: errors,
       });
     }
+
+    var images = await updateImage(files, publicId)
+    body.category_image = images
+
     const category = await Category.findOneAndUpdate({ _id: id }, body, {
       new: true,
     });

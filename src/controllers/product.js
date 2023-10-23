@@ -1,6 +1,7 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
+var { uploadImage, updateImage } = require('../controllers/upload');
 
 exports.getAll = async (req, res) => {
   const {
@@ -108,6 +109,8 @@ exports.removeForce = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const body = req.body;
+    var files = req.files 
+
     const { error } = ProductSchema.validate(body, { abortEarly: false });
     if (error) {
       const errors = error.details.map((err) => err.message);
@@ -115,6 +118,15 @@ exports.addProduct = async (req, res) => {
         message: errors,
       });
     }
+
+    var images = await uploadImage(files)
+    if(images[0] == null){
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+      });
+    }
+    body.images = images
+
     const product = await Product.create(body);
     await Category.findOneAndUpdate(product.categoryId, {
       $addToSet: {

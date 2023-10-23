@@ -3,27 +3,32 @@ var Auth = require('../models/auth')
 const { el } = require('date-fns/locale')
 
 
-exports.getRoom = async(req, res, next) =>{
-    try{
-        const data = await Room.find()        
-                            .populate('shopUserId')
-                            .populate('userUserId')
-                            .populate('userIdSend')
-        res.status(200).json(data)
-    }catch(err){
-        res.status(400).json("Lỗi " + err)   
-    }
-}
+// exports.getRoom = async(req, res, next) =>{
+//     try{
+//         const data = await Room.find()        
+//                             .populate('shopUserId')
+//                             .populate('userUserId')
+//                             .populate('userIdSend')
+//         res.status(200).json(data)
+//     }catch(err){
+//         res.status(400).json("Lỗi " + err)   
+//     }
+// }
 
 // lấy room theo id người dùng
 exports.getRoomById = async(req, res, next) =>{
     try{
-        var id = req.params.id
-        const auth = await Auth.findById(id)
+        const auth = await Auth.findById(req.user.id)
         if(auth != null){
             // TODO: check role để kiểm tra xem lấy id ở shopUserId hay userUserId
             // const isShop = auth.email == "admin"
-            const data = await Room.find({userUserId: auth.id})        
+            console.log(auth.id);
+            const data = await Room.find({
+  $or: [
+    { userUserId: auth.id },
+    { shopUserId: auth.id }
+  ]
+})        
                                 .populate('shopUserId')
                                 .populate('userUserId')
                                 .populate('userIdSend')

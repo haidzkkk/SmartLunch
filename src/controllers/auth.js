@@ -6,6 +6,7 @@ var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
 var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
+var { uploadImage, updateImage } = require('../controllers/upload');
 let refreshTokens = [];
 
 // lấy người dùng hiện tại
@@ -105,6 +106,56 @@ exports.updateUser = async (req, res) => {
         });
     }
 };
+
+// upload avatar
+exports.uploadAvatarUser = async (req, res) => {
+    try {
+        const id = req.user;
+        var files = req.files 
+
+        var images = await uploadImage(files)
+       
+        const user = await Auth.findByIdAndUpdate(id, {avatar: images[0]}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+        if (!user) {
+            return res.status(400).json({
+                message: "tải lên avatar người dùng thất bại"
+            });
+        }
+        return res.status(200).json({
+            user
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+// update avatar
+exports.updateAvatarUser = async (req, res) => {
+    try {
+        const id = req.user;
+        const publicId = req.params.publicId;
+        var files = req.files 
+
+        var images = await updateImage(files, publicId)
+       
+        const user = await Auth.findByIdAndUpdate(id, {avatar: images}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+        if (!user) {
+            return res.status(400).json({
+                message: "tải lên avatar người dùng thất bại"
+            });
+        }
+        return res.status(200).json({
+            user
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 
 // Đăng ký người dùng
 exports.signup = async (req, res) => {
