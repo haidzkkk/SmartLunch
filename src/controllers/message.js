@@ -1,5 +1,4 @@
 var Message = require('../models/message')
-var configApp = require('../config/configApp');
 const { updateRoomSocket } = require('./room');
 var { sendMessageToClient, sendRoomToClient } = require('../controllers/socket');
 
