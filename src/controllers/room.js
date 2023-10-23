@@ -1,6 +1,5 @@
 var Room = require('../models/room')
 var Auth = require('../models/auth')
-var configApp = require('../config/configApp')
 const { el } = require('date-fns/locale')
 
 

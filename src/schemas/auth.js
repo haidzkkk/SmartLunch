@@ -49,6 +49,42 @@ exports.signinSchema = joi.object({
     }),
 })
 
+exports.forgotPassSchema = joi.string().required().messages({
+    "string.empty": "Mời nhập email",
+    "any.required": "Email không được để trống",
+    "string.email": "Email không đúng định dạng",
+});
+
+exports.resetPassSchema = joi.object({
+    userId: joi.string().required().messages({
+        "string.empty": "Không có userId",
+        "any.required": 'Trường "userId" là bắt buộc',
+    }),
+    newPassword: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu không được để trống",
+        "any.required": "Trường mật khẩu là bắt buộc",
+        "string.min": "Mật khẩu phải có ít nhất {#limit} ký tự",
+    }),
+    confirmPassword: joi.string().valid(joi.ref("newPassword")).required().messages({
+        "any.only": "Mật khẩu không khớp",
+        "string.empty": "Mật khẩu không được để trống",
+        "any.required": "Trường mật khẩu là bắt buộc",
+    }),
+})
+
+exports.changePasswordUserSchema = joi.object({
+    currentPassword: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu hiện tại không được để trống",
+        "any.required": "Trường mật khẩu hiện tại là bắt buộc",
+        "string.min": "Mật khẩu hiện tại phải có ít nhất {#limit} ký tự",
+    }),
+    newPassword: joi.string().min(6).required().messages({
+        "string.empty": "Mật khẩu mới không được để trống",
+        "any.required": "Trường mật khẩu mới là bắt buộc",
+        "string.min": "Mật khẩu mới phải có ít nhất {#limit} ký tự",
+    })
+})
+
 exports.updateUserSchema = joi.object({
     first_name: joi.string().required().messages({
         "string.empty": "Vui lòng mời nhập tên",

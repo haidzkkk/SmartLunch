@@ -24,8 +24,6 @@ var orderRouter = require('./src/routes/order');
 var uploadRouter = require('./src/routes/upload');
 
 const socketController = require('./src/controllers/socket');
-const { URL_MONGO, PORT } = require('./src/config/configApp.js');
-
 
 dotenv.config();
 var app = express();
@@ -70,8 +68,8 @@ app.use('/api', uploadRouter);
 
 socketController.initializeSocketServer()
 
-app.listen(PORT, async () =>{
-  await mongoose.connect(URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+app.listen(process.env.PORT, async () =>{
+  await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
   console.log(`server running on: http://localhost:3000`)
 })
 
