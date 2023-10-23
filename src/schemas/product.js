@@ -10,9 +10,6 @@ exports.ProductSchema = Joi.object({
         "any.required": "Trường giá sản phẩm bắt buộc nhập",
         "number.base": "Giá sản phẩm phải là số"
     }),
-    image: Joi.object().required().messages({
-        "any.required": "Trường ảnh sản phẩm bắt buộc nhập"
-    }),
     sold_quantity: Joi.number(),
     description: Joi.string(),
     views: Joi.number(),

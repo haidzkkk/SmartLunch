@@ -1,9 +1,8 @@
 
 var cloudinary = require('../config/cloudinary')
-exports.uploadImage = async (req, res) => {
-    const files = req.files
+exports.uploadImage = async (files) => {
     if (!Array.isArray(files)) {
-        return res.status(400).json({ error: 'No files were uploaded' });
+        return null;
     }
     try {
         const uploadPromises = files.map((file) => {
@@ -19,9 +18,9 @@ exports.uploadImage = async (req, res) => {
             url: result.secure_url,
             publicId: result.public_id,
         }));
-        return res.json({ urls: uploadedFiles });
+        return uploadedFiles;
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return null;
     }
 };
 
@@ -37,13 +36,11 @@ exports.deleteImage = async (req, res) => {
 };
 
 
-exports.updateImage = async (req, res) => {
-    const files = req.files
+exports.updateImage = async (files, publicId) => {
     if (!Array.isArray(files) || files.length === 0) {
-        return res.status(400).json({ error: 'No files were uploaded' });
+        return null;
     }
 
-    const publicId = req.params.publicId; // Lấy publicId của ảnh cần cập nhật
     const newImage = files[0].path; // Lấy đường dẫn của ảnh mới
     try {
         // Upload ảnh mới lên Cloudinary và xóa ảnh cũ cùng lúc
@@ -52,10 +49,10 @@ exports.updateImage = async (req, res) => {
             cloudinary.uploader.destroy('DATN/'+publicId)
         ]);
         // Trả về kết quả với url và publicId của ảnh mới
-        return res.json({ url: uploadResult.secure_url, publicId: uploadResult.public_id, deleteResult });
+        return { url: uploadResult.secure_url, publicId: uploadResult.public_id, deleteResult }
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: error.message || "Error updating image" });
+        return null;
     }
 
 };
