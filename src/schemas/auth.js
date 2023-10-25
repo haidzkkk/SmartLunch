@@ -28,12 +28,7 @@ exports.signupSchema = joi.object({
         "string.empty": "Mời điền số điện thoại",
         "any.required": "bắt buộc thêm số điện thoại",
         "string.max": "Số phải phải có ít hơn 12 số",
-    }),
-    address: joi.string().required().messages({
-        "string.empty": "Thêm địa chỉ ",
-        "any.required": 'Trường "Địa chỉ" là bắt buộc',
-    }),
-    avatar: joi.object()
+    })
 });
 
 exports.signinSchema = joi.object({
@@ -104,8 +99,9 @@ exports.updateUserSchema = joi.object({
         "any.required": "bắt buộc thêm số điện thoại",
         "string.max": "Số phải phải có ít hơn 10 số",
     }),
-    address: joi.string().required().messages({
-        "string.empty": "Thêm địa chỉ ",
-        "any.required": 'Trường "Địa chỉ" là bắt buộc',
-    })
+    birthday: joi.string().required().messages({
+        "string.empty": "Thêm ngày sinh ",
+        "any.required": 'Trường "Ngày sinh" là bắt buộc',
+    }),
+    gender: joi.boolean()
 });

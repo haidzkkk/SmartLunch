@@ -160,7 +160,7 @@ exports.updateAvatarUser = async (req, res) => {
 // Đăng ký người dùng
 exports.signup = async (req, res) => {
     try {
-        const { first_name, last_name, email, phone, address, avatar, password } = req.body;
+        const { first_name, last_name, email, phone, password } = req.body;
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
         const { error } = authSchema.signupSchema.validate(req.body, { abortEarly: false });
@@ -187,8 +187,6 @@ exports.signup = async (req, res) => {
             first_name,
             last_name,
             phone,
-            address,
-            avatar,
             email,
             password: hashedPassword
         });
