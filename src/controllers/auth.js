@@ -8,7 +8,32 @@ const { json } = require('body-parser')
 var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 let refreshTokens = [];
 
-// lấy người dùng hiện tại
+exports.getUserUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/users');
+    const data = await response.json();
+    res.render('user/user', { data });
+  };
+  exports.getUserByIdUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/userbyadmin/'+req.params.id);
+    const data = await response.json();
+    res.render('user/detail', { data });
+  };
+
+  exports.getUserByAdmin = async (req, res) => {
+    try {
+      const id = req.params.id;
+      const user = await Auth.findById(id);
+  
+      return res.status(200).json(
+        user
+      );
+    } catch (error) {
+      return res.status(400).json({
+        message: error,
+      })
+    }
+  };
+
 exports.getCurrentUser = async (req, res) => {
     try {
         const userData = await Auth.findById(req.user.id);
@@ -27,15 +52,13 @@ exports.getCurrentUser = async (req, res) => {
     }
 }
 
-
 // Lấy tất cả người dùng
 exports.getAll = async (req, res) => {
     try {
         const data = await Auth.find();
-        return res.status(200).json({
-            message: "Lấy tất cả người dùng thành công",
+        return res.status(200).json(
             data
-        });
+        );
     } catch (error) {
         return res.status(400).json({
             message: error.message || "Lỗi xảy ra"
@@ -68,9 +91,7 @@ exports.removeByAdmin = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await Auth.findByIdAndDelete(id);
-        return res.status(200).json({
-            user
-        });
+        res.status(303).set('Location', '/api/admin/users').send();
     } catch (error) {
         return res.status(400).json({
             message: error.message

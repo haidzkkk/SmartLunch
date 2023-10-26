@@ -21,4 +21,9 @@ router.get("/forgotPassword", authController.forgotPassword)
 router.post("/verifyOTPChangePassword", authController.verifyOTPChangePassword)
 router.post("/resetPassword", authController.resetPassword)
 router.post("/changePassword", authenticate,authController.changePassword)
+
+router.get('/admin/users', authController.getUserUI);
+router.get('/admin/users/:id', authController.getUserByIdUI);
+router.get('/userbyadmin/:id', authController.getUserByAdmin);
+router.get('/deletebyadmin/:id', authController.removeByAdmin);
 module.exports = router;

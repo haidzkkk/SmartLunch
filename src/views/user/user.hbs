@@ -29,58 +29,36 @@
 
 <body>
   <div class="container">
-    <h3>Create size</h3>
-    <form action="http://localhost:3000/api/size" method="post" id="addForm">
-      <div class="mb-3">
-        <label class="form-label">Size name</label>
-        <input class="form-control" name="size_name" id="size_name" required="true">
-        <div id="emailHelp" class="form-text"></div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Price</label>
-        <input type="number" class="form-control" name="size_price" id="size_price" required="true">
-        <div id="emailHelp" class="form-text">Please price only number</div>
-      </div>
-      <button type="submit" class="btn">Create</button>
-    </form>
-    <script>
-      document.getElementById('addForm').addEventListener('submit', function (event) {
-        if (window.location.href.includes('/api/admin/size')) {
-          window.location.href = 'http://localhost:3000/api/admin/size';
-        } else {
-        }
-      });
-    </script>
-    <h3>Size table</h3>
+    <h3>User table</h3>
     <table id="datatable" class="table table-striped " style="width:100%">
       <thead>
         <tr>
-          <th style="color: #FF593E;text-align: center">Size</th>
-          <th style="color: #FF593E;text-align: center">Price</th>
+          <th style="color: #FF593E;text-align: center">Email</th>
+          <th style="color: #FF593E;text-align: center">Role</th>
+          <th style="color: #FF593E;text-align: center">CreatedAt</th>
           <th style="color: #FF593E;text-align: center">Detail</th>
         </tr>
       </thead>
       <tbody>
         {{#each data}}
         <tr>
-          <td>{{this.size_name}}</td>
-          <td>{{this.size_price}}₫</td>
-          <td><a href="/api/admin/size/{{this._id}} " style="text-decoration: none">👉</a></td>
+          <td>{{this.email}}</td>
+          <td>{{this.role}}</td>
+          <td>{{this.createdAt}}</td>
+          <td><a href="/api/admin/users/{{this._id}}" style="text-decoration: none">👉</a></td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-    <dir class="m-5 pb-5"></dir>
   </div>
 </body>
 <script>
   $(document).ready(function () {
     $('#datatable').DataTable({
       info: false,
-      paging: false,
-      searching: false,
     });
   });
+
 </script>
 
 </html>

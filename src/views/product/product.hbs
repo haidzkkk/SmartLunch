@@ -29,43 +29,67 @@
 
 <body>
   <div class="container">
-    <h3>Create size</h3>
-    <form action="http://localhost:3000/api/size" method="post" id="addForm">
+    <h3>Create product</h3>
+    <form action="http://localhost:3000/api/admin/create/products" method="post" id="addForm">
       <div class="mb-3">
-        <label class="form-label">Size name</label>
-        <input class="form-control" name="size_name" id="size_name" required="true">
+        <label class="form-label">Product name</label>
+        <input class="form-control" name="product_name" id="product_name" required="required">
         <div id="emailHelp" class="form-text"></div>
       </div>
+
       <div class="mb-3">
         <label class="form-label">Price</label>
-        <input type="number" class="form-control" name="size_price" id="size_price" required="true">
+        <input type="number" class="form-control" name="product_price" id="product_price" required="required">
+        <div id="emailHelp" class="form-text"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <input class="form-control" name="description" id="description" required="required">
+        <div id="emailHelp" class="form-text"></div>
         <div id="emailHelp" class="form-text">Please price only number</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <input class="form-control" name="categoryId" id="categoryId" required="required">
+        <div id="emailHelp" class="form-text"></div>
+        <div id="emailHelp" class="form-text">Please price only number</div>
+      </div>
+      <div class="mb-3">
+        <label for="img">Image</label>
+        <img src="" alt="" class="form-control" id="img-preview" style="height: 100px; width: 100px">
+        <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
       </div>
       <button type="submit" class="btn">Create</button>
     </form>
     <script>
       document.getElementById('addForm').addEventListener('submit', function (event) {
-        if (window.location.href.includes('/api/admin/size')) {
-          window.location.href = 'http://localhost:3000/api/admin/size';
+        if (window.location.href.includes('/api/admin/products')) {
+          window.location.href = 'http://localhost:3000/api/admin/products';
         } else {
         }
       });
     </script>
-    <h3>Size table</h3>
+    <h3>Coupon table</h3>
     <table id="datatable" class="table table-striped " style="width:100%">
       <thead>
         <tr>
-          <th style="color: #FF593E;text-align: center">Size</th>
+          <th style="color: #FF593E;text-align: center">Name</th>
           <th style="color: #FF593E;text-align: center">Price</th>
+          <th style="color: #FF593E;text-align: center">Description</th>
+          <th style="color: #FF593E;text-align: center">Category</th>
           <th style="color: #FF593E;text-align: center">Detail</th>
         </tr>
       </thead>
       <tbody>
         {{#each data}}
         <tr>
-          <td>{{this.size_name}}</td>
-          <td>{{this.size_price}}₫</td>
-          <td><a href="/api/admin/size/{{this._id}} " style="text-decoration: none">👉</a></td>
+          <td>{{this.product_name}}</td>
+          <td maxlength="10">{{this.product_price}}</td>
+          <td>{{this.description}}</td>
+          <td>{{this.categoryId}}</td>
+          <td><a href="/api/admin/products/{{this._id}} " style="text-decoration: none">👉</a></td>
         </tr>
         {{/each}}
       </tbody>
@@ -76,9 +100,6 @@
 <script>
   $(document).ready(function () {
     $('#datatable').DataTable({
-      info: false,
-      paging: false,
-      searching: false,
     });
   });
 </script>

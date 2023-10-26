@@ -12,7 +12,7 @@ const productsSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: Array,
+        type: String,
         required: true
     },
     sold_quantity: {
@@ -28,7 +28,7 @@ const productsSchema = new mongoose.Schema({
         required: true
     },
     categoryId: {
-        type: mongoose.Types.ObjectId,
+        type: String,
         ref: "Category",
     },
   

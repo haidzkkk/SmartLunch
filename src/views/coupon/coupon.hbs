@@ -33,48 +33,52 @@
     <form action="http://localhost:3000/api/coupons" method="post" id="addForm">
       <div class="mb-3">
         <label class="form-label">Coupon name</label>
-        <input class="form-control" name="coupon_name" id="coupon_name">
+        <input class="form-control" name="coupon_name" id="coupon_name" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Coupon code</label>
-        <input class="form-control" name="coupon_code" id="coupon_code">
+        <input class="form-control" name="coupon_code" id="coupon_code" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Coupon content</label>
-        <input class="form-control" name="coupon_content" id="coupon_content">
+        <input class="form-control" name="coupon_content" id="coupon_content" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Coupon quantity</label>
-        <input type="number" class="form-control" name="coupon_quantity" id="coupon_quantity">
-        <div id="emailHelp" class="form-text"></div>
-        <div id="emailHelp" class="form-text">Please price only number</div>
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Coupon quantity</label>
+          <input type="number" class="form-control" name="coupon_quantity" id="coupon_quantity" required="true">
+          <div id="emailHelp" class="form-text"></div>
+          <div id="emailHelp" class="form-text">Please price only number</div>
+        </div>
+
+        <div class="col">
+          <label class="form-label">Coupon discount amount</label>
+          <input type="number" class="form-control" name="discount_amount" id="discount_amount" required="true">
+          <div id="emailHelp" class="form-text"></div>
+          <div id="emailHelp" class="form-text">Please price only number</div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Coupon discount amount</label>
-        <input type="number" class="form-control" name="discount_amount" id="discount_amount">
-        <div id="emailHelp" class="form-text"></div>
-        <div id="emailHelp" class="form-text">Please price only number</div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Coupon expiration date</label>
-        <input type="datetime-local" class="form-control" name="expiration_date" id="expiration_date">
-        <div id="emailHelp" class="form-text"></div>
-      </div>
-
-      <div class="mb-3">
+      <div class="row">
+        <div class="col">
         <label class="form-label">Coupon min purchase amount</label>
-        <input type="number" class="form-control" name="min_purchase_amount" id="min_purchase_amount">
+        <input type="number" class="form-control" name="min_purchase_amount" id="min_purchase_amount" required="true">
         <div id="emailHelp" class="form-text"></div>
         <div id="emailHelp" class="form-text">Please price only number</div>
       </div>
+      <div class="col">
+        <label class="form-label">Coupon expiration date</label>
+        <input type="datetime-local" class="form-control" name="expiration_date" id="expiration_date" required="true">
+        <div id="emailHelp" class="form-text"></div>
+      </div>
+      </div>
+
       <button type="submit" class="btn">Create</button>
     </form>
     <script>
@@ -108,6 +112,7 @@
         {{/each}}
       </tbody>
     </table>
+    <dir class="m-5 pb-5"></dir>
   </div>
 </body>
 <script>
