@@ -5,20 +5,20 @@ exports.getCouponUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons');
     const data = await response.json();
     res.render('coupon/coupon', { data });
-  };
-  exports.getCouponIdUI = async (req, res) => {
-    const response = await fetch('http://localhost:3000/api/coupons/'+req.params.id);
+};
+exports.getCouponIdUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/coupons/' + req.params.id);
     const data = await response.json();
-    res.render('coupon/detail', { data});
-  };
+    res.render('coupon/detail', { data });
+};
 
 
 exports.createCoupons = async (req, res) => {
-    try{
+    try {
         var coupon = req.body;
         await Coupon.create(coupon);
         res.status(303).set('Location', '/api/admin/coupons').send();
-    }catch(error){
+    } catch (error) {
         return res.status(400).json({
             message: error,
         })

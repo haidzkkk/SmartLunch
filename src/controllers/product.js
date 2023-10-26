@@ -1,7 +1,7 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
-const Jimp=require('jimp');
+const Jimp = require('jimp');
 
 exports.getProductUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/productbyadmin/products');
@@ -9,9 +9,9 @@ exports.getProductUI = async (req, res) => {
   res.render('product/product', { data });
 };
 exports.getProductByIdUI = async (req, res) => {
-  const response = await fetch('http://localhost:3000/api/products/'+req.params.id);
+  const response = await fetch('http://localhost:3000/api/products/' + req.params.id);
   const data = await response.json();
-  res.render('product/detail', { data});
+  res.render('product/detail', { data });
 };
 exports.removeProduct = async (req, res) => {
   try {
@@ -35,7 +35,7 @@ exports.updateProductUI = async (req, res) => {
     })
   }
 }
-exports.getProduct= async (req, res) => {
+exports.getProduct = async (req, res) => {
   try {
     const product = await Product.find();
     return res.status(200).json(
@@ -47,13 +47,13 @@ exports.getProduct= async (req, res) => {
     });
   }
 };
-exports.createProductUI = async (req, res,next) => {
-  try{
-      const productBody = req.body;
-      const product = await Product.create(productBody);
+exports.createProductUI = async (req, res, next) => {
+  try {
+    const productBody = req.body;
+    const product = await Product.create(productBody);
 
-      res.status(303).set('Location', '/api/admin/products').send();
-  }catch(error){
+    res.status(303).set('Location', '/api/admin/products').send();
+  } catch (error) {
     return res.status(400).json({
       message: error.message,
     });

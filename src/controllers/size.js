@@ -1,4 +1,4 @@
-var  Size  = require ("../models/size.js")
+var Size = require("../models/size.js")
 var SizeSchema = require("../schemas/size.js")
 
 exports.getSize = async (req, res) => {
@@ -19,9 +19,9 @@ exports.getSizeUI = async (req, res) => {
   res.render('size/size', { data });
 };
 exports.getSizeByIdUI = async (req, res) => {
-  const response = await fetch('http://localhost:3000/api/size/'+req.params.id);
+  const response = await fetch('http://localhost:3000/api/size/' + req.params.id);
   const data = await response.json();
-  res.render('size/detail', { data});
+  res.render('size/detail', { data });
 };
 
 exports.getSizeById = async (req, res) => {
@@ -39,16 +39,16 @@ exports.getSizeById = async (req, res) => {
   }
 };
 
-exports.createSize = async (req, res,next) => {
-    try{
-        const sizeBody = req.body;
-        const size = await Size.create(sizeBody);
-        res.status(303).set('Location', '/api/admin/size').send();
-    }catch(err){
-      return res.status(400).json({
-        message: error,
-      });
-    }
+exports.createSize = async (req, res, next) => {
+  try {
+    const sizeBody = req.body;
+    const size = await Size.create(sizeBody);
+    res.status(303).set('Location', '/api/admin/size').send();
+  } catch (err) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
 };
 
 exports.removeSize = async (req, res) => {
