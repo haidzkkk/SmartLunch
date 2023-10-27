@@ -100,6 +100,7 @@ exports.removeForce = async (req, res) => {
   }
 };
 
+
 exports.addCategory = async (req, res) => {
   try {
     const { category_name } = req.body;

@@ -15,7 +15,7 @@ router.post("/products", authenticate, authorization, upload.array("images", 10)
 router.patch("/products/:id", authenticate, authorization, productController.updateProduct);
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 router.get("/products/views/:id", productController.viewProduct);
-
+router.get("/category/products/:categoryId", productController.getProductByCategoryId)
 
 
 module.exports = router;
