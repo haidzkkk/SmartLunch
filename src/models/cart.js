@@ -22,7 +22,7 @@ const cartSchema = new mongoose.Schema (
             image: String,
             purchase_quantity: Number,
             sizeId: String,
-            sizeName : String
+            sizeName : String,
         },
      ],
      total: {

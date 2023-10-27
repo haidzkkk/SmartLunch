@@ -17,11 +17,12 @@ router.post("/products", authenticate, authorization, upload.array("images", 10)
 router.patch("/products/:id", authenticate, authorization, productController.updateProduct);
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 router.get("/products/views/:id", productController.viewProduct);
-
+router.get("/category/products/:categoryId", productController.getProductByCategoryId)
 router.get('/admin/products', productController.getProductUI);
 router.get('/admin/products/:id', productController.getProductByIdUI);
 router.post('/admin/create/products', productController.createProductUI, upload.single('img'));
 router.get('/productbyadmin/products', productController.getProduct);
 router.get("/deletebyadmin/products/:id", productController.removeProduct);
 router.post("/updatebyadmin/products/:id", productController.updateProductUI);
+
 module.exports = router;

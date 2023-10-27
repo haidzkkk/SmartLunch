@@ -252,10 +252,32 @@ exports.viewProduct = async (req, res) => {
     }
     product.views += 1;
     await product.save();
-
-    res.json();
+    res.status(200).json(
+      "thanh cong "     
+  );
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Lỗi trong quá trình xử lý." });
+  }
+};
+
+exports.getProductByCategoryId = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId; // Lấy categoryId từ tham số URL
+
+    // Tìm tất cả sản phẩm có categoryId tương ứng
+    const products = await Product.find({ categoryId : categoryId});
+
+    if (products.length === 0) {
+      return res.status(404).json({
+        message: "Không có sản phẩm nào thuộc danh mục này",
+      });
+    }
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
