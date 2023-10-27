@@ -67,7 +67,6 @@ app.use('/api', couponRouter);
 app.use('/api', orderRouter);
 app.use('/api', uploadRouter);
 app.use('/api', favouriteRouter);
-
 socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{

@@ -1,4 +1,4 @@
-var  Size  = require ("../models/size.js")
+var Size = require("../models/size.js")
 var SizeSchema = require("../schemas/size.js")
 
 exports.getSize = async (req, res) => {
@@ -12,6 +12,16 @@ exports.getSize = async (req, res) => {
       message: error.message,
     });
   }
+};
+exports.getSizeUI = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/size');
+  const data = await response.json();
+  res.render('size/size', { data });
+};
+exports.getSizeByIdUI = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/size/' + req.params.id);
+  const data = await response.json();
+  res.render('size/detail', { data });
 };
 
 exports.getSizeById = async (req, res) => {
@@ -29,26 +39,22 @@ exports.getSizeById = async (req, res) => {
   }
 };
 
-exports.createSize = async (req, res,next) => {
-    try{
-        const sizeBody = req.body;
-        const size = await Size.create(sizeBody);
-        return res.status(200).json(
-          size
-        );
-    }catch(err){
-      return res.status(400).json({
-        message: error,
-      });
-    }
+exports.createSize = async (req, res, next) => {
+  try {
+    const sizeBody = req.body;
+    const size = await Size.create(sizeBody);
+    res.status(303).set('Location', '/api/admin/size').send();
+  } catch (err) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
 };
 
 exports.removeSize = async (req, res) => {
   try {
     const size = await Size.findByIdAndDelete(req.params.id);
-    return res.status(200).json(
-      size
-    );
+    res.status(303).set('Location', '/api/admin/size').send();
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -60,9 +66,7 @@ exports.updateSize = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
     const size = await Size.findByIdAndUpdate(id, body, { new: true, });
-    return res.status(200).json(
-      size
-    )
+    res.status(303).set('Location', '/api/admin/size').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message
