@@ -6,7 +6,9 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "DATN",
-        format: "png",
+        // format: "png",
+        resource_type: "auto",
+        allowedFormats: ['jpg', 'png', 'mp4'],
     }
 });
 

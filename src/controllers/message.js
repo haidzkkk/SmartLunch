@@ -40,7 +40,7 @@ exports.postMessage = async(req, res, next) =>{
         var message = req.body
 
         var images = await uploadImage(files)
-        console.log("anh: " + images.urls );
+        console.log("anh: " + images );
 
         message.images = images
         message.userIdSend = req.user.id
@@ -55,8 +55,8 @@ exports.postMessage = async(req, res, next) =>{
 
         // giử cho cả 2
         if(roomUpdate != null){
-            sendRoomToClient(roomUpdate.shopUserId ,roomUpdate)
-            sendRoomToClient(roomUpdate.userUserId ,roomUpdate)
+            sendRoomToClient(roomUpdate.shopUserId.id ,roomUpdate)
+            sendRoomToClient(roomUpdate.userUserId.id ,roomUpdate)
         }
         sendMessageToClient(messageAdd.roomId, messageAdd)
     

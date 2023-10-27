@@ -23,12 +23,7 @@ exports.getRoomById = async(req, res, next) =>{
             // TODO: check role để kiểm tra xem lấy id ở shopUserId hay userUserId
             // const isShop = auth.email == "admin"
             console.log(auth.id);
-            const data = await Room.find({
-  $or: [
-    { userUserId: auth.id },
-    { shopUserId: auth.id }
-  ]
-})        
+            const data = await Room.find({$or: [{ userUserId: auth.id },{ shopUserId: auth.id }]})        
                                 .populate('shopUserId')
                                 .populate('userUserId')
                                 .populate('userIdSend')
@@ -70,7 +65,9 @@ exports.updateRoomSocket = async (id, type, room) =>{
     try{
         if(type != 0) room.messSent = "type khác"
         console.log(room);
-        var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true })
+        var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true }).populate('shopUserId')
+        .populate('userUserId')
+        .populate('userIdSend')
         if(roomUpdate != null){
             return roomUpdate
         }else{
