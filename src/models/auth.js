@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 const {format} = require('date-fns')
+const { boolean } = require('joi')
 
 const authSchema = new mongoose.Schema ({
     first_name: {
@@ -9,6 +10,14 @@ const authSchema = new mongoose.Schema ({
     last_name:{
         type: String,
         required :true
+    },
+    gender:{
+        type: Boolean,
+        default: true
+    },
+    birthday:{
+        type: String,
+        default: null,
     },
     password:{
         type: String,
@@ -20,10 +29,6 @@ const authSchema = new mongoose.Schema ({
         required:true
     },
     phone:{
-        type: String,
-        required: true
-    },
-    address:{
         type: String,
         required: true
     },

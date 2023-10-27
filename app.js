@@ -22,6 +22,7 @@ var sizeRouter = require('./src/routes/size');
 var couponRouter = require('./src/routes/coupons');
 var orderRouter = require('./src/routes/order');
 var uploadRouter = require('./src/routes/upload');
+var favouriteRouter = require('./src/routes/favourite.js');
 
 const socketController = require('./src/controllers/socket');
 
@@ -65,6 +66,7 @@ app.use('/api', sizeRouter);
 app.use('/api', couponRouter);
 app.use('/api', orderRouter);
 app.use('/api', uploadRouter);
+app.use('/api', favouriteRouter);
 socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{

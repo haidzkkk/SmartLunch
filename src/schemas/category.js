@@ -5,8 +5,5 @@ exports.categorySchema = Joi.object({
         "string.empty": "Tên danh mục bắt buộc nhập",
         "any.required": "Trường danh mục bắt buộc nhập"
     }),
-    category_image: Joi.object().required().messages({
-        "any.required": "Trường ảnh danh mục bắt buộc nhập"
-    }),
   
 })
