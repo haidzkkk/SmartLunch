@@ -1,5 +1,5 @@
-
 var cloudinary = require('../config/cloudinary')
+
 exports.uploadImage = async (files) => {
     if (!Array.isArray(files)) {
         return null;

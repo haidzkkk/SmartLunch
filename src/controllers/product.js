@@ -1,8 +1,65 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
+const Jimp = require('jimp');
 var { uploadImage, updateImage } = require('../controllers/upload');
 
+exports.getProductUI = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const data = await response.json();
+  res.render('product/product', { data });
+};
+exports.getProductByIdUI = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/products/' + req.params.id);
+  const data = await response.json();
+  res.render('product/detail', { data });
+};
+exports.removeProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    res.status(303).set('Location', '/api/admin/products').send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+exports.updateProductUI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    const product = await Product.findByIdAndUpdate(id, body, { new: true, });
+    res.status(303).set('Location', '/api/admin/products').send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message
+    })
+  }
+}
+exports.getProduct = async (req, res) => {
+  try {
+    const product = await Product.find();
+    return res.status(200).json(
+      product
+    );
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+exports.createProductUI = async (req, res, next) => {
+  try {
+    const productBody = req.body;
+    const product = await Product.create(productBody);
+
+    res.status(303).set('Location', '/api/admin/products').send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
 exports.getAll = async (req, res) => {
   const {
     _limit = 10,
