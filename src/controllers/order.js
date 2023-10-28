@@ -7,18 +7,22 @@ var Product = require ("../models/product");
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) =>{
-
     try {
-        const id  = req.params.userId;
-        const order = await Order.find({userId :id}).populate('products.productId status');
-        res.status(200).json(order).json({
-            message :"Lấy thông tin người dùng đặt hàng thành công",
+        const userId  = req.params.userId;
+        const statusId = req.query.statusId
+        const query = {
+            userId: userId, 
+        };
+        if (statusId) {
+            query.status = statusId;
+        }
+        const order = await Order.find(query)
+        return res.status(200).json(
             order
-        });
+        );
     } catch (error) {
         return res.status(400).json({
             message :error.message,
-            
         })
     }
 }
