@@ -1,12 +1,15 @@
-var express = require('express');
+const express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 const passport = require("passport");
+
 var cors = require("cors");
+var exphbs = require('express-handlebars');
 var dotenv = require("dotenv");
+
 var session = require('express-session')
 
 var indexRouter = require('./src/routes/index.js');
@@ -39,9 +42,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+
+
 app.use(session({
     secret: 'DATN',
     resave: false,
@@ -53,6 +58,10 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
+
 
 app.use('/', indexRouter);
 app.use('/api', authRouter);

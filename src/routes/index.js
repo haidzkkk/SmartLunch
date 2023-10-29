@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', async (req, res) => {
-  res.render('home');
+router.get('/', (req, res) => {
+  res.render("a", {layout :"Layouts/home"});
+  
 });
+
 module.exports = router;
