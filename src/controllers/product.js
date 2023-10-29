@@ -7,12 +7,12 @@ var { uploadImage, updateImage } = require('../controllers/upload');
 exports.getProductUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/prodFuctbyadmin/products');
   const data = await response.json();
-  res.render('product/product', { data });
+  res.render('product/product', { data,layout :"Layouts/home" });
 };
 exports.getProductByIdUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/products/' + req.params.id);
   const data = await response.json();
-  res.render('product/detail', { data });
+  res.render('product/detail', { data },{layout :"Layouts/home"});
 };
 exports.removeProduct = async (req, res) => {
   try {

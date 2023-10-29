@@ -4,12 +4,12 @@ var CouponSchema = require("../schemas/coupons.js")
 exports.getCouponUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons');
     const data = await response.json();
-    res.render('coupon/coupon', { data });
+    res.render('coupon/coupon', { data ,layout :"Layouts/home"});
 };
 exports.getCouponIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons/' + req.params.id);
     const data = await response.json();
-    res.render('coupon/detail', { data });
+    res.render('coupon/detail', { data ,layout :"Layouts/home"});
 };
 
 
