@@ -14,7 +14,7 @@ exports.getUserUI = async (req, res) => {
       const response = await fetch('http://localhost:3000/api/users');
       const data = await response.json();
       // Renderr trang "user/user" với dữ liệu và layout "home"
-      res.render('user/user',{data} ,{layout: "layouts/home" });
+      res.render('user/user' ,{data ,layout: "layouts/home" });
     } catch (error) {
       // Xử lý lỗi nếu có
       console.error(error);
@@ -24,7 +24,7 @@ exports.getUserUI = async (req, res) => {
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', { data });
+    res.render('user/detail', { data,layout :"Layouts/home"  });
 };
 
 exports.getUserByAdmin = async (req, res) => {
