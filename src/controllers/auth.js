@@ -5,15 +5,22 @@ var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
-var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
+// var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 var { uploadImage, updateImage } = require('../controllers/upload');
 let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
-    const response = await fetch('http://localhost:3000/api/users');
-    const data = await response.json();
-    res.render('user/user', { data });
-};
+    try {
+      const response = await fetch('http://localhost:3000/api/users');
+      const data = await response.json();
+      // Renderr trang "user/user" với dữ liệu và layout "home"
+      res.render('user/user',{data} ,{layout: "layouts/home" });
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      console.error(error);
+      res.status(500).send("Lỗi khi truy cập API");
+    }
+  };
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();

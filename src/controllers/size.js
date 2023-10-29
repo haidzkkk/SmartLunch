@@ -16,12 +16,12 @@ exports.getSize = async (req, res) => {
 exports.getSizeUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/size');
   const data = await response.json();
-  res.render('size/size', { data });
+  res.render('size/size', { data,layout :"Layouts/home" } );
 };
 exports.getSizeByIdUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/size/' + req.params.id);
   const data = await response.json();
-  res.render('size/detail', { data });
+  res.render('size/detail', { data,layout :"Layouts/home" } );
 };
 
 exports.getSizeById = async (req, res) => {
