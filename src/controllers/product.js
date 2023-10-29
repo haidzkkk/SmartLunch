@@ -5,7 +5,7 @@ const Jimp = require('jimp');
 var { uploadImage, updateImage } = require('../controllers/upload');
 
 exports.getProductUI = async (req, res) => {
-  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const response = await fetch('http://localhost:3000/api/prodFuctbyadmin/products');
   const data = await response.json();
   res.render('product/product', { data });
 };
