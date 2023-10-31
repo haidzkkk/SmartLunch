@@ -11,10 +11,17 @@ let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
     try {
+<<<<<<< HEAD
         const response = await fetch('http://localhost:3000/api/users');
         const data = await response.json();
         // Renderr trang "user/user" với dữ liệu và layout "home"
         res.render('user/user', { data, layout: "layouts/home" });
+=======
+      const response = await fetch('http://localhost:3000/api/users');
+      const data = await response.json();
+      // Renderr trang "user/user" với dữ liệu và layout "home"
+      res.render('user/user' ,{data ,layout: "layouts/home" });
+>>>>>>> 5b91487584ed3281f8fe1196395c41c514de013c
     } catch (error) {
         // Xử lý lỗi nếu có
         console.error(error);
@@ -24,7 +31,11 @@ exports.getUserUI = async (req, res) => {
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
+<<<<<<< HEAD
     res.render('user/detail', { data }, { layout: "layouts/home" });
+=======
+    res.render('user/detail', { data,layout :"Layouts/home"  });
+>>>>>>> 5b91487584ed3281f8fe1196395c41c514de013c
 };
 
 exports.signin = async (req, res) => {
