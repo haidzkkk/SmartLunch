@@ -11,21 +11,27 @@ let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
     try {
-      const response = await fetch('http://localhost:3000/api/users');
-      const data = await response.json();
-      // Renderr trang "user/user" với dữ liệu và layout "home"
-      res.render('user/user',{data} ,{layout: "layouts/home" });
+        const response = await fetch('http://localhost:3000/api/users');
+        const data = await response.json();
+        // Renderr trang "user/user" với dữ liệu và layout "home"
+        res.render('user/user', { data, layout: "layouts/home" });
     } catch (error) {
-      // Xử lý lỗi nếu có
-      console.error(error);
-      res.status(500).send("Lỗi khi truy cập API");
+        // Xử lý lỗi nếu có
+        console.error(error);
+        res.status(500).send("Lỗi khi truy cập API");
     }
-  };
+};
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', { data });
+    res.render('user/detail', { data }, { layout: "layouts/home" });
 };
+
+exports.signin = async (req, res) => {
+    res.render('authtification/login');
+};
+
+
 
 exports.getUserByAdmin = async (req, res) => {
     try {
@@ -139,11 +145,11 @@ exports.updateUser = async (req, res) => {
 exports.uploadAvatarUser = async (req, res) => {
     try {
         const id = req.user;
-        var files = req.files 
+        var files = req.files
 
         var images = await uploadImage(files)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images[0]}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images[0] }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -164,11 +170,11 @@ exports.updateAvatarUser = async (req, res) => {
     try {
         const id = req.user;
         const publicId = req.params.publicId;
-        var files = req.files 
+        var files = req.files
 
         var images = await updateImage(files, publicId)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -547,6 +553,7 @@ exports.signin = async (req, res) => {
                 messages: 'Sai mật khẩu'
             })
         }
+
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
@@ -559,12 +566,15 @@ exports.signin = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
+
             const { password, ...users } = user._doc
             sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+            res.render('product/product');
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken
             })
+
         }
     } catch (error) {
         return res.status(400).json({
@@ -696,6 +706,86 @@ exports.changePassword = async (req, res) => {
         })
     }
 }
+
+
+exports.loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //validate
+        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                messages: errors
+            })
+        }
+
+        const user = await Auth.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                messages: 'Tài Khoản không tồn tại'
+            })
+        }
+
+        const isVerify = await user.verified;
+        if (!isVerify) {
+            return res.status(400).json({
+                message: 'Please verify the account first'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                messages: 'Sai mật khẩu'
+            })
+        }
+
+
+        if (user && password) {
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+            refreshTokens.push(refreshToken);
+            //luu vao cookies
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,//khong cho truy cap cookie nay ra duoc
+                secure: false,
+                path: "/",
+                // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+                sameSite: "strict"
+            })
+            const role = await user.role;
+            if (role == "admin") {
+                const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+                const data = await response.json();
+                res.render('product/product', { data, layout: "Layouts/home" });
+                // return res.status(200).json({
+                //     messages: 'thành công'
+                    
+                // })
+            } else {
+                return res.status(400).json({
+                    messages: 'ko có quyền này'
+                })
+            }
+
+            const { password, ...users } = user._doc
+            sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            })
+
+
+        }
+    } catch (error) {
+        return res.status(400).json({
+            messages: error
+        })
+    }
+}
+
 
 
 
