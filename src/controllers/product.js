@@ -51,6 +51,11 @@ exports.getProduct = async (req, res) => {
 exports.createProductUI = async (req, res, next) => {
   try {
     const productBody = req.body;
+    if (req.file) {
+      const image = req.file; // Đây là tệp ảnh đã tải lên
+
+  
+  }
     const product = await Product.create(productBody);
 
     res.status(303).set('Location', '/api/admin/products').send();
@@ -176,13 +181,13 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    var images = await uploadImage(files)
-    if(images[0] == null){
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-      });
-    }
-    body.images = images
+    // var images = await uploadImage(files)
+    // if(images[0] == null){
+    //   return res.status(400).json({
+    //     message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+    //   });
+    // }
+    // body.images = images
 
     const product = await Product.create(body);
     await Category.findOneAndUpdate(product.categoryId, {

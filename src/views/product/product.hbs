@@ -30,46 +30,50 @@
 <body>
   <div class="container">
     <h3>Create product</h3>
-    <form action="http://localhost:3000/api/admin/create/products" method="post" id="addForm">
-        <div class="row">
-      <div class="col">
-        <label class="form-label">Image</label>
-        <img  alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-        <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
-      </div>
-      <div class="col">
-        <div class="mb-3">
-          <label class="form-label">Product name</label>
-          <input class="form-control" name="product_name" id="product_name" required="required"
-            >
+    <form action="http://localhost:3000/api/products" method="post" id="addForm">
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Image</label>
+          <img alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+          <input type="file" class="form-control mt-3" id="images" name="images" accept="images/*" required>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <label class="form-label">Product name</label>
+            <input class="form-control" name="product_name" id="product_name" required="required">
+            <div id="emailHelp" class="form-text"></div>
+          </div>
+          <div class="mb-3"></div>
+          <label class="form-label">Description</label>
+          <textarea class="form-control" style="height: 300px;" name="description" id="description"
+            required="required"></textarea>
           <div id="emailHelp" class="form-text"></div>
         </div>
-        <div class="mb-3"></div>
-        <label class="form-label">Description</label>
-        <textarea class="form-control" style="height: 300px;" name="description" id="description"
-          required="required"></textarea>
-        <div id="emailHelp" class="form-text"></div>
       </div>
-    </div>
-        <div class="row">
-      <div class="col">
-        <label class="form-label">Price</label>
-        <input type="number" class="form-control" name="product_price" id="product_price" required="required"
-          >
-        <div id="emailHelp" class="form-text"></div>
-        <div id="emailHelp" class="form-text">Please price only number</div>
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Price</label>
+          <input type="number" class="form-control" name="product_price" id="product_price" required="required">
+          <div id="emailHelp" class="form-text"></div>
+          <div id="emailHelp" class="form-text">Please price only number</div>
+        </div>
+
+        <div class="col">
+          <label class="form-label">View</label>
+          <input type="number" class="form-control" name="views" id="views" required="required">
+          <div id="emailHelp" class="form-text"></div>
+          <div id="emailHelp" class="form-text">Please price only number</div>
+        </div>
+
+        <div class="col">
+          <label class="form-label">Category</label>
+          <input class="form-control" name="categoryId" id="categoryId" required="required">
+          <div id="emailHelp" class="form-text"></div>
+        </div>
       </div>
-
-
-
-      <div class="col">
-        <label class="form-label">Category</label>
-        <input class="form-control" name="categoryId" id="categoryId" required="required" >
-        <div id="emailHelp" class="form-text"></div>
-      </div>
-    </div>
       <button type="submit" class="btn" style="margin: 20px;">Create</button>
     </form>
+    {{!--
     <script>
       document.getElementById('addForm').addEventListener('submit', function (event) {
         if (window.location.href.includes('/api/admin/products')) {
@@ -77,7 +81,7 @@
         } else {
         }
       });
-    </script>
+    </script> --}}
     <h3>Coupon table</h3>
     <table id="datatable" class="table table-striped " style="width:100%">
       <thead>
@@ -113,6 +117,31 @@
   $(document).ready(function () {
     $('#datatable').DataTable({
     });
+  });
+
+  const productForm = document.getElementById("addForm");
+  productForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formData = new FormData(productForm);
+    const token = localStorage.getItem("accessToken");
+    console.log(formData)
+    console.log(token)
+    try {
+      const response = await fetch("/api/products", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Authorization": token,
+        },
+      });
+      if (response.ok) {
+        const productData = await response.json();
+        console.log("Product created:", productData);
+      } else {
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   });
 </script>
 
