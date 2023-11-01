@@ -30,23 +30,6 @@
 <body>
   <div class="container">
     <h3>Create product</h3>
-    <form action="http://localhost:3000/api/products" method="post" id="addForm">
-      <div class="row">
-        <div class="col">
-          <label class="form-label">Image</label>
-          <img alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-          <input type="file" class="form-control mt-3" id="images" name="images" accept="images/*" required>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <label class="form-label">Product name</label>
-            <input class="form-control" name="product_name" id="product_name" required="required">
-            <div id="emailHelp" class="form-text"></div>
-          </div>
-          <div class="mb-3"></div>
-          <label class="form-label">Description</label>
-          <textarea class="form-control" style="height: 300px;" name="description" id="description"
-            required="required"></textarea>
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
@@ -97,7 +80,7 @@
         {{#each data}}
         <tr>
           <td>{{this.product_name}}</td>
-          <td maxlength="10">{{this.product_price}}</td>
+          <td >{{this.product_price}}</td>
           <td>{{this.description}}</td>
           <td>{{this.categoryId}}</td>
           <td><a href="/api/admin/products/{{this._id}} " style="text-decoration: none"><svg
@@ -110,10 +93,7 @@
         {{/each}}
       </tbody>
     </table>
-    <dir class="m-5 pb-5"></dir>
-  </div>
-</body>
-<script>
+    <script>
   $(document).ready(function () {
     $('#datatable').DataTable({
     });
