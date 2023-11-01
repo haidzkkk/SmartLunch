@@ -1,22 +1,35 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
-var { uploadImage, updateImage } = require('../controllers/upload');
+const Jimp = require("jimp");
+const cloudinary = require("cloudinary").v2;
+var { uploadImage, updateImage } = require("../controllers/upload");
 
 exports.getProductUI = async (req, res) => {
-  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const response = await fetch(
+    "http://localhost:3000/api/productbyadmin/products"
+  );
   const data = await response.json();
-  res.render('product/product', { data });
+  res.render("product/product", { data, layout: "Layouts/home" });
+};
+exports.getProductDelete = async (req, res) => {
+  const responsex = await fetch('http://localhost:3000/api/products/delete');
+  const dataDelete = await responsex.json();
+  res.render('recyclebin/recycle', { dataDelete,layout :"Layouts/home" });
 };
 exports.getProductByIdUI = async (req, res) => {
-  const response = await fetch('http://localhost:3000/api/products/' + req.params.id);
+  const response = await fetch(
+    "http://localhost:3000/api/products/" + req.params.id
+  );
   const data = await response.json();
-  res.render('product/detail', { data });
+  res.render("product/detail", { data, layout: "Layouts/home" });
 };
 exports.removeProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
-    res.status(303).set('Location', '/api/admin/products').send();
+    res.status(303).set("Location", "/api/admin/products").send();
+
+
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -27,12 +40,12 @@ exports.updateProductUI = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    const product = await Product.findByIdAndUpdate(id, body, { new: true, });
-    res.status(303).set('Location', '/api/admin/products').send();
+    const product = await Product.findByIdAndUpdate(id, body, { new: true });
+    res.status(303).set("Location", "/api/admin/products").send();
   } catch (error) {
     return res.status(400).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
 }
 exports.getTopViewedProducts = async (req, res) => {
@@ -46,27 +59,51 @@ exports.getTopViewedProducts = async (req, res) => {
 exports.getProduct = async (req, res) => {
   try {
     const product = await Product.find();
-    return res.status(200).json(
-      product
-    );
+    return res.status(200).json(product);
   } catch (error) {
     return res.status(400).json({
       message: error.message,
     });
   }
 };
-exports.createProductUI = async (req, res, next) => {
-  try {
-    const productBody = req.body;
-    const product = await Product.create(productBody);
 
-    res.status(303).set('Location', '/api/admin/products').send();
+exports.addProductUi = async (req, res) => {
+  try {
+
+    const body = req.body;
+    var files = req.files;
+
+    const { error } = ProductSchema.validate(body, { abortEarly: false });
+    if (error) {
+      const errors = error.details.map((err) => err.message);
+      return res.status(400).json({
+        message: errors,
+      });
+    }
+    
+    var images = await uploadImage(files);
+    if (images === null || images.length === 0) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+      });
+    }
+    body.images = images;
+  
+    const product = await Product.create(body);
+
+    if (!product) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại",
+      });
+    }
+    res.status(303).set("Location", "/api/admin/products").send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,
     });
   }
 };
+
 exports.getAll = async (req, res) => {
   const {
     _limit = 10,
@@ -81,7 +118,7 @@ exports.getAll = async (req, res) => {
     sort: {
       [_sort]: _order == "desc" ? -1 : 1,
     },
-  }
+  };
   const searchQuery = q ? { name: { $regex: q, $options: "i" } } : {};
   try {
     const product = await Product.paginate(searchQuery, options);
@@ -116,9 +153,7 @@ exports.restoreProduct = async (req, res) => {
         message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
       });
     }
-    return res.status(200).json({
-      product: restoredProduct,
-    });
+    res.status(303).set('Location', '/api/admin/products').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -151,7 +186,7 @@ exports.remove = async (req, res) => {
     if (product) {
       await product.delete();
     }
-    return res.status(200).json(product);
+    res.status(303).set('Location', '/api/admin/recycle').send();
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -173,7 +208,7 @@ exports.removeForce = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const body = req.body;
-    var files = req.files 
+    var files = req.files;
 
     const { error } = ProductSchema.validate(body, { abortEarly: false });
     if (error) {
@@ -183,20 +218,22 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    var images = await uploadImage(files)
-    if(images[0] == null){
+
+    var images = await uploadImage(files);
+    if (images[0] == null) {
       return res.status(400).json({
         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
       });
     }
-    body.images = images
+    body.images = images;
+
 
     const product = await Product.create(body);
-    await Category.findOneAndUpdate(product.categoryId, {
-      $addToSet: {
-        products: product._id,
-      },
-    });
+    // await Category.findOneAndUpdate(product.categoryId, {
+    //   $addToSet: {
+    //     products: product._id,
+    //   },
+    // });
     if (product.length === 0) {
       return res.status(400).json({
         message: "Thêm sản phẩm thất bại",
@@ -259,9 +296,7 @@ exports.viewProduct = async (req, res) => {
     }
     product.views += 1;
     await product.save();
-    res.status(200).json(
-      "thanh cong "     
-  );
+    res.status(200).json("thanh cong ");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Lỗi trong quá trình xử lý." });
@@ -273,7 +308,7 @@ exports.getProductByCategoryId = async (req, res) => {
     const categoryId = req.params.categoryId; // Lấy categoryId từ tham số URL
 
     // Tìm tất cả sản phẩm có categoryId tương ứng
-    const products = await Product.find({ categoryId : categoryId});
+    const products = await Product.find({ categoryId: categoryId });
 
     if (products.length === 0) {
       return res.status(404).json({

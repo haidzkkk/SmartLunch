@@ -30,4 +30,8 @@ router.get('/admin/users', authController.getUserUI);
 router.get('/admin/users/:id', authController.getUserByIdUI);
 router.get('/userbyadmin/:id', authController.getUserByAdmin);
 router.get('/deletebyadmin/:id', authController.removeByAdmin);
+router.get('/singin', authController.signin);
+router.post('/login',authController.signin)
+
+
 module.exports = router;

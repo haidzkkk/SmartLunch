@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', async (req, res) => {
-  res.render('home');
+router.get('/', (req, res) => {
+  res.render("authtification/login");
+  
 });
+
 module.exports = router;

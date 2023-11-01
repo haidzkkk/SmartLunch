@@ -3,7 +3,25 @@ var orderSchema = require("../schemas/order").orderSchema;
 var Coupon = require("../models/coupons.js");
 var Product = require("../models/product");
 
+exports.getAllOrderUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/getAllorder');
+    const data = await response.json();
+    res.render('order/order', { data ,layout :"Layouts/home"});
+};
 
+// exports.getbyIdOrderUI = async (req, res) => {
+//     const response = await fetch('http://localhost:3000/api/getAllorder/')+ req.params.id;
+//     const data = await response.json();
+//     res.render('order/detail', { data ,layout :"Layouts/home"});
+// };
+
+exports.getbyIdOrderUI = async (req, res) => {
+    const response = await fetch(
+      "http://localhost:3000/api/order/" + req.params.id
+    );
+    const data = await response.json();
+    res.render("order/detail", { data, layout: "Layouts/home" });
+  };
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) => {
@@ -17,8 +35,10 @@ exports.getOrderByUserId = async (req, res) => {
             query.status = statusId;
         }
         const order = await Order.find(query)
-        return res.status(200).json(
-            order
+        return res.status(200).json({
+              order
+        }
+          
         );
     } catch (error) {
         return res.status(400).json({
