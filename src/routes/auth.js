@@ -24,4 +24,5 @@ router.get("/forgotPassword", authController.forgotPassword)
 router.post("/verifyOTPChangePassword", authController.verifyOTPChangePassword)
 router.post("/resetPassword", authController.resetPassword)
 router.post("/changePassword", authenticate,authController.changePassword)
+router.get("/users/search/:text", authenticate, authController.searchAuth)
 module.exports = router;

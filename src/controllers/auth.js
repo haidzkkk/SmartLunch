@@ -669,5 +669,41 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+// fun Lấy một người dùng theo ID
+exports.getOneById = async (id) => {
+    try {
+        const data = await Auth.findById(id);
+        if (!data) return null
+        return data
+    } catch (error) {
+        return null
+    }
+};
+
+exports.searchAuth = async (req, res) => {
+    try {
+        const curentUser = req.user
+
+        const textSearch = req.params.text
+        const users = await Auth.find({
+            $and: [
+              {
+                $or: [
+                  { first_name: { $regex: new RegExp(textSearch, "i") } },
+                  { last_name: { $regex: new RegExp(textSearch, "i") } },
+                ],
+              },
+              { _id: { $ne: curentUser._id } },
+            ],
+          });
+        res.status(200).json(users)
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+
 
 
