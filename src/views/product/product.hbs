@@ -30,6 +30,20 @@
 <body>
   <div class="container">
     <h3>Create product</h3>
+    <form action="http://localhost:3000/api/admin/create/products" method="post" id="addForm">
+       <div class="row">
+                <div class="col">
+                    <label class="form-label">Image</label>
+                   <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+                   <input type="file" class="form-control mt-3" id="product_image" name="product_image" accept="image/*" required>
+                </div>
+                
+      <div class="col">
+        <div class="mb-3">
+          <label class="form-label">Product name</label>
+          <input class="form-control" name="product_name" id="product_name" required="required"
+            >
+
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
@@ -93,12 +107,12 @@
         {{/each}}
       </tbody>
     </table>
+
     <script>
   $(document).ready(function () {
     $('#datatable').DataTable({
     });
   });
-
   const productForm = document.getElementById("addForm");
   productForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -124,5 +138,19 @@
     }
   });
 </script>
+    // Thêm một sự kiện nghe cho trường tệp đầu vào
+    fileInput.addEventListener('change', function () {
+      // Kiểm tra xem có tệp nào đã chọn hay không
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
 
+        // Đọc và hiển thị hình ảnh đã chọn
+        reader.onload = function (e) {
+          imgPreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+  </script>
 </html>
