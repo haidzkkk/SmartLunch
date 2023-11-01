@@ -35,6 +35,7 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
+
 app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
