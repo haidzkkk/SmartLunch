@@ -1,17 +1,17 @@
-var Order = require ("../models/order.js");
-var orderSchema = require ("../schemas/order").orderSchema;
-var Coupon = require ("../models/coupons.js");
-var Product = require ("../models/product");
+var Order = require("../models/order.js");
+var orderSchema = require("../schemas/order").orderSchema;
+var Coupon = require("../models/coupons.js");
+var Product = require("../models/product");
 
 
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
-exports.getOrderByUserId = async (req, res) =>{
+exports.getOrderByUserId = async (req, res) => {
     try {
-        const userId  = req.params.userId;
+        const userId = req.params.userId;
         const statusId = req.query.statusId
         const query = {
-            userId: userId, 
+            userId: userId,
         };
         if (statusId) {
             query.status = statusId;
@@ -22,7 +22,7 @@ exports.getOrderByUserId = async (req, res) =>{
         );
     } catch (error) {
         return res.status(400).json({
-            message :error.message,
+            message: error.message,
         })
     }
 }
@@ -37,18 +37,15 @@ exports.getOrderById = async (req, res) => {
                 message: "Đơn hàng không tồn tại"
             })
         }
-        return res.status(200).json({
-            message: "Lấy 1 đơn hàng thành công",
-            order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message
         })
     }
 }
- //lấy tất cả đơn hàng
- exports.getAllOrder = async (req, res) => {
+//lấy tất cả đơn hàng
+exports.getAllOrder = async (req, res) => {
     try {
         const order = await Order.find().populate('products.productId status');
         if (!order) {
@@ -56,10 +53,7 @@ exports.getOrderById = async (req, res) => {
                 error: "Lấy tất cả đơn hàng thất bại"
             })
         }
-        return res.status(200).json({
-            message: "Lấy tất cả đơn hàng thành công",
-            order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -67,8 +61,8 @@ exports.getOrderById = async (req, res) => {
     }
 }
 
- // xóa order
- exports.removeOrder = async (req, res) => {
+// xóa order
+exports.removeOrder = async (req, res) => {
     try {
         // Tìm đơn hàng để lấy thông tin sản phẩm đã mua
         const order = await Order.findById(req.params.id);
@@ -143,10 +137,7 @@ exports.createOrder = async (req, res) => {
             })
         }
 
-        return res.status(200).json({
-            message: "Đặt hàng thành công",
-            order
-        });
+        return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -173,10 +164,7 @@ exports.updateOrder = async (req, res) => {
                 message: "Đơn hàng không tồn tại"
             })
         }
-        return res.status(200).json({
-            message: "Cập nhật đơn hàng thành công",
-            orderUpdateSuccess: order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message

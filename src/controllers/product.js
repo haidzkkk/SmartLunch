@@ -1,7 +1,6 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
-const Jimp = require('jimp');
 var { uploadImage, updateImage } = require('../controllers/upload');
 
 exports.getProductUI = async (req, res) => {
@@ -36,6 +35,14 @@ exports.updateProductUI = async (req, res) => {
     })
   }
 }
+exports.getTopViewedProducts = async (req, res) => {
+  try {
+    const topViewedProducts = await Product.find().sort({ views: -1 }).limit(5);
+    res.status(200).json(topViewedProducts);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
 exports.getProduct = async (req, res) => {
   try {
     const product = await Product.find();

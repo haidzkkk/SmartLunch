@@ -23,6 +23,10 @@ const orderSchema = mongoose.Schema({
    
     }
   ],
+  discount: {
+    type: Number,
+    required: false
+  },
   total: {
     type: Number,
     required: true
@@ -30,7 +34,7 @@ const orderSchema = mongoose.Schema({
   status: {
     type: mongoose.Types.ObjectId,
     ref: "Status",
-    default: '64e8a93da63d2db5e8d8562a'
+    default: '65264bc32d9b3bb388078974'
   },
   phone: {
     type: String,
@@ -40,8 +44,13 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  consignee_name: {
+    type: String,
+    required: true
+  },
   notes: {
-    type: String
+    type: String,
+    required: false
   },
   paymentCode: {
     type: String
