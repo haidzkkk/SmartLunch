@@ -34,7 +34,7 @@
         <div class="row">
       <div class="col">
         <label class="form-label">Image</label>
-        <img  alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+        <img  alt="" src="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
         <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
       </div>
       <div class="col">
@@ -93,7 +93,7 @@
         {{#each data}}
         <tr>
           <td>{{this.product_name}}</td>
-          <td maxlength="10">{{this.product_price}}</td>
+          <td >{{this.product_price}}</td>
           <td>{{this.description}}</td>
           <td>{{this.categoryId}}</td>
           <td><a href="/api/admin/products/{{this._id}} " style="text-decoration: none"><svg
@@ -106,10 +106,7 @@
         {{/each}}
       </tbody>
     </table>
-    <dir class="m-5 pb-5"></dir>
-  </div>
-</body>
-<script>
+    <script>
   $(document).ready(function () {
     $('#datatable').DataTable({
     });
