@@ -1,7 +1,6 @@
 var Product = require("../models/product.js");
 var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
-const Jimp = require("jimp");
 const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 
