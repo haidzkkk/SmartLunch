@@ -5,11 +5,51 @@ var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
-var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
+// var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 var { uploadImage, updateImage } = require('../controllers/upload');
+const { log } = require('handlebars')
 let refreshTokens = [];
 
-// lấy người dùng hiện tại
+exports.getUserUI = async (req, res) => {
+    try {
+
+        const response = await fetch('http://localhost:3000/api/users');
+        const data = await response.json();
+        // Renderr trang "user/user" với dữ liệu và layout "home"
+        res.render('user/user', { data, layout: "layouts/home" });
+
+
+        // Xử lý lỗi nếu có
+        console.error(error);
+        res.status(500).send("Lỗi khi truy cập API");
+    }catch(error){
+        return res.status(400).json({
+            message: error,
+        })
+    }
+};
+
+exports.getUserByIdUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
+    const data = await response.json();
+    res.render('user/detail', { data }, { layout: "layouts/home" });
+};
+
+exports.getUserByAdmin = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await Auth.findById(id);
+
+        return res.status(200).json(
+            user
+        );
+    } catch (error) {
+        return res.status(400).json({
+            message: error,
+        })
+    }
+};
+
 exports.getCurrentUser = async (req, res) => {
     try {
         const userData = await Auth.findById(req.user.id);
@@ -28,15 +68,13 @@ exports.getCurrentUser = async (req, res) => {
     }
 }
 
-
 // Lấy tất cả người dùng
 exports.getAll = async (req, res) => {
     try {
         const data = await Auth.find();
-        return res.status(200).json({
-            message: "Lấy tất cả người dùng thành công",
+        return res.status(200).json(
             data
-        });
+        );
     } catch (error) {
         return res.status(400).json({
             message: error.message || "Lỗi xảy ra"
@@ -69,9 +107,7 @@ exports.removeByAdmin = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await Auth.findByIdAndDelete(id);
-        return res.status(200).json({
-            user
-        });
+        res.status(303).set('Location', '/api/admin/users').send();
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -111,11 +147,11 @@ exports.updateUser = async (req, res) => {
 exports.uploadAvatarUser = async (req, res) => {
     try {
         const id = req.user;
-        var files = req.files 
+        var files = req.files
 
         var images = await uploadImage(files)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images[0]}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images[0] }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -136,11 +172,11 @@ exports.updateAvatarUser = async (req, res) => {
     try {
         const id = req.user;
         const publicId = req.params.publicId;
-        var files = req.files 
+        var files = req.files
 
         var images = await updateImage(files, publicId)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -223,18 +259,18 @@ exports.resetPassword = async (req, res) => {
         }
 
         if (newPassword !== confirmPassword) {
-            return res.status(400).json({message:"Mật khẩu và xác nhận mật khẩu không khớp."});
+            return res.status(400).json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
         }
 
         const user = await Auth.findById(userId);
 
         // Kiểm tra xem người dùng tồn tại và có được phép đặt lại mật khẩu hay không
         if (!user) {
-            return res.status(400).json({message:"Người dùng không tồn tại."});
+            return res.status(400).json({ message: "Người dùng không tồn tại." });
         }
 
         if (!user.passwordChanged) {
-            return res.status(400).json({message:"Người dùng chưa được phép đặt lại mật khẩu."});
+            return res.status(400).json({ message: "Người dùng chưa được phép đặt lại mật khẩu." });
         }
 
         // Hash mật khẩu mới và cập nhật vào cơ sở dữ liệu
@@ -263,7 +299,7 @@ exports.forgotPassword = async function (req, res) {
                 message: errors
             });
         }
-        
+
         // Kiểm tra người dùng có tồn tại hay không?
         const existingUser = await Auth.findOne({ email });
         if (!existingUser) {
@@ -276,10 +312,10 @@ exports.forgotPassword = async function (req, res) {
         return res.status(200).json(
             otpResponse // Thêm thông tin về OTP vào phản hồi
         );
-    } catch (error){
+    } catch (error) {
         return res.status(400).json({
             message: error.message
-        });  
+        });
     }
 }
 
@@ -370,11 +406,11 @@ exports.verifyOTPChangePassword = async (req, res) => {
     try {
         const { userId, otp } = req.body;
         if (!userId || !otp) {
-            return res.status(400).json({message:"Không được để trống mã OTP"});
+            return res.status(400).json({ message: "Không được để trống mã OTP" });
         } else {
             const UserOTPVerificationRecords = await UserOTPVerification.find({ userId });
             if (UserOTPVerificationRecords.length <= 0) {
-                return res.status(400).json({message:"Không tìm thấy bản ghi tài khoản hoặc tài khoản đã được xác minh. Vui lòng đăng ký"});
+                return res.status(400).json({ message: "Không tìm thấy bản ghi tài khoản hoặc tài khoản đã được xác minh. Vui lòng đăng ký" });
             } else {
                 const { expiresAt } = UserOTPVerificationRecords[0];
                 const hashedOTP = UserOTPVerificationRecords[0].otp;
@@ -519,9 +555,11 @@ exports.signin = async (req, res) => {
                 messages: 'Sai mật khẩu'
             })
         }
+
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
+        
             refreshTokens.push(refreshToken);
             //luu vao cookies
             res.cookie("refreshToken", refreshToken, {
@@ -531,12 +569,15 @@ exports.signin = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
+
             const { password, ...users } = user._doc
-            sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+            //sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken
             })
+
         }
     } catch (error) {
         return res.status(400).json({
@@ -544,6 +585,7 @@ exports.signin = async (req, res) => {
         })
     }
 }
+
 
 // Generate Access Token
 const generateAccessToken = (user) => {
@@ -648,6 +690,64 @@ exports.changePassword = async (req, res) => {
         }
         userNew.passwordChangeAt = Date.now()
         const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+        refreshTokens.push(refreshToken);
+        //luu vao cookies
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,//khong cho truy cap cookie nay ra duoc
+            secure: false,
+            path: "/",
+            // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+            sameSite: "strict"
+        })
+        return res.status(200).json({
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+
+exports.loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //validate
+        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                messages: errors
+            })
+        }
+
+        const user = await Auth.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                messages: 'Tài Khoản không tồn tại'
+            })
+        }
+
+        const isVerify = await user.verified;
+        if (!isVerify) {
+            return res.status(400).json({
+                message: 'Please verify the account first'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                messages: 'Sai mật khẩu'
+            })
+        }
+
+
+        if (user && password) {
+            const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
             refreshTokens.push(refreshToken);
             //luu vao cookies
@@ -658,13 +758,21 @@ exports.changePassword = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
-        return res.status(200).json({
-                accessToken: accessToken,
-                refreshToken: refreshToken
-            })
+            const role = await user.role;
+            if (role == "admin") {
+                const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+                const data = await response.json();
+                const layout = "layouts/home";
+                return res.redirect('/api/admin/products?data=${JSON.stringify(data)}&layout=${layout}')
+            } else {
+                return res.status(400).json({
+                    messages: 'ko có quyền này'
+                })
+            }
+        }
     } catch (error) {
         return res.status(400).json({
-            message: error.message
+            messages: error
         })
     }
 }
@@ -703,6 +811,7 @@ exports.searchAuth = async (req, res) => {
         })
     }
 }
+
 
 
 

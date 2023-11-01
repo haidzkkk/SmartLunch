@@ -8,6 +8,9 @@ exports.orderSchema = Joi.object({
         "string.base": "ID người dùng phải là string"
     }),
     couponId: Joi.string().allow(null),
+    discount: Joi.number().min(0).required().messages({
+        "number.min": "Không được nhập số âm"
+    }),
     products: Joi.array().required(),
     consignee_name  : Joi.string().required().messages({
         "string.empty": "người nhận bắt buộc nhập",
@@ -27,7 +30,7 @@ exports.orderSchema = Joi.object({
         "string.empty": "Thêm địa chỉ ",
         "any.required": 'Trường "Địa chỉ" là bắt buộc',
     }),
-    notes: Joi.string(),
+    notes: Joi.string().allow(null),
     paymentId: Joi.string(),
     paymentCode: Joi.string(),
     payerId: Joi.string()

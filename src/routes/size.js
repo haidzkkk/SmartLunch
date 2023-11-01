@@ -5,9 +5,10 @@ var router = express.Router();
 
 router.get("/size", sizeController.getSize);
 router.get("/size/:id", sizeController.getSizeById);
-router.delete("/size/:id", sizeController.removeSize);
+router.get("/delete/size/:id", sizeController.removeSize);
 router.post("/size", sizeController.createSize);
-router.patch("/size/:id", sizeController.updateSize);
+router.post("/size/:id", sizeController.updateSize);
 
-
+router.get('/admin/size', sizeController.getSizeUI );
+router.get('/admin/size/:id', sizeController.getSizeByIdUI);
 module.exports = router;

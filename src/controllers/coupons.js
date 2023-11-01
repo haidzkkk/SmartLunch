@@ -1,15 +1,26 @@
 var Coupon = require("../models/coupons.js")
 var CouponSchema = require("../schemas/coupons.js")
 
+exports.getCouponUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/coupons');
+    const data = await response.json();
+    res.render('coupon/coupon', { data ,layout :"Layouts/home"});
+};
+exports.getCouponIdUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/coupons/' + req.params.id);
+    const data = await response.json();
+    res.render('coupon/detail', { data ,layout :"Layouts/home"});
+};
+
 
 exports.createCoupons = async (req, res) => {
-    try{
+    try {
         var coupon = req.body;
         await Coupon.create(coupon);
-        res.status(200).json(coupon);
-    }catch(err){
+        res.status(303).set('Location', '/api/admin/coupons').send();
+    } catch (error) {
         return res.status(400).json({
-            message: error.message
+            message: error,
         })
     }
 }
@@ -23,7 +34,7 @@ exports.getOneCoupons = async (req, res) => {
         )
     } catch (error) {
         return res.status(400).json({
-            message: error.message
+            message: error,
         })
     }
 }
@@ -46,9 +57,7 @@ exports.getAllCoupons = async (req, res) => {
 exports.removeCoupons = async (req, res) => {
     try {
         const coupon = await Coupon.findByIdAndDelete(req.params.id);
-        return res.status(200).json(
-            coupon
-        )
+        res.status(303).set('Location', '/api/admin/coupons').send();
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -62,8 +71,7 @@ exports.updateCoupons = async (req, res) => {
         const id = req.params.id
         const body = req.body
         const coupon = await Coupon.findByIdAndUpdate(id, body, { new: true })
-        return res.status(200).json(coupon
-        )
+        res.status(303).set('Location', '/api/admin/coupons').send();
     } catch (error) {
         return res.status(400).json({
             message: error.message

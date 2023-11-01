@@ -1,29 +1,31 @@
 var cloudinary = require('../config/cloudinary')
+const multer = require('multer');
 
 exports.uploadImage = async (files) => {
     if (!Array.isArray(files)) {
-        return null;
+      return null;
     }
+  
     try {
-        const uploadPromises = files.map((file) => {
-            // Sử dụng Cloudinary API để upload file lên Cloudinary
-            return cloudinary.uploader.upload(file.path);
-        });
-        console.log('uploadPromises', uploadPromises)
-
-        // Chờ cho tất cả các file đều được upload lên Cloudinary
-        const results = await Promise.all(uploadPromises);
-        // Trả về kết quả là một mảng các đối tượng chứa thông tin của các file đã upload lên Cloudinary
-        const uploadedFiles = results.map((result) => ({
-            url: result.secure_url,
-            publicId: result.public_id,
-        }));
-        return uploadedFiles;
+      const uploadPromises = files.map((file) => {
+        // Sử dụng Cloudinary API để upload file lên Cloudinary
+        return cloudinary.uploader.upload(file.path);
+      });
+  
+      // Chờ cho tất cả các file đều được upload lên Cloudinary
+      const results = await Promise.all(uploadPromises);
+  
+      // Trả về kết quả là một mảng các đối tượng chứa thông tin của các file đã upload lên Cloudinary
+      const uploadedFiles = results.map((result) => ({
+        url: result.secure_url,
+        publicId: result.public_id,
+      }));
+  
+      return uploadedFiles;
     } catch (error) {
-        return null;
+      return null;
     }
-};
-
+  };
 
 exports.deleteImage = async (req, res) => {
     const publicId = req.params.publicId;
