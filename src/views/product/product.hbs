@@ -31,12 +31,13 @@
   <div class="container">
     <h3>Create product</h3>
     <form action="http://localhost:3000/api/admin/create/products" method="post" id="addForm">
-        <div class="row">
-      <div class="col">
-        <label class="form-label">Image</label>
-        <img  alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-        <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
-      </div>
+       <div class="row">
+                <div class="col">
+                    <label class="form-label">Image</label>
+                   <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+                   <input type="file" class="form-control mt-3" id="product_image" name="product_image" accept="image/*" required>
+                </div>
+                
       <div class="col">
         <div class="mb-3">
           <label class="form-label">Product name</label>
@@ -109,11 +110,24 @@
     <dir class="m-5 pb-5"></dir>
   </div>
 </body>
-<script>
-  $(document).ready(function () {
-    $('#datatable').DataTable({
-    });
-  });
-</script>
+ <script>
+    // Chọn trường tệp đầu vào và thẻ hình ảnh để thao tác với chúng
+    var fileInput = document.getElementById('product_image');
+    var imgPreview = document.getElementById('img-preview');
 
+    // Thêm một sự kiện nghe cho trường tệp đầu vào
+    fileInput.addEventListener('change', function () {
+      // Kiểm tra xem có tệp nào đã chọn hay không
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+
+        // Đọc và hiển thị hình ảnh đã chọn
+        reader.onload = function (e) {
+          imgPreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+  </script>
 </html>

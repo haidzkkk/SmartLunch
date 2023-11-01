@@ -560,7 +560,7 @@ exports.signin = async (req, res) => {
                 sameSite: "strict"
             })
             const { password, ...users } = user._doc
-            sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+            //sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken
@@ -572,6 +572,7 @@ exports.signin = async (req, res) => {
         })
     }
 }
+
 
 // Generate Access Token
 const generateAccessToken = (user) => {

@@ -12,4 +12,7 @@ routerOrder.get("/order/:userId/user", routerController.getOrderByUserId);
 routerOrder.get("/getAllorder", routerController.getAllOrder)
 routerOrder.patch("/order/:id", routerController.updateOrder);
 
+routerOrder.get("/getAllorderUi", routerController.getAllOrderUI)
+routerOrder.get("/getByIdOder/:id", routerController.getbyIdOrderUI)
+
 module.exports = routerOrder;
