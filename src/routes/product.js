@@ -15,7 +15,7 @@ var router = express.Router();
 router.get("/products", productController.getAll);
 router.get("/products/delete", productController.getAllDelete);
 router.get("/products/:id", productController.get);
-
+router.get("/topViewedProducts", productController.getTopViewedProducts);
 router.delete("/products/:id",authenticate,authorization, productController.remove
 );
 router.delete("/products/force/:id",authenticate,authorization,productController.removeForce);
@@ -38,7 +38,6 @@ router.get("/admin/products", productController.getProductUI);
 router.get("/admin/products/:id", productController.getProductByIdUI);
 router.post("/admin/create/products",upload.array("images", 10), productController.addProductUi);
 router.get("/productbyadmin/products", productController.getProduct);
-
 router.delete("/products/:id", authenticate, authorization, productController.remove);
 router.delete("/products/force/:id", authenticate, authorization, productController.removeForce);
 router.post("/products",  upload.array("images", 10), productController.addProduct);

@@ -47,6 +47,14 @@ exports.updateProductUI = async (req, res) => {
       message: error.message,
     });
   }
+}
+exports.getTopViewedProducts = async (req, res) => {
+  try {
+    const topViewedProducts = await Product.find().sort({ views: -1 }).limit(5);
+    res.status(200).json(topViewedProducts);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
 };
 exports.getProduct = async (req, res) => {
   try {

@@ -26,6 +26,7 @@ var couponRouter = require('./src/routes/coupons');
 var orderRouter = require('./src/routes/order');
 var uploadRouter = require('./src/routes/upload');
 var favouriteRouter = require('./src/routes/favourite.js');
+var addressRouter = require('./src/routes/address.js');
 var recycleRouter = require('./src/routes/recycle.js');
 
 const socketController = require('./src/controllers/socket');
@@ -78,6 +79,7 @@ app.use('/api', couponRouter);
 app.use('/api', orderRouter);
 app.use('/api', uploadRouter);
 app.use('/api', favouriteRouter);
+app.use('/api', addressRouter);
 app.use('/api', recycleRouter);
 socketController.initializeSocketServer()
 
