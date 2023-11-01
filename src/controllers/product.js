@@ -12,6 +12,11 @@ exports.getProductUI = async (req, res) => {
   const data = await response.json();
   res.render("product/product", { data, layout: "Layouts/home" });
 };
+exports.getProductDelete = async (req, res) => {
+  const responsex = await fetch('http://localhost:3000/api/products/delete');
+  const dataDelete = await responsex.json();
+  res.render('recyclebin/recycle', { dataDelete,layout :"Layouts/home" });
+};
 exports.getProductByIdUI = async (req, res) => {
   const response = await fetch(
     "http://localhost:3000/api/products/" + req.params.id
@@ -23,6 +28,8 @@ exports.removeProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     res.status(303).set("Location", "/api/admin/products").send();
+
+
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -54,6 +61,7 @@ exports.getProduct = async (req, res) => {
 
 exports.addProductUi = async (req, res) => {
   try {
+
     const body = req.body;
     var files = req.files;
 
@@ -137,9 +145,7 @@ exports.restoreProduct = async (req, res) => {
         message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
       });
     }
-    return res.status(200).json({
-      product: restoredProduct,
-    });
+    res.status(303).set('Location', '/api/admin/products').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -172,7 +178,7 @@ exports.remove = async (req, res) => {
     if (product) {
       await product.delete();
     }
-    return res.status(200).json(product);
+    res.status(303).set('Location', '/api/admin/recycle').send();
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -204,6 +210,7 @@ exports.addProduct = async (req, res) => {
       });
     }
 
+
     var images = await uploadImage(files);
     if (images[0] == null) {
       return res.status(400).json({
@@ -211,6 +218,7 @@ exports.addProduct = async (req, res) => {
       });
     }
     body.images = images;
+
 
     const product = await Product.create(body);
     // await Category.findOneAndUpdate(product.categoryId, {
