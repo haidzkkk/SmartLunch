@@ -6,6 +6,7 @@ const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 
 exports.getProductUI = async (req, res) => {
+  
   const response = await fetch(
     "http://localhost:3000/api/productbyadmin/products"
   );
@@ -59,42 +60,6 @@ exports.getProduct = async (req, res) => {
   }
 };
 
-exports.addProductUi = async (req, res) => {
-  try {
-
-    const body = req.body;
-    var files = req.files;
-
-    const { error } = ProductSchema.validate(body, { abortEarly: false });
-    if (error) {
-      const errors = error.details.map((err) => err.message);
-      return res.status(400).json({
-        message: errors,
-      });
-    }
-    
-    var images = await uploadImage(files);
-    if (images === null || images.length === 0) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-      });
-    }
-    body.images = images;
-  
-    const product = await Product.create(body);
-
-    if (!product) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại",
-      });
-    }
-    res.status(303).set("Location", "/api/admin/products").send();
-  } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
-  }
-};
 
 exports.getAll = async (req, res) => {
   const {
@@ -196,48 +161,58 @@ exports.removeForce = async (req, res) => {
     });
   }
 };
-
 exports.addProduct = async (req, res) => {
   try {
     const body = req.body;
-    var files = req.files;
+    const files = req.files;
 
+    // Kiểm tra dữ liệu từ req.body bằng cách sử dụng Joi schema
     const { error } = ProductSchema.validate(body, { abortEarly: false });
     if (error) {
       const errors = error.details.map((err) => err.message);
       return res.status(400).json({
-        message: errors,
+        message: "Lỗi trong dữ liệu đầu vào",
+        errors: errors,
       });
     }
 
-
-    var images = await uploadImage(files);
-    if (images[0] == null) {
+    // Kiểm tra xem có hình ảnh được tải lên hay không
+    if (!files || files.length === 0) {
       return res.status(400).json({
         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
       });
     }
+
+    // Gọi hàm uploadImage để tải lên hình ảnh
+    const images = await uploadImage(files);
+
+    if (images.length === 0) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại, lỗi trong quá trình tải lên hình ảnh",
+      });
+    }
+
+    // Gán mảng hình ảnh vào thuộc tính images của sản phẩm
     body.images = images;
 
-
+    // Tạo sản phẩm mới trong cơ sở dữ liệu
     const product = await Product.create(body);
-    // await Category.findOneAndUpdate(product.categoryId, {
-    //   $addToSet: {
-    //     products: product._id,
-    //   },
-    // });
-    if (product.length === 0) {
+
+    if (!product) {
       return res.status(400).json({
         message: "Thêm sản phẩm thất bại",
       });
     }
-    return res.status(200).json(product);
+
+    return res.status(201).json(product);
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
+    console.error("Lỗi server:", error);
+    return res.status(500).json({
+      message: "Lỗi server",
     });
   }
 };
+
 
 exports.updateProduct = async (req, res) => {
   try {
