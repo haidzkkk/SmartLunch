@@ -128,10 +128,15 @@ exports.updateRoom = async (req, res, next) => {
 
 exports.updateRoomSocket = async (id, type, room) => {
     try {
-        if (type != 0 && type == 1) room.messSent = "Đã gửi ảnh"
+        if (type == 0) {
+
+        }else if(type == 1){
+            room.messSent = "Đã gửi ảnh"
+        }
         else{
             room.messSent = "Type khác"
         }
+        
         var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true }).populate('shopUserId')
             .populate('userUserId')
             .populate('userIdSend')
