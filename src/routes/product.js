@@ -20,11 +20,7 @@ router.delete("/products/:id",authenticate,authorization, productController.remo
 );
 router.delete("/products/force/:id",authenticate,authorization,productController.removeForce);
 router.post("/products", authenticate, authorization, upload.array("images", 10), productController.addProduct);
-router.patch(
-  "/products/:id",
-  authenticate,
-  authorization,
-  productController.updateProduct
+router.patch("/products/:id",authenticate,authorization,productController.updateProduct
 );
 router.patch(
   "/products/restore/:id",
@@ -36,11 +32,11 @@ router.get("/products/views/:id", productController.viewProduct);
 router.get("/category/products/:categoryId",productController.getProductByCategoryId);
 router.get("/admin/products", productController.getProductUI);
 router.get("/admin/products/:id", productController.getProductByIdUI);
-router.post("/admin/create/products",upload.array("images", 10), productController.addProductUi);
+// router.post("/admin/create/products",upload.array("images", 10), productController.addProductUi);
 router.get("/productbyadmin/products", productController.getProduct);
 router.delete("/products/:id", authenticate, authorization, productController.remove);
 router.delete("/products/force/:id", authenticate, authorization, productController.removeForce);
-router.post("/products",  upload.array("images", 10), productController.addProduct);
+router.post("/products", authenticate, authorization , upload.array("images", 10), productController.addProduct);
 router.patch("/products/:id", authenticate, authorization, productController.updateProduct);
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 router.get("/products/views/:id", productController.viewProduct);
@@ -48,7 +44,6 @@ router.get("/category/products/:categoryId", productController.getProductByCateg
 router.get('/admin/products', productController.getProductUI);
 router.get('/admin/products/:id', productController.getProductByIdUI);
 router.get('/productbyadmin/products', productController.getProduct);
-
 router.get("/deletebyadmin/products/:id", productController.removeProduct);
 router.get("/remove/products/:id", productController.remove);
 router.post("/updatebyadmin/products/:id", productController.updateProductUI);
