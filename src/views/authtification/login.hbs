@@ -1,40 +1,119 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Đăng Nhập</title>
-</head>
-<body>
-    <h1>Đăng Nhập</h1>
-    <form id="loginForm">
-        <input type="text" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Mật khẩu" required>
-        <button type="button" onclick="login()">Đăng Nhập</button>
-    </form>
-    <p id="message"></p>
-</body>
-<script>
-    function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+<html lang="en">
 
-        fetch("/api/signin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.accessToken) {
-                localStorage.setItem("accessToken", data.accessToken);
-                document.getElementById("message").innerText = data.accessToken;
-                window.location.href = "api/admin/products";
-              
-            } else {
-                document.getElementById("message").innerText = "Đăng nhập thất bại";
-            }
-        });
-    }
-</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout with Bootstrap</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            width: 1440px;
+            height: 1024px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .crow {
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .img-fluid {
+
+            background: url(https://res.cloudinary.com/drpyumnfr/image/upload/v1698852500/DATN/yuqj2fcxiqp4vsv1gra9.png);
+
+        }
+
+        .form {
+            width: 576px;
+            height: 572px;
+            top: 226px;
+            left: 720px;
+
+        }
+
+        .div_1 {
+            border-top-left-radius: 0;
+            border-top-right-radius: 24px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 24px;
+            width: 576px;
+            height: 1024px border-radius: 0px, 24px, 24px, 0px;
+            background: url(https://res.cloudinary.com/drpyumnfr/image/upload/v1698852500/DATN/yuqj2fcxiqp4vsv1gra9.png);
+        }
+
+        .div_2{
+            width: 864px;
+            height: 1024px;
+            margin-top: 226px;
+            margin-left: 144px;
+            background: url(https://res.cloudinary.com/drpyumnfr/image/upload/v1698852500/DATN/yuqj2fcxiqp4vsv1gra9.png);
+
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" style="">
+            <div class="col-md-3">
+                <div class="div_1">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="div_2">
+                    <form id="loginForm" class="form">
+                        <input type="text" id="email" placeholder="Email" required>
+                        <input type="password" id="password" placeholder="Mật khẩu" required>
+                        <button type="button" onclick="login()">Đăng Nhập</button>
+                    </form>
+                    <p id="message"></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.accessToken) {
+                        localStorage.setItem("accessToken", data.accessToken);
+                        if (data.role == "admin") {
+                            window.location.href = "api/admin/products";
+                        } else {
+                            document.getElementById("message").innerText = "Bạn không có quyền";
+                        }
+
+                    } else {
+                        document.getElementById("message").innerText = "Đăng nhập thất bại";
+                    }
+                });
+        }
+    </script>
+
+
+</body>
+
 </html>
