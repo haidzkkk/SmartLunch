@@ -12,24 +12,11 @@ exports.orderSchema = Joi.object({
         "number.min": "Không được nhập số âm"
     }),
     products: Joi.array().required(),
-    consignee_name  : Joi.string().required().messages({
-        "string.empty": "người nhận bắt buộc nhập",
-        "any.required": "người nhận bắt buộc nhập",
-        "string.base": "người nhận phải là string"
-    }),
     total: Joi.number().min(0).required().messages({
         "number.min": "Không được nhập số âm"
     }),
     status: Joi.string(),
-    phone: Joi.string().max(10).required().messages({
-        "string.empty": "Mời điền số điện thoại",
-        "any.required": "Bắt buộc thêm số điện thoại",
-        "string.max": "Số phải phải có ít hơn 10 số",
-    }),
-    address: Joi.string().required().messages({
-        "string.empty": "Thêm địa chỉ ",
-        "any.required": 'Trường "Địa chỉ" là bắt buộc',
-    }),
+    address: Joi.string(),
     notes: Joi.string().allow(null),
     paymentId: Joi.string(),
     paymentCode: Joi.string(),
