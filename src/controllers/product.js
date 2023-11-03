@@ -211,7 +211,7 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    return res.status(201).json(product);
+    res.status(303).set("Location", "/api/admin/products").send();
   } catch (error) {
     console.error("Lỗi server:", error);
     return res.status(500).json({
