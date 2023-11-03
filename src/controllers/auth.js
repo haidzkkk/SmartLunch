@@ -11,23 +11,11 @@ const { log } = require('handlebars')
 let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
-    try {
 
         const response = await fetch('http://localhost:3000/api/users');
         const data = await response.json();
-        // Renderr trang "user/user" với dữ liệu và layout "home"
         res.render('user/user', { data, layout: "layouts/home" });
-
-
-        // Xử lý lỗi nếu có
-        console.error(error);
-        res.status(500).send("Lỗi khi truy cập API");
-    }catch(error){
-        return res.status(400).json({
-            message: error,
-        })
-    }
-};
+}
 
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
@@ -569,6 +557,10 @@ exports.signin = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
+
+            const { password, ...users } = user._doc
+            //sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken
@@ -581,6 +573,7 @@ exports.signin = async (req, res) => {
         })
     }
 }
+
 
 // Generate Access Token
 const generateAccessToken = (user) => {
@@ -770,6 +763,42 @@ exports.loginAdmin = async (req, res) => {
     }
     
 }
+
+// fun Lấy một người dùng theo ID
+exports.getOneById = async (id) => {
+    try {
+        const data = await Auth.findById(id);
+        if (!data) return null
+        return data
+    } catch (error) {
+        return null
+    }
+};
+
+exports.searchAuth = async (req, res) => {
+    try {
+        const curentUser = req.user
+
+        const textSearch = req.params.text
+        const users = await Auth.find({
+            $and: [
+              {
+                $or: [
+                  { first_name: { $regex: new RegExp(textSearch, "i") } },
+                  { last_name: { $regex: new RegExp(textSearch, "i") } },
+                ],
+              },
+              { _id: { $ne: curentUser._id } },
+            ],
+          });
+        res.status(200).json(users)
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
 
 
 

@@ -1,28 +1,44 @@
-var Order = require ("../models/order.js");
-var orderSchema = require ("../schemas/order").orderSchema;
-var Coupon = require ("../models/coupons.js");
-var Product = require ("../models/product");
+var Order = require("../models/order.js");
+var orderSchema = require("../schemas/order").orderSchema;
+var Coupon = require("../models/coupons.js");
+var Product = require("../models/product");
 
+exports.getAllOrderUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/getAllorder');
+    const data = await response.json();
+    res.render('order/order', { data ,layout :"Layouts/home"});
+};
 
+// exports.getbyIdOrderUI = async (req, res) => {
+//     const response = await fetch('http://localhost:3000/api/getAllorder/')+ req.params.id;
+//     const data = await response.json();
+//     res.render('order/detail', { data ,layout :"Layouts/home"});
+// };
+
+exports.getbyIdOrderUI = async (req, res) => {
+    const response = await fetch(
+      "http://localhost:3000/api/order/" + req.params.id
+    );
+    const data = await response.json();
+    res.render("order/detail", { data, layout: "Layouts/home" });
+  };
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
-exports.getOrderByUserId = async (req, res) =>{
+exports.getOrderByUserId = async (req, res) => {
     try {
-        const userId  = req.params.userId;
+        const userId = req.params.userId;
         const statusId = req.query.statusId
         const query = {
-            userId: userId, 
+            userId: userId,
         };
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query)
-        return res.status(200).json(
-            order
-        );
+        const order = await Order.find(query).populate('products.productId status address' );
+        return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
-            message :error.message,
+            message: error.message,
         })
     }
 }
@@ -31,35 +47,34 @@ exports.getOrderByUserId = async (req, res) =>{
 exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
-        const order = await Order.findById(id).populate('products.productId status')
+        const order = await Order.findById(id).populate('products.productId status address')
         if (!order || order.length === 0) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             })
         }
-        return res.status(200).json({
-            message: "Lấy 1 đơn hàng thành công",
-            order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message
         })
     }
 }
- //lấy tất cả đơn hàng
- exports.getAllOrder = async (req, res) => {
+//lấy tất cả đơn hàng
+exports.getAllOrder = async (req, res) => {
     try {
-        const order = await Order.find().populate('products.productId status');
+        const statusId = req.query.statusId
+        const query = {};
+        if (statusId) {
+            query.status = statusId;
+        }
+        const order = await Order.find(query).populate('products.productId status address');
         if (!order) {
             return res.status(404).json({
                 error: "Lấy tất cả đơn hàng thất bại"
             })
         }
-        return res.status(200).json({
-            message: "Lấy tất cả đơn hàng thành công",
-            order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -67,8 +82,8 @@ exports.getOrderById = async (req, res) => {
     }
 }
 
- // xóa order
- exports.removeOrder = async (req, res) => {
+// xóa order
+exports.removeOrder = async (req, res) => {
     try {
         // Tìm đơn hàng để lấy thông tin sản phẩm đã mua
         const order = await Order.findById(req.params.id);
@@ -136,17 +151,16 @@ exports.createOrder = async (req, res) => {
             }
         }
 
-        const order = await Order.create(body);
+        const order = await Order.create(body)
         if (!order) {
             return res.status(404).json({
                 error: "Đặt hàng thất bại"
             })
         }
 
-        return res.status(200).json({
-            message: "Đặt hàng thành công",
-            order
-        });
+        const result = await Order.findById(order._id).populate('products.productId status address');
+
+        return res.status(200).json(result)
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -160,23 +174,13 @@ exports.updateOrder = async (req, res) => {
     try {
         const id = req.params.id;
         const body = req.body;
-        const { error } = orderSchema.validate(body, { abortEarly: false });
-        if (error) {
-            const errors = error.details.map((err) => err.message);
-            return res.status(400).json({
-                message: errors
-            })
-        }
-        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status')
+        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status address')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             })
         }
-        return res.status(200).json({
-            message: "Cập nhật đơn hàng thành công",
-            orderUpdateSuccess: order
-        })
+        return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({
             message: error.message

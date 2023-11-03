@@ -19,9 +19,9 @@
     </i>
     <h3>Detail Product</h3>
     <div class="row">
-      <div class="col">
+      <div class="col" >
         <label class="form-label">Image</label>
-        <img src="{{data.image}}" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+        <img src="{{data.images.0.url}}" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
         <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
       </div>
       <div class="col">
@@ -39,6 +39,9 @@
       </div>
     </div>
   </div>
+
+  
+
   <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm">
 
     <div class="row">
@@ -49,8 +52,6 @@
         <div id="emailHelp" class="form-text"></div>
         <div id="emailHelp" class="form-text">Please price only number</div>
       </div>
-
-
 
       <div class="col">
         <label class="form-label">Category</label>
@@ -77,8 +78,8 @@
     });
   </script>
       <div class="col">
-  <form action="http://localhost:3000/api/deletebyadmin/products/{{data._id}}" method="get" id="deleteForm">
-    <button type="submit" onclick="abc()" class="btn" style="float: right">Delete</button>
+    <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
+    <button type="submit" onclick="abc()" class="btn" style="float: right">Move to recycle bin</button>
   </form>
   </div>
   <script>
@@ -93,6 +94,18 @@
         }
       }
     });
+        document.getElementById('removeForm').addEventListener('submit', function (event) {
+      const confirmDelete = confirm("Do you really want to remove this?");
+      if (!confirmDelete) {
+        event.preventDefault();
+      } else {
+        if (window.location.href.includes('/api/admin/products')) {
+          window.location.href = 'http://localhost:3000/api/admin/products';
+        } else {
+        }
+      }
+    });
   </script>
+    </div>
   </div>
 </body>

@@ -24,7 +24,6 @@ exports.getMessageById = async(req, res, next) =>{
         .populate('roomId.userIdSend')
                             .populate('userIdSend')
         if(data != null){
-            console.log(data);
             res.status(200).json(data)
         }else{
             res.status(404).json("not found")
@@ -40,7 +39,6 @@ exports.postMessage = async(req, res, next) =>{
         var message = req.body
 
         var images = await uploadImage(files)
-        console.log("anh: " + images );
 
         message.images = images
         message.userIdSend = req.user.id

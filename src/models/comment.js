@@ -20,9 +20,8 @@ const CommentSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  createdAt: {type: Date, 
+    default: () => new Date(Date.now() + 7 * 60 * 60 * 1000)
   }
 }, {
   collection: 'comments'
