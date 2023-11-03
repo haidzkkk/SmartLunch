@@ -65,7 +65,7 @@
               }
             });
           </script>
-          <td><a href="/api/products/restore/{{this._id}} " style="text-decoration: none"><svg
+          <td><a href="/api/products/restore/{{this._id}}" type="submit" id="productForm" style="text-decoration: none"><svg
                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF593E" class="bi bi-recycle"
                 viewBox="0 0 16 16">
                 <path
@@ -80,5 +80,46 @@
         $('#datatable').DataTable({
         });
       });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const productForm = document.getElementById("productForm");
+        console.log(productForm);
+        productForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(productForm);
+          const token = localStorage.getItem("accessToken");
 
-</html >
+          console.log("aaa" + token);
+          if (!token) {
+            // Handle the case where the token is missing or invalid
+            console.error("Token is missing or invalid");
+            return;
+          }
+
+          try {
+            const response = await fetch(productForm.action, {
+              method: "POST",
+              body: formData,
+              headers: {
+                "Authorization": "Bearer " + token,
+              },
+            });
+
+            if (response.ok) {
+              // Product created successfully, handle the response here
+              const productData = await response.json();
+              console.log("Product created:", productData);
+            } else {
+              // Handle errors, e.g., display an error message
+              console.error("Product creation failed");
+            }
+          } catch (error) {
+            // Handle network or other errors
+            console.error("Error:", error);
+          }
+        });
+      })
+    </script>
+
+</html>

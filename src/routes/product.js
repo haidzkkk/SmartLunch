@@ -22,10 +22,8 @@ router.delete("/products/force/:id",authenticate,authorization,productController
 router.post("/products", authenticate, authorization, upload.array("images", 10), productController.addProduct);
 router.patch("/products/:id",authenticate,authorization,productController.updateProduct
 );
-router.patch(
+router.get(
   "/products/restore/:id",
-  authenticate,
-  authorization,
   productController.restoreProduct
 );
 router.get("/products/views/:id", productController.viewProduct);

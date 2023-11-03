@@ -11,23 +11,11 @@ const { log } = require('handlebars')
 let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
-    try {
 
         const response = await fetch('http://localhost:3000/api/users');
         const data = await response.json();
-        // Renderr trang "user/user" với dữ liệu và layout "home"
         res.render('user/user', { data, layout: "layouts/home" });
-
-
-        // Xử lý lỗi nếu có
-        console.error(error);
-        res.status(500).send("Lỗi khi truy cập API");
-    }catch(error){
-        return res.status(400).json({
-            message: error,
-        })
-    }
-};
+}
 
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
