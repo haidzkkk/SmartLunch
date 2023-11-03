@@ -1,6 +1,7 @@
 var categorySchema = require("../schemas/category.js").categorySchema;
 var { uploadImage, updateImage } = require('../controllers/upload');
 var Category = require("../models/category.js");
+const fetch = require('node-fetch');
 
 exports.getAllCategory = async (req, res) => {
   const {

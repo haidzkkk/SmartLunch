@@ -4,6 +4,7 @@ var ProductSchema = require("../schemas/product.js").ProductSchema;
 const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 const fetch = require('node-fetch');
+
 exports.getProductUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
