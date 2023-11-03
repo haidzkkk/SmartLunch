@@ -700,69 +700,69 @@ exports.changePassword = async (req, res) => {
 }
 
 
-exports.loginAdmin = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        //validate
-        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
-        if (error) {
-            const errors = error.details.map((err) => err.message);
-            return res.status(400).json({
-                messages: errors
-            })
-        }
+    exports.loginAdmin = async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            //validate
+            const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+            if (error) {
+                const errors = error.details.map((err) => err.message);
+                return res.status(400).json({
+                    messages: errors
+                })
+            }
 
-        const user = await Auth.findOne({ email });
-        if (!user) {
-            return res.status(404).json({
-                messages: 'Tài Khoản không tồn tại'
-            })
-        }
-        const isVerify = await user.verified;
-        if (!isVerify) {
-            return res.status(400).json({
-                message: 'Please verify the account first'
-            })
-        }
+            const user = await Auth.findOne({ email });
+            if (!user) {
+                return res.status(404).json({
+                    messages: 'Tài Khoản không tồn tại'
+                })
+            }
+            const isVerify = await user.verified;
+            if (!isVerify) {
+                return res.status(400).json({
+                    message: 'Please verify the account first'
+                })
+            }
 
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            return res.status(400).json({
-                messages: 'Sai mật khẩu'
-            })
-        }
-      
-        if (user && password) {
-            const accessToken = generateAccessToken(user);
-            const refreshToken = generateRefreshToken(user);
+            const isMatch = await bcrypt.compare(password, user.password)
+            if (!isMatch) {
+                return res.status(400).json({
+                    messages: 'Sai mật khẩu'
+                })
+            }
         
-            refreshTokens.push(refreshToken);
-            //luu vao cookies
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,//khong cho truy cap cookie nay ra duoc
-                secure: false,
-                path: "/",
-                // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
-                sameSite: "strict"
-            })
-            return res.status(200).json({
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                role : user.role
-            })
+            if (user && password) {
+                const accessToken = generateAccessToken(user);
+                const refreshToken = generateRefreshToken(user);
+            
+                refreshTokens.push(refreshToken);
+                //luu vao cookies
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,//khong cho truy cap cookie nay ra duoc
+                    secure: false,
+                    path: "/",
+                    // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+                    sameSite: "strict"
+                })
+                return res.status(200).json({
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    role : user.role
+                })
 
-        }
-   
-      
-
-       
-    } catch (error) {
-        return res.status(400).json({
-            messages: error
-        })
-    }
+            }
     
-}
+        
+
+        
+        } catch (error) {
+            return res.status(400).json({
+                messages: error
+            })
+        }
+        
+    }
 
 // fun Lấy một người dùng theo ID
 exports.getOneById = async (id) => {
