@@ -34,12 +34,8 @@ exports.getOrderByUserId = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query)
-        return res.status(200).json({
-              order
-        }
-          
-        );
+        const order = await Order.find(query).populate('products.productId status address' );
+        return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
             message: error.message,
@@ -51,7 +47,7 @@ exports.getOrderByUserId = async (req, res) => {
 exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
-        const order = await Order.findById(id).populate('products.productId status')
+        const order = await Order.findById(id).populate('products.productId status address')
         if (!order || order.length === 0) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
@@ -67,7 +63,12 @@ exports.getOrderById = async (req, res) => {
 //lấy tất cả đơn hàng
 exports.getAllOrder = async (req, res) => {
     try {
-        const order = await Order.find().populate('products.productId status');
+        const statusId = req.query.statusId
+        const query = {};
+        if (statusId) {
+            query.status = statusId;
+        }
+        const order = await Order.find(query).populate('products.productId status address');
         if (!order) {
             return res.status(404).json({
                 error: "Lấy tất cả đơn hàng thất bại"
@@ -150,14 +151,16 @@ exports.createOrder = async (req, res) => {
             }
         }
 
-        const order = await Order.create(body);
+        const order = await Order.create(body)
         if (!order) {
             return res.status(404).json({
                 error: "Đặt hàng thất bại"
             })
         }
 
-        return res.status(200).json(order);
+        const result = await Order.findById(order._id).populate('products.productId status address');
+
+        return res.status(200).json(result)
     } catch (error) {
         return res.status(400).json({
             message: error.message
@@ -171,14 +174,7 @@ exports.updateOrder = async (req, res) => {
     try {
         const id = req.params.id;
         const body = req.body;
-        const { error } = orderSchema.validate(body, { abortEarly: false });
-        if (error) {
-            const errors = error.details.map((err) => err.message);
-            return res.status(400).json({
-                message: errors
-            })
-        }
-        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status')
+        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status address')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"

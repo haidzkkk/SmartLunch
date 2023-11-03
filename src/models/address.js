@@ -26,6 +26,10 @@ const addressSchema = new mongoose.Schema({
         ref: 'Auth',
         required: true,
     },
+    isSelected: {
+        type: Boolean,
+        default: false
+    },
 });
 
 const Address = mongoose.model('Address', addressSchema);
