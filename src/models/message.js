@@ -7,7 +7,7 @@ const messageSchema = new mongoose.Schema ({
     linkMessage : {type: String, require: false},
     images : {type: Array, require: false},
     type : {type: Number, require: true},
-    time : {type: Date, default: Date.now(), require: true},
+    time : {type: Date, default: () => new Date(Date.now() + 7 * 60 * 60 * 1000)},
 }, {
     collection: 'messages'
 })

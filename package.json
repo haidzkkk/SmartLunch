@@ -24,7 +24,6 @@
     "hbs": "^4.2.0",
     "http": "^0.0.1-security",
     "http-errors": "~1.6.3",
-    "jimp": "^0.22.10",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "log4js": "^6.9.1",

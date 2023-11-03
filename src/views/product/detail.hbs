@@ -18,16 +18,34 @@
       ID: {{data._id}}
     </i>
     <h3>Detail Product</h3>
-    <p></p>
-    <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm">
-      <div class="mb-3">
-        <label class="form-label">Product name</label>
-        <input class="form-control" name="product_name" id="product_name" required="required"
-          value="{{data.product_name}}">
+    <div class="row">
+      <div class="col" >
+        <label class="form-label">Image</label>
+        <img src="{{data.images.0.url}}" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+        <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
+      </div>
+      <div class="col">
+        <div class="mb-3">
+          <label class="form-label">Product name</label>
+          <input class="form-control" name="product_name" id="product_name" required="required"
+            value="{{data.product_name}}">
+          <div id="emailHelp" class="form-text"></div>
+        </div>
+        <div class="mb-3"></div>
+        <label class="form-label">Description</label>
+        <textarea class="form-control" style="height: 300px;" name="description" id="description"
+          required="required">{{data.description}}</textarea>
         <div id="emailHelp" class="form-text"></div>
       </div>
+    </div>
+  </div>
 
-      <div class="mb-3">
+  
+
+  <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm">
+
+    <div class="row">
+      <div class="col">
         <label class="form-label">Price</label>
         <input type="number" class="form-control" name="product_price" id="product_price" required="required"
           value="{{data.product_price}}">
@@ -35,53 +53,59 @@
         <div id="emailHelp" class="form-text">Please price only number</div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <input class="form-control" name="description" id="description" required="required"
-          value="{{data.description}}">
-        <div id="emailHelp" class="form-text"></div>
-      </div>
-
-      <div class="mb-3">
+      <div class="col">
         <label class="form-label">Category</label>
         <input class="form-control" name="categoryId" id="categoryId" required="required" value="{{data.categoryId}}">
         <div id="emailHelp" class="form-text"></div>
       </div>
-      <div class="mb-3">
-        <label for="img">Image</label>
-        <img src="{{data.image}}" alt="" class="form-control" id="img-preview" style="height: 100px; width: 100px">
-        <input type="file" class="form-control mt-3" id="img" name="img" accept="img/*" required>
-      </div>
-      <button type="submit" class="btn">Update</button>
-    </form>
-    <script>
-      document.getElementById('updateForm').addEventListener('submit', function (event) {
-        const confirmDelete = confirm("Do you really want to update this?");
-        if (!confirmDelete) {
-          event.preventDefault();
+    </div>
+        <div class="row">
+      <div class="col">
+    <button type="submit" class="btn" style="float: right">Update</button>
+    </div>
+  </form>
+  <script>
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+      const confirmDelete = confirm("Do you really want to update this?");
+      if (!confirmDelete) {
+        event.preventDefault();
+      } else {
+        if (window.location.href.includes('/api/admin/products')) {
+          window.location.href = 'http://localhost:3000/api/admin/products';
         } else {
-          if (window.location.href.includes('/api/admin/products')) {
-            window.location.href = 'http://localhost:3000/api/admin/products';
-          } else {
-          }
         }
-      });
-    </script>
-    <form action="http://localhost:3000/api/deletebyadmin/products/{{data._id}}" method="get" id="deleteForm">
-      <button type="submit" onclick="abc()" class="btn" style="float: right">Delete</button>
-    </form>
-    <script>
-      document.getElementById('deleteForm').addEventListener('submit', function (event) {
-        const confirmDelete = confirm("Do you really want to delete this?");
-        if (!confirmDelete) {
-          event.preventDefault();
+      }
+    });
+  </script>
+      <div class="col">
+    <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
+    <button type="submit" onclick="abc()" class="btn" style="float: right">Move to recycle bin</button>
+  </form>
+  </div>
+  <script>
+    document.getElementById('deleteForm').addEventListener('submit', function (event) {
+      const confirmDelete = confirm("Do you really want to delete this?");
+      if (!confirmDelete) {
+        event.preventDefault();
+      } else {
+        if (window.location.href.includes('/api/admin/products')) {
+          window.location.href = 'http://localhost:3000/api/admin/products';
         } else {
-          if (window.location.href.includes('/api/admin/products')) {
-            window.location.href = 'http://localhost:3000/api/admin/products';
-          } else {
-          }
         }
-      });
-    </script>
+      }
+    });
+        document.getElementById('removeForm').addEventListener('submit', function (event) {
+      const confirmDelete = confirm("Do you really want to remove this?");
+      if (!confirmDelete) {
+        event.preventDefault();
+      } else {
+        if (window.location.href.includes('/api/admin/products')) {
+          window.location.href = 'http://localhost:3000/api/admin/products';
+        } else {
+        }
+      }
+    });
+  </script>
+    </div>
   </div>
 </body>

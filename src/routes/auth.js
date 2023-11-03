@@ -24,10 +24,14 @@ router.post("/resendOTPVerificationCode", authController.sendNewOtp)
 router.get("/forgotPassword", authController.forgotPassword)
 router.post("/verifyOTPChangePassword", authController.verifyOTPChangePassword)
 router.post("/resetPassword", authController.resetPassword)
+router.get("/users/search/:text", authenticate, authController.searchAuth)
 router.post("/changePassword", authenticate, authController.changePassword)
-
 router.get('/admin/users', authController.getUserUI);
 router.get('/admin/users/:id', authController.getUserByIdUI);
 router.get('/userbyadmin/:id', authController.getUserByAdmin);
 router.get('/deletebyadmin/:id', authController.removeByAdmin);
+router.get('/singin', authController.signin);
+router.post('/login',authController.signin)
+
+
 module.exports = router;

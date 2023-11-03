@@ -73,9 +73,9 @@ const authSchema = new mongoose.Schema ({
         type:String
     },
     createdAt:{
-        type: Date,
-        default:Date.now()
-    }
+        type: Date, 
+        default: () => new Date(Date.now() + 7 * 60 * 60 * 1000)
+      }
 })
 
 authSchema.virtual("formattedCreatedAt").get(function(){

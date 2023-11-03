@@ -9,7 +9,7 @@ const orderSchema = mongoose.Schema({
   couponId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Coupon",
-    required: false  // Đặt required là false để cho phép giá trị null
+    default: null
   },
   products: [
     {
@@ -20,9 +20,13 @@ const orderSchema = mongoose.Schema({
       consignee_name: String,
       purchase_quantity: Number,
       sizeId: String,
-   
+      sizeName:String,
     }
   ],
+  discount: {
+    type: Number,
+    required: false
+  },
   total: {
     type: Number,
     required: true
@@ -30,18 +34,16 @@ const orderSchema = mongoose.Schema({
   status: {
     type: mongoose.Types.ObjectId,
     ref: "Status",
-    default: '64e8a93da63d2db5e8d8562a'
-  },
-  phone: {
-    type: String,
-    required: true
+    default: '65264bc32d9b3bb388078974'
   },
   address: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "Address",
     required: true
   },
   notes: {
-    type: String
+    type: String,
+    required: false
   },
   paymentCode: {
     type: String

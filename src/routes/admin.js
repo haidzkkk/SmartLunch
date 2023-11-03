@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/admin', (req, res) => {
   res.render("authtification/login");
   
 });

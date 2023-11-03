@@ -7,24 +7,20 @@ var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
 // var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
 var { uploadImage, updateImage } = require('../controllers/upload');
+const { log } = require('handlebars')
 let refreshTokens = [];
 
 exports.getUserUI = async (req, res) => {
-    try {
-      const response = await fetch('http://localhost:3000/api/users');
-      const data = await response.json();
-      // Renderr trang "user/user" với dữ liệu và layout "home"
-      res.render('user/user',{data} ,{layout: "layouts/home" });
-    } catch (error) {
-      // Xử lý lỗi nếu có
-      console.error(error);
-      res.status(500).send("Lỗi khi truy cập API");
-    }
-  };
+
+        const response = await fetch('http://localhost:3000/api/users');
+        const data = await response.json();
+        res.render('user/user', { data, layout: "layouts/home" });
+}
+
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', { data });
+    res.render('user/detail', { data }, { layout: "layouts/home" });
 };
 
 exports.getUserByAdmin = async (req, res) => {
@@ -139,11 +135,11 @@ exports.updateUser = async (req, res) => {
 exports.uploadAvatarUser = async (req, res) => {
     try {
         const id = req.user;
-        var files = req.files 
+        var files = req.files
 
         var images = await uploadImage(files)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images[0]}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images[0] }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -164,11 +160,11 @@ exports.updateAvatarUser = async (req, res) => {
     try {
         const id = req.user;
         const publicId = req.params.publicId;
-        var files = req.files 
+        var files = req.files
 
         var images = await updateImage(files, publicId)
-       
-        const user = await Auth.findByIdAndUpdate(id, {avatar: images}, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
+
+        const user = await Auth.findByIdAndUpdate(id, { avatar: images }, { new: true }).select('-password -role -refreshToken -passwordChangeAt -__v');
         if (!user) {
             return res.status(400).json({
                 message: "tải lên avatar người dùng thất bại"
@@ -547,9 +543,11 @@ exports.signin = async (req, res) => {
                 messages: 'Sai mật khẩu'
             })
         }
+
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
+        
             refreshTokens.push(refreshToken);
             //luu vao cookies
             res.cookie("refreshToken", refreshToken, {
@@ -559,12 +557,15 @@ exports.signin = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
+
             const { password, ...users } = user._doc
-            sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+            //sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken
             })
+
         }
     } catch (error) {
         return res.status(400).json({
@@ -572,6 +573,7 @@ exports.signin = async (req, res) => {
         })
     }
 }
+
 
 // Generate Access Token
 const generateAccessToken = (user) => {
@@ -696,6 +698,109 @@ exports.changePassword = async (req, res) => {
         })
     }
 }
+
+
+exports.loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //validate
+        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                messages: errors
+            })
+        }
+
+        const user = await Auth.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                messages: 'Tài Khoản không tồn tại'
+            })
+        }
+
+        const isVerify = await user.verified;
+        if (!isVerify) {
+            return res.status(400).json({
+                message: 'Please verify the account first'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                messages: 'Sai mật khẩu'
+            })
+        }
+
+
+        if (user && password) {
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+            refreshTokens.push(refreshToken);
+            //luu vao cookies
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,//khong cho truy cap cookie nay ra duoc
+                secure: false,
+                path: "/",
+                // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+                sameSite: "strict"
+            })
+            const role = await user.role;
+            if (role == "admin") {
+                const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+                const data = await response.json();
+                const layout = "layouts/home";
+                return res.redirect('/api/admin/products?data=${JSON.stringify(data)}&layout=${layout}')
+            } else {
+                return res.status(400).json({
+                    messages: 'ko có quyền này'
+                })
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({
+            messages: error
+        })
+    }
+}
+
+// fun Lấy một người dùng theo ID
+exports.getOneById = async (id) => {
+    try {
+        const data = await Auth.findById(id);
+        if (!data) return null
+        return data
+    } catch (error) {
+        return null
+    }
+};
+
+exports.searchAuth = async (req, res) => {
+    try {
+        const curentUser = req.user
+
+        const textSearch = req.params.text
+        const users = await Auth.find({
+            $and: [
+              {
+                $or: [
+                  { first_name: { $regex: new RegExp(textSearch, "i") } },
+                  { last_name: { $regex: new RegExp(textSearch, "i") } },
+                ],
+              },
+              { _id: { $ne: curentUser._id } },
+            ],
+          });
+        res.status(200).json(users)
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+
 
 
 
