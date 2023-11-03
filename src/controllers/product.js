@@ -5,12 +5,9 @@ const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 
 exports.getProductUI = async (req, res) => {
-  
-  const response = await fetch(
-    "http://localhost:3000/api/productbyadmin/products"
-  );
+  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
-  res.render("product/product", { data, layout: "Layouts/home" });
+  res.render('product/product', { data,layout :"Layouts/home" });
 };
 exports.getProductDelete = async (req, res) => {
   const responsex = await fetch('http://localhost:3000/api/products/delete');
