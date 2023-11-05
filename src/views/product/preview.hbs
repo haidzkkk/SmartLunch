@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* The device with borders */
+.smartphone {
+  position: relative;
+  width: 460px;
+  height: 940px;
+  margin: auto;
+  border: 16px black solid;
+  border-top-width: 60px;
+  border-bottom-width: 60px;
+  border-radius: 36px;
+}
+
+/* The horizontal line on the top of the device */
+.smartphone:before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 5px;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+/* The circle on the bottom of the device */
+
+
+/* The screen (or content) of the device */
+.smartphone .content {
+  width: 460px;
+  height: 940px;
+  background: white;
+}
+</style>
+</head>
+<body>
+
+<div class="smartphone">
+        <img src="{{data.images.0.url}}" alt="" class="form-control" id="img-preview" style="height: 150x; width: 150px">
+          <h2 
+            value="{{data.product_name}}">
+        <p  >{{data.description}}</p>
+        <h2 
+          value="{{data.product_price}}">
+</div>
+
+</body>
+</html>

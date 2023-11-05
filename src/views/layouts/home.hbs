@@ -13,6 +13,18 @@
         crossorigin="anonymous"></script>
 </head>
 <style>
+    table.table-striped {
+        text-align: center;
+    }
+
+    .btn {
+        background-color: #FF593E;
+        color: aliceblue;
+    }
+
+    h3 {
+        text-align: center;
+    }
     .bi {
         width: 30px;
         height: 30px;
@@ -23,7 +35,10 @@
     h3 {
         font-family: monospace;
     }
-
+    nav{
+        background-color: #e8e6e6;
+        border-bottom-right-radius: 95%;
+    }
     .nav-item {
         margin: 10px;
     }
@@ -33,9 +48,33 @@
     }
 
     .form-label {
-        font-family: cursive;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         font-size: large;
         font-weight: bold;
+    }
+
+    .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #fccb90;
+
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
+
+    @media (min-width: 768px) {
+        .gradient-form {
+            height: 100vh !important;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .gradient-custom-2 {
+            border-top-right-radius: .3rem;
+            border-bottom-right-radius: .3rem;
+        }
     }
 
     body {
@@ -178,10 +217,9 @@
                                     <path
                                         d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                                 </svg>
-                                Recycle Bin
+                                Bin
                             </a>
                         </li>
-
                     </ul>
                 </div>
             </nav>

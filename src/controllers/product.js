@@ -12,6 +12,14 @@ exports.getProductUI = async (req, res) => {
   const data = await response.json();
   res.render("product/product", { data, layout: "Layouts/home" });
 };
+exports.getProductCreateUI = async (req, res) => {
+  
+  res.render("product/create", {  layout: "Layouts/home" });
+};
+exports.getProductPreview = async (req, res) => {
+  
+  res.render("product/preview", {  layout: "Layouts/home" });
+};
 exports.getProductDelete = async (req, res) => {
   const responsex = await fetch('http://localhost:3000/api/products/delete');
   const dataDelete = await responsex.json();
