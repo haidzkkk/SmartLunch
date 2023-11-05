@@ -29,13 +29,15 @@ router.get(
 router.get("/products/views/:id", productController.viewProduct);
 router.get("/category/products/:categoryId",productController.getProductByCategoryId);
 router.get("/admin/products", productController.getProductUI);
+router.get("/admin/products/create", productController.getProductCreateUI);
+router.get("/admin/products/preview", productController.getProductPreview);
 router.get("/admin/products/:id", productController.getProductByIdUI);
 // router.post("/admin/create/products",upload.array("images", 10), productController.addProductUi);
 router.get("/productbyadmin/products", productController.getProduct);
 router.delete("/products/:id", authenticate, authorization, productController.remove);
 router.delete("/products/force/:id", authenticate, authorization, productController.removeForce);
 router.post("/products", authenticate, authorization , upload.array("images", 10), productController.addProduct);
-router.patch("/products/:id", authenticate, authorization, productController.updateProduct);
+router.post("/products/:id", authenticate, authorization,upload.array("images", 10), productController.updateProduct);
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 router.get("/products/views/:id", productController.viewProduct);
 router.get("/category/products/:categoryId", productController.getProductByCategoryId)
