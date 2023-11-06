@@ -3,14 +3,12 @@ var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
 const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
+const fetch = require('node-fetch');
 
 exports.getProductUI = async (req, res) => {
-  
-  const response = await fetch(
-    "http://localhost:3000/api/productbyadmin/products"
-  );
+  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
-  res.render("product/product", { data, layout: "Layouts/home" });
+  res.render('product/product', { data,layout :"Layouts/home" });
 };
 exports.getProductCreateUI = async (req, res) => {
   
@@ -36,8 +34,6 @@ exports.removeProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     res.status(303).set("Location", "/api/admin/products").send();
-
-
   } catch (error) {
     return res.status(400).json({
       message: error,
