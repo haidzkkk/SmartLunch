@@ -3,6 +3,51 @@ var { uploadImage, updateImage } = require('../controllers/upload');
 var Category = require("../models/category.js");
 const fetch = require('node-fetch');
 
+
+
+exports.getCategoryUI = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/categorybyadmin/category');
+  const data = await response.json();
+  res.render('category/category', { data,layout :"Layouts/home" });
+};
+exports.getCategoryByIdUI = async (req, res) => {
+  const response = await fetch(
+    "http://localhost:3000/api/category/" + req.params.id
+  );
+  const data = await response.json();
+  res.render("category/detail", { data, layout: "Layouts/home" });
+};
+
+exports.getCategoryDelete = async (req, res) => {
+  const responsex = await fetch('http://localhost:3000/api/category/delete');
+  const dataDelete = await responsex.json();
+  res.render('recyclebin/recycle_category', { dataDelete,layout :"Layouts/home" });
+};
+
+exports.removeCategory = async (req, res) => {
+  try {
+    const category = await Category.findByIdAndDelete(req.params.id);
+    res.status(303).set("Location", "/api/admin/category").send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};
+
+exports.updateCategoryUI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    const category = await Category.findByIdAndUpdate(id, body, { new: true });
+    res.status(303).set("Location", "/api/admin/category").send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+}
+
 exports.getAllCategory = async (req, res) => {
   const {
     _limit = 10,
@@ -74,19 +119,6 @@ exports.getCategoryById = async (req, res) => {
   }
 };
 
-exports.removeCategory = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const category = await Category.deleteById(id);
-    return res.status(200).json(  
-      category,
-    );
-  } catch (error) {
-    return res.status(400).json({
-      message: error,
-    });
-  }
-};
 
 exports.removeForce = async (req, res) => {
   try {
@@ -100,6 +132,8 @@ exports.removeForce = async (req, res) => {
     });
   }
 };
+
+
 
 
 exports.addCategory = async (req, res) => {
@@ -157,7 +191,7 @@ exports.restoreCategory = async (req, res) => {
         message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
       });
     }
-    return res.status(200).json(restoredCategory);
+    res.status(303).set('Location', '/api/admin/category').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -195,6 +229,36 @@ exports.updateCategory = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       message: error.message,
+    });
+  }
+};
+
+
+
+
+exports.getCategory = async (req, res) => {
+  try {
+    const data = await Category.find();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const category = await Category.findById(id);
+    // console.log(product);
+    if (category) {
+      await category.delete();
+    }
+    res.status(303).set('Location', '/api/admin/recycle_category').send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
     });
   }
 };

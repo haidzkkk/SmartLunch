@@ -26,8 +26,6 @@ exports.removeProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     res.status(303).set("Location", "/api/admin/products").send();
-
-
   } catch (error) {
     return res.status(400).json({
       message: error,
