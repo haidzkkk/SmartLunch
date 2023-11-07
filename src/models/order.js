@@ -40,6 +40,11 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  shipperId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Auth",
+    default: null
+  },
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Address",
@@ -58,7 +63,10 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '654892638cd8c0661be05f7c'
   },
-},
+  payerId: {
+    type: String
+  }
+}, 
   { timestamps: true, versionKey: false });
   let orderModel= mongoose.model("Order", orderSchema)
   module.exports =orderModel

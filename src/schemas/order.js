@@ -8,6 +8,7 @@ exports.orderSchema = Joi.object({
         "string.base": "ID người dùng phải là string"
     }),
     couponId: Joi.string().allow(null),
+    shiperId: Joi.string().allow(null), 
     discount: Joi.number().min(0).required().messages({
         "number.min": "Không được nhập số âm"
     }),

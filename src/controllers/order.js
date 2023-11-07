@@ -34,7 +34,27 @@ exports.getOrderByUserId = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query).populate('products.productId status address' );
+        const order = await Order.find(query).populate('products.productId status address userId' );
+        return res.status(200).json(order);
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message,
+        })
+    }
+}
+
+// lấy thông tin về các đơn hàng của shipper đã nhận
+exports.getOrderByShipper = async (req, res) => {
+    try {
+        const shipperId = req.user.id
+        const statusId = req.query.statusId
+        const query = {
+            shipperId: shipperId,
+        };
+        if (statusId) {
+            query.status = statusId;
+        }
+        const order = await Order.find(query).populate('products.productId status address userId' );
         return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
@@ -47,7 +67,7 @@ exports.getOrderByUserId = async (req, res) => {
 exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
-        const order = await Order.findById(id).populate('products.productId status address')
+        const order = await Order.findById(id).populate('products.productId status address userId')
         if (!order || order.length === 0) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
@@ -68,7 +88,7 @@ exports.getAllOrder = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query).populate('products.productId status address');
+        const order = await Order.find(query).populate('products.productId status address userId');
         if (!order) {
             return res.status(404).json({
                 error: "Lấy tất cả đơn hàng thất bại"
@@ -154,7 +174,7 @@ exports.createOrder = async (req, res) => {
         const order = await Order.create(body)
         if (!order) {
             return res.status(404).json({
-                error: "Đặt hàng thất bại"
+                error: "Đặt hàng thất bại "
             })
         }
 
@@ -164,8 +184,6 @@ exports.createOrder = async (req, res) => {
         .populate('status')
         .populate('address')
         .populate('statusPayment')
-
-console.log(JSON.stringify(result));
 
         return res.status(200).json(result)
     } catch (error) {
@@ -180,8 +198,12 @@ console.log(JSON.stringify(result));
 exports.updateOrder = async (req, res) => {
     try {
         const id = req.params.id;
+        const shipperId = req.query.shipperId
         const body = req.body;
-        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status address')
+        if (shipperId) {
+            body.shipperId = shipperId;
+        }
+        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status address userId')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
