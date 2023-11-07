@@ -36,6 +36,11 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '65264bc32d9b3bb388078974'
   },
+  shipperId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Auth",
+    default: null
+  },
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Address",
