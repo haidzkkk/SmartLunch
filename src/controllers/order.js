@@ -158,7 +158,14 @@ exports.createOrder = async (req, res) => {
             })
         }
 
-        const result = await Order.findById(order._id).populate('products.productId status address');
+        const result = await Order.findById(order._id)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+
+console.log(JSON.stringify(result));
 
         return res.status(200).json(result)
     } catch (error) {
