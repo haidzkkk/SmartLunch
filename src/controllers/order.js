@@ -9,19 +9,19 @@ exports.getAllOrderUI = async (req, res) => {
     res.render('order/order', { data ,layout :"Layouts/home"});
 };
 
-// exports.getbyIdOrderUI = async (req, res) => {
-//     const response = await fetch('http://localhost:3000/api/getAllorder/')+ req.params.id;
-//     const data = await response.json();
-//     res.render('order/detail', { data ,layout :"Layouts/home"});
-// };
-
 exports.getbyIdOrderUI = async (req, res) => {
-    const response = await fetch(
-      "http://localhost:3000/api/order/" + req.params.id
-    );
+    const response = await fetch('http://localhost:3000/api/getAllorder/')+ req.params.id;
     const data = await response.json();
-    res.render("order/detail", { data, layout: "Layouts/home" });
-  };
+    res.render('order/detail', { data ,layout :"Layouts/home"});
+};
+
+// exports.getbyIdOrderUI = async (req, res) => {
+//     const response = await fetch(
+//       "http://localhost:3000/api/order/" + req.params.id
+//     );
+//     const data = await response.json();
+//     res.render("order/detail", { data, layout: "Layouts/home" });
+//   };
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) => {
@@ -178,7 +178,12 @@ exports.createOrder = async (req, res) => {
             })
         }
 
-        const result = await Order.findById(order._id).populate('products.productId status address userId');
+        const result = await Order.findById(order._id)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
 
         return res.status(200).json(result)
     } catch (error) {
