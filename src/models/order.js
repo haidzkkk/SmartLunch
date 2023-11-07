@@ -56,7 +56,7 @@ const orderSchema = mongoose.Schema({
   payerId: {
     type: String
   }
-},
+}, 
   { timestamps: true, versionKey: false });
   let orderModel= mongoose.model("Order", orderSchema)
   module.exports =orderModel

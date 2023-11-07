@@ -174,7 +174,7 @@ exports.createOrder = async (req, res) => {
         const order = await Order.create(body)
         if (!order) {
             return res.status(404).json({
-                error: "Đặt hàng thất bại"
+                error: "Đặt hàng thất bại "
             })
         }
 
