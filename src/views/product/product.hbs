@@ -30,52 +30,7 @@
 
 <body>
   <div class="container">
-    <h3>Create Product</h3>
-    <form action="http://localhost:3000/api/products" method="post" id="productForm" enctype="multipart/form-data">
-      <div class="row">
-        <div class="col">
-          <label class="form-label">Image</label>
-          <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-          <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" required>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <label class="form-label">Product name</label>
-            <input class="form-control" name="product_name" id="product_name" required>
-          </div>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <label class="form-label">description</label>
-            <input class="form-control" name="description" id="description" required>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label class="form-label">Price</label>
-            <input type="number" class="form-control" name="product_price" id="product_price" required>
-          </div>
-          <div class="col">
-            <label class="form-label">View</label>
-            <input type="number" class "form-control" name="views" id="views" required>
-          </div>
-          <div class="col">
-            <label class="form-label">Category</label>
-            <input class="form-control" name="categoryId" id="categoryId" required>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="btn" style="margin: 20px;">Create</button>
-    </form>
-    <!-- Product table or other content goes here -->
-    <script>
-      document.getElementById('productForm').addEventListener('submit', function (event) {
-        if (window.location.href.includes('/api/admin/coupons')) {
-          window.location.href = 'http://localhost:3000/api/admin/coupons';
-        } else {
-        }
-      });
-    </script>
+  <a href="/api/admin/products/create" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Create new product</a>
  <h3>Coupon table</h3>
     <table id="datatable" class="table table-striped " style="width:100%">
       <thead>
@@ -105,62 +60,6 @@
       </tbody>
     </table>
       </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const productForm = document.getElementById("productForm");
-       console.log(productForm);
-      productForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const formData = new FormData(productForm);
-        const token = localStorage.getItem("accessToken");
-    
-         console.log("aaa" + token);
-        if (!token) {
-          // Handle the case where the token is missing or invalid
-          console.error("Token is missing or invalid");
-          return;
-        }
-      
-        try {
-          const response = await fetch(productForm.action, {
-            method: "POST",
-            body: formData,
-            headers: {
-              "Authorization": "Bearer " + token,
-            },
-          });
-          
-          if (response.ok) {
-            // Product created successfully, handle the response here
-            const productData = await response.json();
-            console.log("Product created:", productData);
-          } else {
-            // Handle errors, e.g., display an error message
-            console.error("Product creation failed");
-          }
-        } catch (error) {
-          // Handle network or other errors
-          console.error("Error:", error);
-        }
-      });
-
-      // Add code to preview the selected image if needed (as shown in your original code)
-      const fileInput = document.getElementById("images");
-      const imgPreview = document.getElementById("img-preview");
-
-      fileInput.addEventListener('change', function () {
-        if (fileInput.files && fileInput.files[0]) {
-          var reader = new FileReader();
-
-          reader.onload = function (e) {
-            imgPreview.src = e.target.result;
-          };
-
-          reader.readAsDataURL(fileInput.files[0]);
-        }
-      });
-    });
-  </script>
 </body>
     <script>
         $(document).ready(function () {
