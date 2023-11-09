@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Line Chart</title>
+  <!-- Thêm đường dẫn đến thư viện Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Thêm kiểu cho biểu đồ */
+    #myLineChart {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Địa điểm hiển thị biểu đồ -->
+  <canvas id="myLineChart"></canvas>
+
+  <script>
+    // Dữ liệu cho 12 tháng
+    var months = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+    var data = {
+      labels: months,
+      datasets: [{
+        label: 'Doanh số',
+        data: [150, 200, 180, 250, 220, 300, 280, 350, 320, 400, 380, 450],
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderWidth: 2,
+        pointRadius: 5,
+        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+        fill: true
+      }]
+    };
+
+    // Cấu hình biểu đồ
+    var options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      title: {
+        display: true,
+        text: 'Biểu đồ Line 12 tháng',
+        fontSize: 18
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    };
+
+    // Lấy đối tượng canvas và vẽ biểu đồ đường
+    var ctx = document.getElementById("myLineChart").getContext("2d");
+    var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+  </script>
+</body>
+</html>
