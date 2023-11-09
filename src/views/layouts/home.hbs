@@ -13,56 +13,6 @@
         crossorigin="anonymous"></script>
 </head>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: white;
-    }
-
-    .block {
-        position: relative;
-        margin: 10% auto 0;
-        border-radius: 4px;
-        width: max-content;
-        height: max-content;
-        background: linear-gradient(0deg, white, #fdfdfd);
-        box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
-    }
-
-    .glow::before,
-    .glow::after {
-        content: '';
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        border-radius: 4px;
-        background: linear-gradient(45deg, #6b5d5b, #f3e7e0, #6b5d5b, #f3e7e0, #6b5d5b, #efefef, #6b5d5b, #efefef, #6b5d5b);
-        background-size: 400%;
-        width: calc(100% + 0px);
-        height: calc(100% + 0px);
-        z-index: -1;
-        animation: animate 60s linear infinite;
-    }
-
-    @keyframes animate {
-        0% {
-            background-position: 0 0;
-        }
-
-        50% {
-            background-position: 400% 0;
-        }
-
-        100% {
-            background-position: 0 0;
-        }
-    }
-
-    .glow::after {
-        filter: blur(30px);
-        opacity: .95
-    }
-
     table.table-striped {
         text-align: center;
     }
@@ -166,7 +116,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link aaa" style="color: black; font-weight: bold;" aria-current="page"
-                                href="/a">
+                                href="/dashboard">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                                     class="bi bi-house" viewBox="0 0 16 16">
                                     <path
@@ -279,6 +229,7 @@
                 <marquee direction="left" style="color: #FF593E; font-weight: bold;">
                     ️️🎄🎄🎄Giáng sinh zui zẻ.️🎄🎄🎄
                 </marquee>
+
                 {{{body}}}
 
             </main>
