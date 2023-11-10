@@ -20,7 +20,6 @@ const orderSchema = mongoose.Schema({
       consignee_name: String,
       purchase_quantity: Number,
       sizeId: String,
-   
     }
   ],
   discount: {
@@ -36,10 +35,10 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '65488caa8cd8c0661be05f78'
   },
-  phone: {
-    type: String,
-    required: true
-  },
+  // phone: {
+  //   type: String,
+  //   required: true
+  // },
   shipperId: {
     type: mongoose.Types.ObjectId,
     ref: "Auth",
