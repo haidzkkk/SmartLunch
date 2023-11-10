@@ -2,7 +2,7 @@ const Address = require('../models/address');
 
 exports.createAddress = async (req, res) => {
     try {
-        const userId = req.user.id
+        const userId = req.user.id;
         const { recipientName, phoneNumber, addressLine, latitude, longitude } = req.body;
         const address = new Address({
             recipientName,
@@ -10,19 +10,36 @@ exports.createAddress = async (req, res) => {
             addressLine,
             latitude,
             longitude,
-            userId
+            userId,
+            isSelected: true
         });
+    
         const newAddress = await address.save();
-        res.status(201).json(newAddress);
+    
+        if (newAddress === null) {
+            return res.status(400).json({ error: 'Không thể tạo địa chỉ.' });
+        }
+    
+        await Address.updateMany(
+            { userId, _id: { $ne: newAddress._id } },
+            { $set: { isSelected: false } }
+        );
+    
+        await newAddress.populate("userId")
+
+        res.status(200).json(newAddress);
     } catch (error) {
+        console.error('Lỗi khi tạo địa chỉ:', error);
         res.status(500).json({ error: 'Không thể tạo địa chỉ.' });
     }
+    
 };
 
 exports.getAddressesByUserId = async (req, res) => {
     try {
         const userId = req.user.id
-        const addresses = await Address.find({ userId: userId });
+        const addresses = await Address.find({ userId, isRemove: false }).populate("userId");
+
         return res.status(200).json(addresses);
     } catch (error) {
         return res.status(500).json({ error: 'Không thể lấy danh sách địa chỉ.' });
@@ -44,6 +61,7 @@ exports.getOneById = async (req, res) => {
         if (!address) {
             return res.status(404).json({ error: 'Địa chỉ không tồn tại.' });
         }
+        await address.populate("userId")
         return res.status(200).json(address);
     } catch (error) {
         return res.status(500).json({ error: 'Không thể lấy địa chỉ.' });
@@ -52,10 +70,19 @@ exports.getOneById = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
     try {
-        const address = await Address.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const address = await Address.findByIdAndUpdate(req.params.id);
         if (!address) {
             return res.status(404).json({ error: 'Địa chỉ không tồn tại.' });
-        }
+        }     
+        await Address.updateMany(
+            { userId: req.user, _id: { $ne: address._id } },
+            { $set: { isSelected: false } }
+        );
+
+        address.isSelected = true;
+        await address.save();
+        await address.populate("userId")
+
         return res.status(200).json(address);
     } catch (error) {
         return res.status(500).json({ error: 'Không thể cập nhật địa chỉ.' });
@@ -64,10 +91,15 @@ exports.updateAddress = async (req, res) => {
 
 exports.removeAddress = async (req, res) => {
     try {
-        const address = await Address.findOneAndRemove({ _id: req.params.id });
+        const address = await Address.findByIdAndUpdate(req.params.id);
         if (!address) {
             return res.status(404).json({ error: 'Địa chỉ không tồn tại.' });
-        }
+        }     
+
+        address.isRemove = true;
+        await address.save();
+        await address.populate("userId")
+
         return res.status(200).json(address);
     } catch (error) {
         return res.status(500).json({ error: 'Không thể xóa địa chỉ.' });

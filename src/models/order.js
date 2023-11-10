@@ -63,10 +63,12 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '654892638cd8c0661be05f7c'
   },
-  payerId: {
-    type: String
-  }
-}, 
+  isPayment: {
+    type: Boolean,
+    default: false
+  },
+},
+
   { timestamps: true, versionKey: false });
   let orderModel= mongoose.model("Order", orderSchema)
   module.exports =orderModel
