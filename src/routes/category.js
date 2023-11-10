@@ -15,4 +15,20 @@ router.post("/category", authenticate,authorization, upload.array("images", 1), 
 router.patch("/category/:id", authenticate, authorization, upload.array("images", 1), categoryController.updateCategory)
 router.patch("/category/restore/:id", authenticate, authorization, categoryController.restoreCategory)
 
+
+
+router.get(
+    "/category/restore/:id",
+    categoryController.restoreCategory
+  );
+router.get("/admin/category", categoryController.getCategoryUI);
+router.get('/categorybyadmin/category', categoryController.getCategory);
+router.get('/admin/category/:id', categoryController.getCategoryByIdUI);
+
+router.post("/updatebyadmin/category/:id", categoryController.updateCategoryUI);
+
+router.get("/remove/category/:id", categoryController.remove);
+
+
+
 module.exports = router;

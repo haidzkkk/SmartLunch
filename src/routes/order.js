@@ -3,6 +3,7 @@ var  routerController =  require ("../controllers/order.js")
 var { authenticate } = require('../middlewares/authenticate')
 var { authorization } = require('../middlewares/authorization.js')
 
+
 var routerOrder = express.Router();
 
 routerOrder.post("/order", authenticate, routerController.createOrder);
@@ -15,5 +16,15 @@ routerOrder.patch("/order/payment/:id", authenticate, routerController.updatePay
 
 routerOrder.get("/getAllorderUi", authenticate, routerController.getAllOrderUI)
 routerOrder.get("/getByIdOder/:id", authenticate, routerController.getbyIdOrderUI)
+routerOrder.post("/order", routerController.createOrder);
+routerOrder.get("/order/:id", routerController.getOrderById)
+routerOrder.delete("/order/:id", routerController.removeOrder)
+routerOrder.get("/order/:userId/user", routerController.getOrderByUserId)
+routerOrder.get("/orders/delivering",authenticate, routerController.getOrderByShipper)
+routerOrder.get("/getAllorder", routerController.getAllOrder)
+routerOrder.patch("/order/:id", routerController.updateOrder)
+
+routerOrder.get("/getAllorderUi", routerController.getAllOrderUI)
+routerOrder.get("/getByIdOder/:id", routerController.getbyIdOrderUI)
 
 module.exports = routerOrder;

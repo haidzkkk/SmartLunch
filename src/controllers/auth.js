@@ -20,7 +20,7 @@ exports.getUserUI = async (req, res) => {
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', { data }, { layout: "layouts/home" });
+    res.render('user/detail', {data ,  layout: "layouts/home" });
 };
 
 exports.getUserByAdmin = async (req, res) => {
@@ -718,7 +718,6 @@ exports.loginAdmin = async (req, res) => {
                 messages: 'Tài Khoản không tồn tại'
             })
         }
-
         const isVerify = await user.verified;
         if (!isVerify) {
             return res.status(400).json({
@@ -732,11 +731,11 @@ exports.loginAdmin = async (req, res) => {
                 messages: 'Sai mật khẩu'
             })
         }
-
-
+      
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
+        
             refreshTokens.push(refreshToken);
             //luu vao cookies
             res.cookie("refreshToken", refreshToken, {
@@ -746,23 +745,23 @@ exports.loginAdmin = async (req, res) => {
                 // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
                 sameSite: "strict"
             })
-            const role = await user.role;
-            if (role == "admin") {
-                const response = await fetch('http://localhost:3000/api/productbyadmin/products');
-                const data = await response.json();
-                const layout = "layouts/home";
-                return res.redirect('/api/admin/products?data=${JSON.stringify(data)}&layout=${layout}')
-            } else {
-                return res.status(400).json({
-                    messages: 'ko có quyền này'
-                })
-            }
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                role : user.role
+            })
+
         }
+   
+      
+
+       
     } catch (error) {
         return res.status(400).json({
             messages: error
         })
     }
+    
 }
 
 // fun Lấy một người dùng theo ID
