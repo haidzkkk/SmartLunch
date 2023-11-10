@@ -36,7 +36,13 @@ exports.getOrderByUserId = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query).populate('products.productId status address userId' );
+        const order = await Order.find(query)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
         return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
@@ -56,7 +62,13 @@ exports.getOrderByShipper = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query).populate('products.productId status address userId' );
+        const order = await Order.find(query)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
         return res.status(200).json(order);
     } catch (error) {
         return res.status(400).json({
@@ -69,7 +81,14 @@ exports.getOrderByShipper = async (req, res) => {
 exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
-        const order = await Order.findById(id).populate('products.productId status address userId')
+        const order = await Order.findById(id)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
+        
         if (!order || order.length === 0) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
@@ -90,7 +109,14 @@ exports.getAllOrder = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query).populate('products.productId status address userId');
+        const order = await Order.find(query)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
+
         if (!order) {
             return res.status(404).json({
                 error: "Lấy tất cả đơn hàng thất bại"
@@ -191,7 +217,6 @@ exports.createOrder = async (req, res) => {
         .populate('status')
         .populate('address')
         .populate('statusPayment')
-
         result.address = await result.address.populate('userId')
 
         return res.status(200).json(result)
@@ -215,11 +240,12 @@ exports.updateOrder = async (req, res) => {
             body.shipperId = shipperId;
         }
         const order = await Order.findByIdAndUpdate(id, body, { new: true })
-            .populate('products.productId')
-            .populate('userId')
-            .populate('status')
-            .populate('address')
-            .populate('statusPayment')
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
@@ -245,14 +271,13 @@ exports.updatePaymentOrder = async (req, res) => {
             .populate('status')
             .populate('address')
             .populate('statusPayment')
+            order.address = await order.address.populate('userId')
+
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             })
         }
-
-        
-        order.address = await order.address.populate('userId')
 
         return res.status(200).json(order)
     } catch (error) {
