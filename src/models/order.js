@@ -36,10 +36,6 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '65488caa8cd8c0661be05f78'
   },
-  phone: {
-    type: String,
-    required: true
-  },
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Address",
@@ -57,6 +53,10 @@ const orderSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Status",
     default: '654892638cd8c0661be05f7c'
+  },
+  isPayment: {
+    type: Boolean,
+    default: false
   },
 },
   { timestamps: true, versionKey: false });

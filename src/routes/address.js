@@ -9,7 +9,7 @@ router.get('/addresses', addressController.getAll);
 router.get('/user/addresses', authenticate, addressController.getAddressesByUserId);
 router.get('/addresses/:id', authenticate, addressController.getOneById);
 router.post('/addresses', authenticate, addressController.createAddress);
-router.patch('/addresses/:id', authenticate, authorization, addressController.updateAddress);
-router.delete('/addresses/:id', authenticate, authorization, addressController.removeAddress);
+router.patch('/addresses/:id', authenticate, addressController.updateAddress);
+router.delete('/addresses/:id', authenticate, addressController.removeAddress);
 
 module.exports = router;

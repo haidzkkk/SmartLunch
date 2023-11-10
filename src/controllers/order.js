@@ -2,6 +2,8 @@ var Order = require("../models/order.js");
 var orderSchema = require("../schemas/order").orderSchema;
 var Coupon = require("../models/coupons.js");
 var Product = require("../models/product");
+var Address = require('../models/address'); 
+var Status = require('../models/status')
 
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
@@ -117,6 +119,7 @@ exports.removeOrder = async (req, res) => {
 exports.createOrder = async (req, res) => {
     try {
         const body = req.body;
+        body.userId = req.user.id
         const { error } = orderSchema.validate(body, { abortEarly: false });
         if (error) {
             const errors = error.details.map((err) => err.message);
@@ -124,6 +127,10 @@ exports.createOrder = async (req, res) => {
                 message: errors
             })
         }
+
+        // check address có tồn tại
+        const address = await Address.findOne({ _id: body.address, isRemove: false });
+        if(address == null) return res.status(400).json({ message: 'Không tìm thấy address' });
 
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
         if (body.couponId !== null) {
@@ -165,10 +172,12 @@ exports.createOrder = async (req, res) => {
         .populate('address')
         .populate('statusPayment')
 
-console.log(JSON.stringify(result));
+        result.address = await result.address.populate('userId')
+
 
         return res.status(200).json(result)
     } catch (error) {
+        console.log(error.message);
         return res.status(400).json({
             message: error.message
         });
@@ -179,14 +188,47 @@ console.log(JSON.stringify(result));
 // cập nhật
 exports.updateOrder = async (req, res) => {
     try {
-        const id = req.params.id;
         const body = req.body;
-        const order = await Order.findByIdAndUpdate(id, body, { new: true }).populate('products.productId status address')
+        const order = await Order.findByIdAndUpdate(req.user._id, body, { new: true })
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             })
         }
+        return res.status(200).json(order)
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+
+// truyển thành đã thanh toán
+exports.updatePaymentOrder = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const isPayment = req.query.isPayment
+        const order = await Order.findByIdAndUpdate(id, {isPayment: isPayment}, { new: true })
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
+        if (!order) {
+            return res.status(404).json({
+                message: "Đơn hàng không tồn tại"
+            })
+        }
+
+        
+        order.address = await order.address.populate('userId')
+
         return res.status(200).json(order)
     } catch (error) {
         return res.status(400).json({

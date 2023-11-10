@@ -17,9 +17,9 @@ exports.orderSchema = Joi.object({
     }),
     consignee_name: Joi.string(),
     phone: Joi.string(),
-    status: Joi.string(),
+    status: Joi.string().allow(null),
     statusPayment: Joi.string().allow(null),
     address: Joi.string(),
     notes: Joi.string().allow(null),
-    payerId: Joi.string()
+    isPayment: Joi.boolean().allow(null),
 })
