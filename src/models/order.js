@@ -17,7 +17,6 @@ const orderSchema = mongoose.Schema({
       product_name: String,
       product_price: Number,
       image: String,
-      consignee_name: String,
       purchase_quantity: Number,
       sizeId: String,
     }
@@ -33,12 +32,8 @@ const orderSchema = mongoose.Schema({
   status: {
     type: mongoose.Types.ObjectId,
     ref: "Status",
-    default: '65488caa8cd8c0661be05f78'
+    default: '65264bc32d9b3bb388078974'
   },
-  // phone: {
-  //   type: String,
-  //   required: true
-  // },
   shipperId: {
     type: mongoose.Types.ObjectId,
     ref: "Auth",
@@ -47,10 +42,6 @@ const orderSchema = mongoose.Schema({
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Address",
-    required: true
-  },
-  consignee_name: {
-    type: String,
     required: true
   },
   notes: {
