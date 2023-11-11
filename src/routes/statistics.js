@@ -1,6 +1,9 @@
 var express = require('express');
-var productController = require('../controllers/product')
-
-
-router.get('/admin/statistics ', productController.getProductUI);
+var router = express.Router();
+router.get('/admin/statistics', (req, res) => {
+    res.render("statistics/statistics");
+  });
+  router.get('/barchart', (req, res) => {
+    res.render("statistics/bar");
+  });
 module.exports = router;
