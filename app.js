@@ -12,7 +12,7 @@ var dotenv = require("dotenv");
 
 var session = require('express-session')
 
-var indexRouter = require('./src/routes/index.js');
+var indexRouter = require('./src/routes/dashboard.js');
 var authRouter = require('./src/routes/auth.js');
 var productsRouter= require('./src/routes/product');
 var categoryRouter= require('./src/routes/category.js');
@@ -29,6 +29,7 @@ var favouriteRouter = require('./src/routes/favourite.js');
 var addressRouter = require('./src/routes/address.js');
 var recycleRouter = require('./src/routes/recycle.js');
 var adminRouter = require('./src/routes/admin.js');
+var statisticsRouter = require('./src/routes/statistics.js');
 const socketController = require('./src/controllers/socket');
 
 dotenv.config();
@@ -68,6 +69,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', authRouter);
+app.use('/api', statisticsRouter);
 app.use('/api', productsRouter);
 app.use('/api', categoryRouter);
 app.use('/api', commentsRouter);
