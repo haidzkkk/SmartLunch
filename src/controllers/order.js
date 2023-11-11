@@ -28,7 +28,7 @@ exports.getbyIdOrderUI = async (req, res) => {
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
         const statusId = req.query.statusId
         const query = {
             userId: userId,
@@ -36,14 +36,18 @@ exports.getOrderByUserId = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query)
-        .populate('products.productId')
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
-        order.address = await order.address.populate('userId')
-        return res.status(200).json(order);
+        const orders = await Order.find(query)
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        for (const order of orders) {
+            await order.address.populate('userId');
+        }
+
+        return res.status(200).json(orders);
     } catch (error) {
         return res.status(400).json({
             message: error.message,
@@ -51,7 +55,6 @@ exports.getOrderByUserId = async (req, res) => {
     }
 }
 
-// lấy thông tin về các đơn hàng của shipper đã nhận
 exports.getOrderByShipper = async (req, res) => {
     try {
         const shipperId = req.user.id
@@ -62,20 +65,25 @@ exports.getOrderByShipper = async (req, res) => {
         if (statusId) {
             query.status = statusId;
         }
-        const order = await Order.find(query)
-        .populate('products.productId')
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
-        order.address = await order.address.populate('userId')
-        return res.status(200).json(order);
+        const orders = await Order.find(query)
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        for (const order of orders) {
+            await order.address.populate('userId');
+        }
+
+        return res.status(200).json(orders);
     } catch (error) {
         return res.status(400).json({
             message: error.message,
         })
     }
 }
+
 
 // lấy đơn hàng
 exports.getOrderById = async (req, res) => {
