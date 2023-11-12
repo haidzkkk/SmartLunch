@@ -88,6 +88,16 @@ exports.getAllCategory = async (req, res) => {
   }
 };
 
+exports.getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({ deleted: false });
+    return res.status(200).json(categories);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+}
 exports.getAllDelete = async (req, res) => {
   try {
     const category = await Category.findWithDeleted({ deleted: true });

@@ -10,10 +10,13 @@ exports.getAllOrderUI = async (req, res) => {
 };
 
 exports.getbyIdOrderUI = async (req, res) => {
-    const response = await fetch('http://localhost:3000/api/getAllorder/')+ req.params.id;
+    const response = await fetch(
+      "http://localhost:3000/api/order/" + req.params.id
+    );
     const data = await response.json();
-    res.render('order/detail', { data ,layout :"Layouts/home"});
-};
+    res.render("order/detail", { data, layout: "Layouts/home" });
+  };
+
 
 // exports.getbyIdOrderUI = async (req, res) => {
 //     const response = await fetch(

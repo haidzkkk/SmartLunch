@@ -1,73 +1,15 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.4.0/css/searchPanes.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
-<link rel="stylesheet" href="style.css">
-<style>
-  .btn {
-    background-color: #FF593E;
-    color: aliceblue;
-  }
+<!DOCTYPE html>
+<html>
 
-  .smartphone {
-    position: relative;
-    width: 460px;
-    height: 900px;
-    margin: auto;
-    border: 16px black solid;
-    border-top-width: 60px;
-    border-bottom-width: 60px;
-    border-radius: 36px;
-  }
-
-  /* The horizontal line on the top of the device */
-  .smartphone:before {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 5px;
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #ffffff;
-    border-radius: 10px;
-  }
-
-  /* The circle on the bottom of the device */
-
-
-  /* The screen (or content) of the device */
-  .smartphone .content {
-    width: 460px;
-    height: 940px;
-    background: white;
-  }
-
-  .h4 {
-    font-size: larger;
-    border: 1px solid #F44849;
-    border-radius: 25px;
-    text-align: center;
-    margin: 0;
-    color: #F44849;
-    font-weight: 500;
-    padding: 11px;
-  }
-
-  .h44 {
-    font-size: larger;
-    border-radius: 25px;
-    text-align: center;
-    margin: 0;
-    color: #66707A;
-    font-weight: 500;
-    padding: 11px;
-    background-color: #ECF1F6;
-  }
-</style>
+<head>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.4.0/css/searchPanes.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
 
 <body>
   <div class="container">
@@ -77,30 +19,28 @@
           <img src="{{data.images.0.url}}" width="430px" height="270px" id="img-preview2">
           <div class="row">
             <div class="col">
-              <h2 style="margin-left: 20px;margin-top: 30px; font-size: x-large;" id="name">{{data.product_name}}</h2>
+              <h2 style="margin-left: 20px; margin-top: 30px; font-size: x-large;" id="name">{{data.product_name}}</h2>
             </div>
             <div class="col">
-              <h2 style="margin-right: 24px;margin-top: 30px; color: #FF593E;font-size: x-large;    float: right;"
-                id="price">
-                {{data.product_price}}đ</h2>
+              <h2 style="margin-right: 24px; margin-top: 30px; color: #FF593E; font-size: x-large; float: right;"
+                id="price">{{data.product_price}}đ</h2>
             </div>
           </div>
-          <p style="margin-left: 20px; color:#9CA4AB ;">⭐4.8 (1.2k)</p>
-          <h5 style="margin-left: 20px;margin-top: 25px;">Mô tả</h5>
-          <p style="margin-left: 20px;margin-right: 20px ; color:#9CA4AB ;margin-top: 20px;" id="descriptiontext">
+          <p style="margin-left: 20px; color: #9CA4AB;">⭐4.8 (1.2k)</p>
+          <h5 style="margin-left: 20px; margin-top: 25px;">Mô tả</h5>
+          <p style="margin-left: 20px; margin-right: 20px; color: #9CA4AB; margin-top: 20px;" id="descriptiontext">
             {{data.description}}</p>
-          <h5 style="margin-left: 20px;margin-top: 25px;">Kích cỡ</h5>
+          <h5 style="margin-left: 20px; margin-top: 25px;">Kích cỡ</h5>
           <div class="row" style="margin-top: 25px; margin-left: 20px; margin-right: 20px;">
             <div class="col">
               <h4 class="h4">Size M</h4>
             </div>
             <div class="col">
-              <h4 class="h44">Size L</h4>
+              <h4 class="h4">Size L</h4>
             </div>
             <div class="col">
-              <h4 class="h44">Size XL</h4>
+              <h4 class="h4">Size XL</h4>
             </div>
-
           </div>
           <svg style="margin-left: 20px; margin-top: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
             fill="black" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -111,197 +51,96 @@
       </div>
       <div class="col">
         <div class="mb-3">
-          <i style="float: right; font-size: small; text-">
-            ID: {{data._id}}
-          </i>
-          <label class="form-label">Product name</label>
-          <input class="form-control" name="product_name" id="product_name" required="required"
-            value="{{data.product_name}}">
-          <div id="emailHelp" class="form-text"></div>
-        </div>
-        <div class="mb-3"></div>
-        <label class="form-label">Description</label>
-        <textarea class="form-control" style="height: 300px;" name="description" id="description"
-          required="required">{{data.description}}</textarea>
-        <div id="emailHelp" class="form-text"></div>
-        <div class="col">
-          <label class="form-label">Price</label>
-          <input type="number" class="form-control" name="product_price" id="product_price" required="required"
-            value="{{data.product_price}}">
-          <div id="emailHelp" class="form-text"></div>
-          <div id="emailHelp" class="form-text">Please price only number</div>
-        </div>
-        <div class="col">
-          <label class="form-label">Category</label>
-          <input class="form-control" name="categoryId" id="categoryId" required="required" value="{{data.categoryId}}">
-          <div id="emailHelp" class="form-text"></div>
-        </div>
-        <div class="col">
-          <label class="form-label">Image</label>
-          <img src="{{data.images.0.url}}" alt="" class="form-control" id="img-preview"
-            style="height: 400px; width: 400px">
-          <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" required>
+          <i style="float: right; font-size: small;">ID: {{data._id}}</i>
+          <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm"
+            enctype="multipart/form-data">
+            <label class="form-label">Product name</label>
+            <input class="form-control" name="product_name" id="product_name" required="required"
+              value="{{data.product_name}}">
+            <div id="emailHelp" class="form-text"></div>
+            <label class="form-label">Description</label>
+            <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required">
+              {{data.description}}</textarea>
+            <div id="emailHelp" class="form-text"></div>
+            <div class="col">
+              <label class="form-label">Price</label>
+              <input type="number" class="form-control" name="product_price" id="product_price" required="required"
+                value="{{data.product_price}}">
+              <div id="emailHelp" class="form-text"></div>
+              <div id="emailHelp" class="form-text">Please enter a valid number</div>
+            </div>
+            <div class="col">
+              <label class="form-label">Category</label>
+              <input class="form-control" name="categoryId" id="categoryId" required="required"
+                value="{{data.categoryId}}">
+              <div id="emailHelp" class="form-text"></div>
+            </div>
+            <div class="col">
+              <label class="form-label">Image</label>
+              <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+              <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple
+                required>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button type="submit" class="btn" style="float: right">Update</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-
-
-
-  <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm">
-
-    <div class="row">
-
-
-
-    </div>
-    <div class="row" style="margin-top: 20px;">
-      <div class="col">
-        <button type="submit" class="btn" style="float: right">Update</button>
-      </div>
-  </form>
-  <script>
-    document.getElementById('updateForm').addEventListener('submit', function (event) {
-      const confirmDelete = confirm("Do you really want to update this?");
-      if (!confirmDelete) {
-        event.preventDefault();
-      } else {
-        if (window.location.href.includes('/api/admin/products')) {
-          window.location.href = 'http://localhost:3000/api/admin/products';
-        } else {
-        }
-      }
-    });
-  </script>
   <div class="col">
     <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
-      <button type="submit" onclick="abc()" class="btn" style="float: right">Move to recycle bin</button>
+      <button type="submit" class="btn" style="float: right">Move to recycle bin</button>
     </form>
   </div>
+
   <script>
-    document.getElementById('deleteForm').addEventListener('submit', function (event) {
-      const confirmDelete = confirm("Do you really want to delete this?");
-      if (!confirmDelete) {
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+      const confirmUpdate = confirm("Do you really want to update this?");
+      if (!confirmUpdate) {
         event.preventDefault();
       } else {
         if (window.location.href.includes('/api/admin/products')) {
           window.location.href = 'http://localhost:3000/api/admin/products';
-        } else {
         }
       }
     });
+
     document.getElementById('removeForm').addEventListener('submit', function (event) {
-      const confirmDelete = confirm("Do you really want to remove this?");
-      if (!confirmDelete) {
+      const confirmRemove = confirm("Do you really want to remove this?");
+      if (!confirmRemove) {
         event.preventDefault();
       } else {
         if (window.location.href.includes('/api/admin/products')) {
           window.location.href = 'http://localhost:3000/api/admin/products';
-        } else {
         }
       }
     });
-  </script>
-  </div>
-  <script>
-    const input1 = document.querySelector('#product_name');
-    const input2 = document.querySelector('#description');
-    const input3 = document.querySelector('#product_price');
-    const h1 = document.querySelector('#name');
-    const h2 = document.querySelector('#descriptiontext');
-    const h3 = document.querySelector('#price');
 
-    input1.addEventListener('change', function () {
-      const text = input1.value;
-
-      // Cắt bớt chuỗi văn bản và thêm "..." vào cuối
-      const displayText = text.substring(0, 25) + "...";
-
-      // Hiển thị chuỗi văn bản đã cắt bớt
-      h1.textContent = displayText;
-
-    });
-    input2.addEventListener('change', function () {
-      h2.textContent = input2.value;
-    });
-    const price = parseFloat(input3.value);
-    h3.textContent = price.toLocaleString('vi-VN') + "đ";
-    input3.addEventListener('change', function () {
-      // Chuyển đổi giá trị nhập vào thành kiểu số
-      const price = parseFloat(input3.value);
-
-      // Kiểm tra nếu price là một số hợp lệ
-      if (!isNaN(price)) {
-        // Định dạng số và thêm "đ" vào sau
-        h3.textContent = price.toLocaleString('vi-VN') + "đ";
-      } else {
-        h3.textContent = "Số không hợp lệ";
-      }
-    });
-
-  </script>
-</body>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const productForm = document.getElementById("updateForm");
-    console.log(productForm);
-    productForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const formData = new FormData(productForm);
-      const token = localStorage.getItem("accessToken");
-
-      console.log("aaa" + token);
-      if (!token) {
-        // Handle the case where the token is missing or invalid
-        console.error("Token is missing or invalid");
-        return;
-      }
-
-      try {
-        const response = await fetch(productForm.action, {
-          method: "POST",
-          body: formData,
-          headers: {
-            "Authorization": "Bearer " + token,
-          },
-        });
-
-        if (response.ok) {
-          // Product created successfully, handle the response here
-          const productData = await response.json();
-          console.log("Product created:", productData);
-        } else {
-          // Handle errors, e.g., display an error message
-          console.error("Product creation failed");
-        }
-      } catch (error) {
-        // Handle network or other errors
-        console.error("Error:", error);
-      }
-    });
-
-    // Add code to preview the selected image if needed (as shown in your original code)
     const fileInput = document.getElementById("images");
     const imgPreview = document.getElementById("img-preview");
-    const imgPreview2 = document.getElementById("img-preview2");
-
     fileInput.addEventListener('change', function () {
       if (fileInput.files && fileInput.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
 
         reader.onload = function (e) {
           imgPreview.src = e.target.result;
-          imgPreview2.src = e.target.result;
         };
 
         reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        // Xử lý khi không có tệp hình ảnh nào được chọn
+        console.log("Không có tệp hình ảnh được chọn");
       }
     });
-  });
-  document.getElementById('productForm').addEventListener('submit', function (event) {
-    if (window.location.href.includes('/api/admin/products')) {
-      window.location.href = 'http://localhost:3000/api/admin/products';
-    } else {
-    }
-  });
-</script>
+
+    window.addEventListener('popstate', function (event) {
+      window.location.reload();
+    });
+  </script>
+</body>
+
+</html>
