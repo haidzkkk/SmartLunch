@@ -1,7 +1,9 @@
 var express = require ("express")
 var  routerController =  require ("../controllers/order.js")
-var { authenticate } = require('../middlewares/authenticate')
-var { authorization } = require('../middlewares/authorization.js')
+
+const authorization  = require('../middlewares/authorization').authorization;
+const authenticate = require('../middlewares/authenticate').authenticate
+
 
 
 var routerOrder = express.Router();
@@ -15,7 +17,7 @@ routerOrder.patch("/order", authenticate, routerController.updateOrder);
 routerOrder.patch("/order/payment/:id", authenticate, routerController.updatePaymentOrder);
 routerOrder.get("/orders/delivering",authenticate, routerController.getOrderByShipper)
 
-routerOrder.get("/getAllorderUi", routerController.getAllOrderUI)
-routerOrder.get("/getByIdOder/:id", routerController.getbyIdOrderUI)
+routerOrder.get("/getAllorderUi",routerController.getAllOrderUI)
+routerOrder.get("/getByIdOder/:id",routerController.getbyIdOrderUI)
 
 module.exports = routerOrder;

@@ -16,7 +16,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 20px;
       background-color: #fff;
@@ -69,12 +69,16 @@
     .dataTables_info {
       display: none;
     }
+
+    .detail-column {
+      display: none; /* Ẩn cột "Detail" mặc định */
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="bordered-table">
-      <h3>Order Table - Xác nhận</h3>
+      <h3>Order Table -Đã xác nhận đơn hàng</h3>
       <table id="confirmedTable" class="table table-striped">
         <thead>
           <tr>
@@ -82,16 +86,16 @@
             <th class="name-column">Name</th>
             <th>Phone</th>
             <th>Address</th>
-            <th>Notes</th>
             <th>Total</th>
-            <th>Status</th> <!-- Giữ "Status" trong bảng Xác nhận -->
+            <th>Status</th>
+            <th class="detail-column">Detail</th>
           </tr>
         </thead>
       </table>
     </div>
 
     <div class="bordered-table">
-      <h3>Order Table - Đang giao</h3>
+      <h3>Order Table -Đang giao hàng "</h3>
       <table id="shippingTable" class="table table-striped">
         <thead>
           <tr>
@@ -99,16 +103,16 @@
             <th class="name-column">Name</th>
             <th>Phone</th>
             <th>Address</th>
-            <th>Notes</th>
             <th>Total</th>
-            <th>Status</th> <!-- Giữ "Status" trong bảng Đang giao -->
+            <th>Status</th>
+            <th class="detail-column">Detail</th>
           </tr>
         </thead>
       </table>
     </div>
 
     <div class="bordered-table">
-      <h3>Order Table - Đang chuẩn bị</h3>
+      <h3>Order Table -Đang chờ xác nhận</h3>
       <table id="preparingTable" class="table table-striped">
         <thead>
           <tr>
@@ -116,7 +120,6 @@
             <th class="name-column">Name</th>
             <th>Phone</th>
             <th>Address</th>
-            <th>Notes</th>
             <th>Total</th>
             <th>Action</th>
           </tr>
@@ -125,6 +128,134 @@
         </tbody>
       </table>
     </div>
+  <div class="bordered-table">
+      <h3>Order Table - Giao hàng thành công</h3>
+      <table id="sussees" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+           <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+       <div class="bordered-table">
+      <h3>Order Table - Hủy đơn hàng thành công</h3>
+      <table id="_delete" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+             <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+       <div class="bordered-table">
+      <h3>Order Table - cash</h3>
+      <table id="cash" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+           <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+       <div class="bordered-table">
+      <h3>Order Table - paypal</h3>
+      <table id="paypal" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+           <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+     
+       <div class="bordered-table">
+      <h3>Order Table - momo</h3>
+      <table id="momo" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+       <div class="bordered-table">
+      <h3>Order Table - "zalopay</h3>
+      <table id="zalopay" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+       <div class="bordered-table">
+      <h3>Order Table - vnpay</h3>
+      <table id="vnpay" class="table table-striped">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="name-column">Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total</th>
+           <th>Status</th>
+            <th class="detail-column">Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
   <!-- JavaScript libraries -->
@@ -133,134 +264,156 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
 
   <script>
-    $(document).ready(function () {
-      var tableIndices = {
-        'confirmedTable': 1,
-        'shippingTable': 1,
-        'preparingTable': 1
-      };
+   $(document).ready(function () {
+  var tableIndices = {
+    'confirmedTable': 1,
+    'shippingTable': 1,
+    'preparingTable': 1,
+    'sussees': 1,
+    '_delete': 1,
+    'cash': 1,
+    'paypal': 1,
+    'momo': 1,
+    'zalopay': 1,
+    'vnpay': 1,
+  };
 
-      function initializeDataTable(tableId) {
-        if (!$.fn.dataTable.isDataTable('#' + tableId)) {
-          $('#' + tableId).DataTable({
-            paging: false,
-          });
-        }
-      }
+  // Function to initialize DataTable
+  function initializeDataTable(tableId) {
+    if (!$.fn.dataTable.isDataTable('#' + tableId)) {
+      $('#' + tableId).DataTable({
+        paging: false,
+      });
+    }
+  }
 
-      // Mảng để lưu trữ các đơn đặt hàng có trạng thái "đang chuẩn bị" cùng với trạng thái tương ứng
-      var preparingOrders = [];
+  // Function to populate data into a specific table
+function populateTable(order, targetTable) {
+  initializeDataTable(targetTable);
+  var table = $('#' + targetTable).DataTable();
+  var currentIndex = tableIndices[targetTable];
 
-      // AJAX request to fetch data
-      $.ajax({
-        url: 'http://localhost:3000/api/getAllorder',
-        method: 'GET',
-        dataType: 'json',
-        success: function (data) {
-          data.forEach(function (order) {
-            var productNames = order.products.map(function (product) {
-              return product.product_name;
-            }).join(', ');
+  // Trích xuất chi tiết đơn hàng
+  var productNames = order.products.map(function (product) {
+    return product.product_name;
+  }).join(', ');
 
-            var nameLink = productNames;
-            var phone = order.address.phoneNumber;
-            var address = order.address.addressLine;
-            var notes = order.notes;
-            var total = order.total;
-            var status = order.status;
+  var nameLink = productNames;
+  var phone = order.address.phoneNumber;
+  var address = order.address.addressLine;
+  var total = order.total;
+  var status = order.status;
 
-            if (status.status_name.toLowerCase() === 'đang chuẩn bị') {
-              // Thay "Status" thành nút "Action" trong bảng Đang chuẩn bị
-              var targetTable = 'preparingTable';
-              initializeDataTable(targetTable);
-              var table = $('#' + targetTable).DataTable();
-              var currentIndex = tableIndices[targetTable];
-              var button = '<button class="btn btn-action" data-order-id="' + order._id + '" data-status-id="' + status._id + '">Action</button>';
-              table.row.add([
-                currentIndex,
-                nameLink,
-                phone,
-                address,
-                notes,
-                total,
-                button,
-              ]).draw();
-              tableIndices[targetTable]++;
+  // Thêm dòng vào bảng cụ thể dựa trên ID trạng thái
+  if (status._id === '65264bc32d9b3bb388078974') { // ID trạng thái Đang chờ xác nhận
+    var actionButton = '<button class="btn btn-action" data-order-id="' + order._id + '" data-status-id="' + status._id + '">Action</button>';
+    table.row.add([
+      currentIndex,
+      nameLink,
+      phone,
+      address,
+      total,
+      actionButton,  // Thêm cột nút Action
+    ]).draw();
+    tableIndices[targetTable]++;
+  } else {
+    var detailButton = '<button class="btn btn-detail" data-order-id="' + order._id + '">Chi tiết</button>';
+    table.row.add([
+      currentIndex,
+      nameLink,
+      phone,
+      address,
+      total,
+      status.status_name,
+      detailButton,
+    ]).draw();
+    tableIndices[targetTable]++;
+  }
+}
 
-              // Lưu đơn đặt hàng và trạng thái tương ứng vào mảng preparingOrders
-              preparingOrders.push({ orderId: order._id, statusId: status._id });
-            } else {
-              // Giữ nguyên "Status" trong các bảng còn lại
-              var targetTable = 'confirmedTable';
-              if (status.status_name.toLowerCase() === 'đang giao') {
-                targetTable = 'shippingTable';
-              }
-              initializeDataTable(targetTable);
-              var table = $('#' + targetTable).DataTable();
-              var currentIndex = tableIndices[targetTable];
-              table.row.add([
-                currentIndex,
-                nameLink,
-                phone,
-                address,
-                notes,
-                total,
-                status.status_name,
-              ]).draw();
-              tableIndices[targetTable]++;
-            }
-          });
 
-          // Bắt sự kiện khi nút "Action" trong bảng "Đang chuẩn bị" được nhấn
-          $('#preparingTable tbody').on('click', 'button.btn-action', function () {
-            var orderId = $(this).data('order-id');
-            var statusId = $(this).data('status-id');
 
-            // Gọi API PATCH để cập nhật trạng thái từ "đang chuẩn bị" thành "đang giao"
-            $.ajax({
-              url: 'http://localhost:3000/api/order/' + orderId,
-              method: 'PATCH',
-              data: { status: '65435b342b44ca2d4c364a71' },
-              dataType: 'json',
-              success: function (response) {
-                // Xử lý dữ liệu từ API (response) theo cách bạn muốn
-                console.log('API response:', response);
 
-                // Sau khi cập nhật thành công, bạn có thể làm các thay đổi cần thiết trên bảng
-                // Ví dụ: Xóa hàng khỏi bảng "Đang chuẩn bị" và thêm vào bảng "Đang giao"
-                var preparingTable = $('#preparingTable').DataTable();
-                var shippingTable = $('#shippingTable').DataTable();
-                // Xóa hàng khỏi bảng "Đang chuẩn bị"
-                preparingTable.row($(this).parents('tr')).remove().draw();
-                // Tìm đơn đặt hàng và trạng thái tương ứng trong mảng preparingOrders và cập nhật trạng thái thành "đang giao"
-                var orderIndex = preparingOrders.findIndex(function (item) {
-                  return item.orderId === orderId && item.statusId === statusId;
-                });
-                if (orderIndex !== -1) {
-                  preparingOrders.splice(orderIndex, 1);
-                }
-                // Thêm đơn đặt hàng vào bảng "Đang giao"
-                shippingTable.row.add([
-                  preparingOrders.length + 1,
-                  nameLink,
-                  phone,
-                  address,
-                  notes,
-                  total,
-                  'đang giao',
-                ]).draw();
-              },
-              error: function (error) {
-                console.log('Error:', error);
-              }
-            });
-          });
-        },
-        error: function (error) {
-          console.log('Error:', error);
+  // AJAX request to fetch data
+  $.ajax({
+    url: 'http://localhost:3000/api/getAllorder',
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      data.forEach(function (order) {
+        // Check order status and populate data accordingly
+       if (order.status._id === '65264c102d9b3bb388078976') {
+          populateTable(order, 'confirmedTable');
+        } else if (order.status._id === '65264c672d9b3bb388078978') {
+          populateTable(order, 'shippingTable');
+        } else if (order.status._id === '65264bc32d9b3bb388078974') {
+          populateTable(order, 'preparingTable');
+        } else if (order.status._id === '6526a6e6adce6a54f6f67d7d') {
+          populateTable(order, 'sussees');
+        } else if (order.status._id === '653bc0a72006e5791beab35b') {
+          populateTable(order, '_delete');
+        } else if (order.status._id === '654892638cd8c0661be05f7c') {
+          populateTable(order, 'cash');
+        } else if (order.status._id === '654892778cd8c0661be05f7d') {
+          populateTable(order, 'paypal');
+        } else if (order.status._id === '6548928b8cd8c0661be05f7e') {
+          populateTable(order, 'momo');
+        } else if (order.status._id === '6548929a8cd8c0661be05f80') {
+          populateTable(order, 'zalopay');
+        } else if (order.status._id === '654892938cd8c0661be05f7f') {
+          populateTable(order, 'vnpay');
+        } else {
+          populateTable(order, 'confirmedTable');
         }
       });
-    });
+
+      // Attach click events for buttons and "Detail" buttons
+      $('.container').on('click', 'button.btn-action', function () {
+  // Xử lý sự kiện khi nút được nhấn
+  var orderId = $(this).data('order-id');
+  var statusId = $(this).data('status-id');
+  
+  // Thực hiện hành động dựa trên orderId và statusId
+  // ...
+
+  // Ví dụ: Cập nhật trạng thái đơn hàng sử dụng AJAX
+  $.ajax({
+    url: 'http://localhost:3000/api/order/' + orderId,
+    method: 'PATCH',
+    data: { status: '65264c102d9b3bb388078976' }, // Thay thế 'new_status_id' bằng ID trạng thái mới thực sự
+    dataType: 'json',
+    success: function (response) {
+      // Xử lý phản hồi thành công
+      console.log('Phản hồi từ API:', response);
+
+      // Sau khi cập nhật thành công, chuyển hướng đến một trang cụ thể
+      window.location.href = 'http://localhost:3000/api/getAllorderUi'; // Thay thế '/new-page' bằng URL của trang mới
+    },
+    error: function (error) {
+      // Xử lý lỗi
+      console.log('Lỗi:', error);
+    }
+  });
+});
+
+
+
+
+      $('#confirmedTable tbody, #shippingTable tbody ,#sussees tbody,#_delete tbody,#cash tbody,#paypal tbody,#momo tbody,#zalopay tbody,#vnpay tbody').on('click', 'button.btn-detail', function () {
+        // Handle "Detail" button click event
+        var orderId = $(this).data('order-id');
+        var status = $(this).data('status-id');
+
+        // Redirect to the detail page for the selected order
+        window.location.href = "/api/getByIdOder/" + orderId;
+      });
+    },
+    error: function (error) {
+      console.log('Error:', error);
+    }
+  });
+});
+
   </script>
 </body>
 </html>
