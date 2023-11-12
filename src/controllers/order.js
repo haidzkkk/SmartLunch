@@ -2,7 +2,7 @@ var Order = require("../models/order.js");
 var orderSchema = require("../schemas/order").orderSchema;
 var Coupon = require("../models/coupons.js");
 var Product = require("../models/product");
-
+const fetch = require('node-fetch');
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
     const data = await response.json();
@@ -15,13 +15,13 @@ exports.getbyIdOrderUI = async (req, res) => {
     res.render('order/detail', { data ,layout :"Layouts/home"});
 };
 
-// exports.getbyIdOrderUI = async (req, res) => {
-//     const response = await fetch(
-//       "http://localhost:3000/api/order/" + req.params.id
-//     );
-//     const data = await response.json();
-//     res.render("order/detail", { data, layout: "Layouts/home" });
-//   };
+exports.getbyIdOrderUI = async (req, res) => {
+    const response = await fetch(
+      "http://localhost:3000/api/order/" + req.params.id
+    );
+    const data = await response.json();
+    res.render("order/detail", { data, layout: "Layouts/home" });
+  };
 
 // lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) => {

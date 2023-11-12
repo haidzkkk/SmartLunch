@@ -6,7 +6,8 @@ const authenticate = require('../middlewares/authenticate').authenticate
 var upload = require('../config/configApp').upload
 
 var router = express.Router();
-
+const multer = require('multer');
+const ab = multer();
 router.get("/getCurrentUser",authenticate,authController.getCurrentUser)
 router.get("/users",authController.getAll)
 router.get("/users/:id",authenticate,authController.getOneById)
@@ -15,6 +16,7 @@ router.patch("/users",authenticate, authController.updateUser)
 router.patch("/users/uploadAvatar",authenticate, upload.array("images", 1), authController.uploadAvatarUser)
 router.patch("/users/updateAvatar/:publicId",authenticate, upload.array("images", 1), authController.updateAvatarUser)
 router.post("/signup",authController.signup)
+router.post("/singupShipper",ab.none(),authController.signupShipper)
 
 router.post('/signin', authController.signin)
 router.post("/logout", authenticate, authController.logout)
@@ -32,6 +34,8 @@ router.get('/userbyadmin/:id', authController.getUserByAdmin);
 router.get('/deletebyadmin/:id', authController.removeByAdmin);
 router.get('/singin', authController.signin);
 router.post('/login',authController.loginAdmin)
+router.get("/admin/shipper/create", authController.getShipperCreateUI);
+
 
 
 module.exports = router;

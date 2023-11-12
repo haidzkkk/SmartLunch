@@ -1,0 +1,120 @@
+<style>
+  .smartphone {
+    position: relative;
+    width: 460px;
+    height: 900px;
+    margin: auto;
+    border: 16px black solid;
+    border-top-width: 60px;
+    border-bottom-width: 60px;
+    border-radius: 36px;
+  }
+
+  /* The horizontal line on the top of the device */
+  .smartphone:before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 5px;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border-radius: 10px;
+  }
+
+  /* The circle on the bottom of the device */
+
+
+  /* The screen (or content) of the device */
+  .smartphone .content {
+    width: 460px;
+    height: 940px;
+    background: white;
+  }
+
+  .h4 {
+    font-size: larger;
+    border: 1px solid #F44849;
+    border-radius: 25px;
+    text-align: center;
+    margin: 0;
+    color: #F44849;
+    font-weight: 500;
+    padding: 11px;
+  }
+
+  .h44 {
+    font-size: larger;
+    border-radius: 25px;
+    text-align: center;
+    margin: 0;
+    color: #66707A;
+    font-weight: 500;
+    padding: 11px;
+    background-color: #ECF1F6;
+  }
+</style>
+<div class="container">
+
+  <h3>Create Shipper</h3>
+  <form action="http://localhost:3000/api/singupShipper" method="post" id="shipperForm" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col">
+        <div class="mb-3">
+          <label class="form-label">First Name</label>
+          <input class="form-control" name="first_name" id="first_name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Last Name</label>
+          <input class="form-control" name="last_name" id="last_name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" id="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input class="form-control" name="phone" id="phone" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input class="form-control" name="password" id="password" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Confirm Password</label>
+          <input class="form-control" name="confirmPassword" id="confirmPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="margin: auto;margin-top: 20px; padding: 20px;display: flex;
+  justify-content: center;">Create</button>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const shipperForm = document.getElementById("shipperForm");
+          console.log(shipperForm);
+          shipperForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(shipperForm);
+            try {
+              const response = await fetch(shipperForm.action, {
+                method: "POST",
+                body: formData,
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                console.log("Shipper created:", data);
+
+              }
+            } else {
+              console.error("Shipper creation failed");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    });
+      </script>
+  </form>

@@ -1,5 +1,6 @@
 var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
+
 var Auth = require('../models/auth')
 var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
@@ -9,6 +10,13 @@ const { json } = require('body-parser')
 var { uploadImage, updateImage } = require('../controllers/upload');
 const { log } = require('handlebars')
 let refreshTokens = [];
+const fetch = require('node-fetch');
+
+
+exports.getShipperCreateUI = async (req, res) => {
+  
+    res.render("user/shipper", {  layout: "Layouts/home" });
+  };
 
 exports.getUserUI = async (req, res) => {
 
@@ -801,5 +809,46 @@ exports.searchAuth = async (req, res) => {
 
 
 
+
+
+exports.signupShipper  = async (req, res) => {
+    try {
+        const { first_name, last_name, email, phone, password } = req.body;
+        const { error } = authSchema.signupSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                message: errors
+            });
+        }
+
+        // Kiểm tra xem email đã được sử dụng chưa
+        const userExist = await Auth.findOne({ email });
+        if (userExist) {
+            return res.status(400).json({
+                message: "Email đã được sử dụng!"
+            });
+        }
+
+        // Mã hóa mật khẩu
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Tạo tài khoản
+        const user = await Auth.create({
+            first_name,
+            last_name,
+            phone,
+            email,
+            password: hashedPassword,
+            role : "shipper"
+        });
+        res.status(303).set('Location', '/api/admin/users').send();
+
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
 
 
