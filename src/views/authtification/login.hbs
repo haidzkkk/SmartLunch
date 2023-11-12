@@ -134,7 +134,7 @@
         if (data.accessToken) {
           localStorage.setItem("accessToken", data.accessToken);
           if (data.role == "admin") {
-            window.location.href = "api/admin/products";
+            window.location.href = "/dashboard";
           } else {
             document.getElementById("message").innerText = "Bạn không có quyền";
           }
