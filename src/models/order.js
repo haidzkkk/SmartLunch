@@ -19,6 +19,7 @@ const orderSchema = mongoose.Schema({
       image: String,
       purchase_quantity: Number,
       sizeId: String,
+      sizeName: String,
     }
   ],
   discount: {
