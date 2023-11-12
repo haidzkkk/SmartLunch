@@ -7,9 +7,8 @@ const cartSchema = new mongoose.Schema (
         type: mongoose.Types.ObjectId, 
         ref : "Auth",
         require: true
-    }
-        ,
-        couponId : {
+    },
+    couponId : {
         type: mongoose.Types.ObjectId, 
         ref : "Coupon",
         require: true
@@ -26,6 +25,10 @@ const cartSchema = new mongoose.Schema (
         },
      ],
      total: {
+        type: Number,
+      },
+
+      totalCoupon: {
         type: Number,
       }
 

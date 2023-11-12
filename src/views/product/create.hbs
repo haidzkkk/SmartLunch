@@ -1,138 +1,111 @@
-<style>
-    .smartphone {
-        position: relative;
-        width: 460px;
-        height: 900px;
-        margin: auto;
-        border: 16px black solid;
-        border-top-width: 60px;
-        border-bottom-width: 60px;
-        border-radius: 36px;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+    <style>
+        .smartphone {
+            position: relative;
+            width: 460px;
+            height: 900px;
+            margin: auto;
+            border: 16px black solid;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+        }
 
-    /* The horizontal line on the top of the device */
-    .smartphone:before {
-        content: '';
-        display: block;
-        width: 60px;
-        height: 5px;
-        position: absolute;
-        top: -30px;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ffffff;
-        border-radius: 10px;
-    }
+        .smartphone:before {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 5px;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            border-radius: 10px;
+        }
 
-    /* The circle on the bottom of the device */
+        .smartphone .content {
+            width: 460px;
+            height: 940px;
+            background: white;
+        }
 
+        .h4 {
+            font-size: larger;
+            border: 1px solid #F44849;
+            border-radius: 25px;
+            text-align: center;
+            margin: 0;
+            color: #F44849;
+            font-weight: 500;
+            padding: 11px;
+        }
 
-    /* The screen (or content) of the device */
-    .smartphone .content {
-        width: 460px;
-        height: 940px;
-        background: white;
-    }
-
-    .h4 {
-        font-size: larger;
-        border: 1px solid #F44849;
-        border-radius: 25px;
-        text-align: center;
-        margin: 0;
-        color: #F44849;
-        font-weight: 500;
-        padding: 11px;
-    }
-
-    .h44 {
-        font-size: larger;
-        border-radius: 25px;
-        text-align: center;
-        margin: 0;
-        color: #66707A;
-        font-weight: 500;
-        padding: 11px;
-        background-color: #ECF1F6;
-    }
-</style>
-<div class="container">
-
-    <h3>Create Product</h3>
-    <form action="http://localhost:3000/api/products" method="post" id="productForm" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col">
-                <div class="smartphone">
-                    <img width="430px" height="270px" id="img-preview2">
-                    <div class="row">
-                        <div class="col">
-                            <h2 style="margin-left: 20px;margin-top: 30px; font-size: x-large;" id="name">
-                            </h2>
-                        </div>
-                        <div class="col">
-                            <h2 style="margin-right: 24px;margin-top: 30px; color: #FF593E;font-size: x-large;    float: right;"
-                                id="price">
-                            </h2>
-                        </div>
+        .h44 {
+            font-size: larger;
+            border-radius: 25px;
+            text-align: center;
+            margin: 0;
+            color: #66707A;
+            font-weight: 500;
+            padding: 11px;
+            background-color: #ECF1F6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Create Product</h3>
+        <form action="http://localhost:3000/api/products" method="post" id="productForm" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col">
+                    <div class="smartphone">
+                        <!-- Smartphone content -->
                     </div>
-                    <p style="margin-left: 20px; color:#9CA4AB ;">⭐4.8 (1.2k)</p>
-                    <h5 style="margin-left: 20px;margin-top: 25px;">Mô tả</h5>
-                    <p style="margin-left: 20px;margin-right: 20px ; color:#9CA4AB ;margin-top: 20px;"
-                        id="descriptiontext">
-                    </p>
-                    <h5 style="margin-left: 20px;margin-top: 25px;">Kích cỡ</h5>
-                    <div class="row" style="margin-top: 25px; margin-left: 20px; margin-right: 20px;">
-                        <div class="col">
-                            <h4 class="h4">Size M</h4>
-                        </div>
-                        <div class="col">
-                            <h4 class="h44">Size L</h4>
-                        </div>
-                        <div class="col">
-                            <h4 class="h44">Size XL</h4>
-                        </div>
 
-                    </div>
-                    <svg style="margin-left: 20px; margin-top: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        fill="black" class="bi bi-three-dots" viewBox="0 0 16 16">
-                        <path
-                            d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                    </svg>
-                </div>
-            </div>
-            <div class="col">
-                <div class="mb-3">
-                    <label class="form-label">Product name</label>
-                    <input class="form-control" name="product_name" id="product_name" required>
+
                 </div>
                 <div class="col">
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" style="height: 300px;" name="description" id="description"
-                            required="required"></textarea>
+                        <label class="form-label">Product name</label>
+                        <input class="form-control" name="product_name" id="product_name" required>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" class="form-control" name="product_price" id="product_price" required>
+                        <div id="emailHelp" class="form-text">Please enter only numbers</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" name="categoryId" id="categoryId" required>
+                            <!-- Categories will be populated from the API -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
+                        <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
+                    </div>
+                    <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3"
+                            style="margin: auto;margin-top: 20px; padding: 20px;display: flex; justify-content: center;">Create
+                    </button>
                 </div>
 
 
-                <div class="col">
-                    <label class="form-label">Price</label>
-                    <input type="number" class="form-control" name="product_price" id="product_price" required>
-                    <div id="emailHelp" class="form-text">Please price only number</div>
-                </div>
-                <div class="col">
-                    <label class="form-label">Category</label>
-                    <input class="form-control" name="categoryId" id="categoryId" required>
-                </div>
-                <div class="col">
-                    <label class="form-label">Image</label>
-                    <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-                    <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="margin: auto;margin-top: 20px; padding: 20px;display: flex;
-  justify-content: center;">Create</button>
             </div>
+        </form>
 
-            <script>
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
                 const input1 = document.querySelector('#product_name');
                 const input2 = document.querySelector('#description');
                 const input3 = document.querySelector('#product_price');
@@ -140,97 +113,82 @@
                 const h2 = document.querySelector('#descriptiontext');
                 const h3 = document.querySelector('#price');
 
-                input1.addEventListener('change', function () {
-                    const text = input1.value;
+                // Add event listeners for input changes
 
-                    // Cắt bớt chuỗi văn bản và thêm "..." vào cuối
-                    const displayText = text.substring(0, 25) + "...";
-
-                    // Hiển thị chuỗi văn bản đã cắt bớt
-                    h1.textContent = displayText;
-
-                });
-                input2.addEventListener('change', function () {
-                    h2.textContent = input2.value;
-                });
-                input3.addEventListener('change', function () {
-                    // Chuyển đổi giá trị nhập vào thành kiểu số
-                    const price = parseFloat(input3.value);
-
-                    // Kiểm tra nếu price là một số hợp lệ
-                    if (!isNaN(price)) {
-                        // Định dạng số và thêm "đ" vào sau
-                        h3.textContent = price.toLocaleString('vi-VN') + "đ";
-                    } else {
-                        h3.textContent = "Số không hợp lệ";
-                    }
-                });
-
-            </script>
-    </form>
-
-    <!-- Product table or other content goes here -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const productForm = document.getElementById("productForm");
-            console.log(productForm);
-            productForm.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                const formData = new FormData(productForm);
-                const token = localStorage.getItem("accessToken");
-
-                console.log("aaa" + token);
-                if (!token) {
-                    // Handle the case where the token is missing or invalid
-                    console.error("Token is missing or invalid");
-                    return;
-                }
+                const categorySelect = document.getElementById("categoryId");
 
                 try {
-                    const response = await fetch(productForm.action, {
-                        method: "POST",
-                        body: formData,
-                        headers: {
-                            "Authorization": "Bearer " + token,
-                        },
+                    // Fetch categories from the API
+                    const response = await fetch('http://localhost:3000/api/categorys');
+                    const data = await response.json();
+
+                    // Clear existing options in the select element
+                    categorySelect.innerHTML = '';
+
+                    // Populate categories in the select element
+                    data.forEach(category => {
+                        const option = document.createElement("option");
+                        option.value = category._id;
+                        option.text = category.category_name;
+                        categorySelect.appendChild(option);
                     });
-
-                    if (response.ok) {
-                        // Product created successfully, handle the response here
-                        const productData = await response.json();
-                        console.log("Product created:", productData);
-                    } else {
-                        // Handle errors, e.g., display an error message
-                        console.error("Product creation failed");
-                    }
                 } catch (error) {
-                    // Handle network or other errors
-                    console.error("Error:", error);
+                    console.error("Error fetching categories:", error);
                 }
+
+                const productForm = document.getElementById("productForm");
+
+                productForm.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+                    const formData = new FormData(productForm);
+                    const token = localStorage.getItem("accessToken");
+
+                    if (!token) {
+                        console.error("Token is missing or invalid");
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(productForm.action, {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                "Authorization": "Bearer " + token,
+                            },
+                        });
+
+                        if (response.ok) {
+                            const productData = await response.json();
+                            console.log("Product created:", productData);
+
+                            if (window.location.href.includes('/api/admin/products')) {
+                                window.location.href = 'http://localhost:3000/api/admin/products';
+                            }
+                        } else {
+                            console.error("Product creation failed");
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
+                });
+
+                const fileInput = document.getElementById("images");
+                const imgPreview = document.getElementById("img-preview");
+                fileInput.addEventListener('change', function () {
+                    if (fileInput.files && fileInput.files[0]) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            imgPreview.src = e.target.result;
+                        };
+
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        console.log("No image file selected");
+                    }
+                });
             });
-
-            // Add code to preview the selected image if needed (as shown in your original code)
-            const fileInput = document.getElementById("images");
-            const imgPreview = document.getElementById("img-preview");
-            const imgPreview2 = document.getElementById("img-preview2");
-
-            fileInput.addEventListener('change', function () {
-                if (fileInput.files && fileInput.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        imgPreview.src = e.target.result;
-                        imgPreview2.src = e.target.result;
-                    };
-
-                    reader.readAsDataURL(fileInput.files[0]);
-                }
-            });
-        });
-        document.getElementById('productForm').addEventListener('submit', function (event) {
-            if (window.location.href.includes('/api/admin/products')) {
-                window.location.href = 'http://localhost:3000/api/admin/products';
-            } else {
-            }
-        });
-    </script>
+        </script>
+    </div>
+</body>
+</html>

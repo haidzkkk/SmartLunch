@@ -4,25 +4,35 @@ var ProductSchema = require("../schemas/product.js").ProductSchema;
 const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 const fetch = require('node-fetch');
+const { response } = require("express");
 
 exports.getProductUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
   res.render('product/product', { data,layout :"Layouts/home" });
 };
+
 exports.getProductCreateUI = async (req, res) => {
-  
-  res.render("product/create", {  layout: "Layouts/home" });
-};
+  const token = res.locals.token;
+  console.log("aaaaaaaaaa");
+  console.log("Token:", token);
+  res.render('product/create', { layout: 'Layouts/home', token });
+}
 exports.getProductPreview = async (req, res) => {
   
-  res.render("product/preview", {  layout: "Layouts/home" });
+  const token = res.locals.token;
+
+  res.render('product/create', { layout: 'Layouts/home', token });
 };
+
+
 exports.getProductDelete = async (req, res) => {
   const responsex = await fetch('http://localhost:3000/api/products/delete');
   const dataDelete = await responsex.json();
   res.render('recyclebin/recycle', { dataDelete,layout :"Layouts/home" });
 };
+
+
 exports.getProductByIdUI = async (req, res) => {
   const response = await fetch(
     "http://localhost:3000/api/products/" + req.params.id
@@ -30,6 +40,8 @@ exports.getProductByIdUI = async (req, res) => {
   const data = await response.json();
   res.render("product/detail", { data, layout: "Layouts/home" });
 };
+
+
 exports.removeProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -40,6 +52,8 @@ exports.removeProduct = async (req, res) => {
     });
   }
 };
+
+
 exports.updateProductUI = async (req, res) => {
   try {
     const id = req.params.id;
@@ -60,6 +74,7 @@ exports.getTopViewedProducts = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+
 exports.getProduct = async (req, res) => {
   try {
     const product = await Product.find();
@@ -175,62 +190,8 @@ exports.removeForce = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const body = req.body;
-    const files = req.files;
+    var files = req.files;
 
-    // Kiểm tra dữ liệu từ req.body bằng cách sử dụng Joi schema
-    const { error } = ProductSchema.validate(body, { abortEarly: false });
-    if (error) {
-      const errors = error.details.map((err) => err.message);
-      return res.status(400).json({
-        message: "Lỗi trong dữ liệu đầu vào",
-        errors: errors,
-      });
-    }
-
-    // Kiểm tra xem có hình ảnh được tải lên hay không
-    if (!files || files.length === 0) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-      });
-    }
-
-    // Gọi hàm uploadImage để tải lên hình ảnh
-    const images = await uploadImage(files);
-
-    if (images.length === 0) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại, lỗi trong quá trình tải lên hình ảnh",
-      });
-    }
-
-    // Gán mảng hình ảnh vào thuộc tính images của sản phẩm
-    body.images = images;
-
-    // Tạo sản phẩm mới trong cơ sở dữ liệu
-    const product = await Product.create(body);
-
-    if (!product) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại",
-      });
-    }
-
-    res.status(303).set("Location", "/api/admin/products").send();
-  } catch (error) {
-    console.error("Lỗi server:", error);
-    return res.status(500).json({
-      message: "Lỗi server",
-    });
-  }
-};
-
-
-exports.updateProduct = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const body = req.body;
-    const { categoryId } = req.body;
-    const product = await Product.findById(id);
     const { error } = ProductSchema.validate(body, { abortEarly: false });
     if (error) {
       const errors = error.details.map((err) => err.message);
@@ -238,31 +199,81 @@ exports.updateProduct = async (req, res) => {
         message: errors,
       });
     }
-    await Category.findByIdAndUpdate(product.categoryId, {
-      $pull: {
-        products: product._id,
-      },
-    });
-    await Category.findByIdAndUpdate(categoryId, {
-      $addToSet: {
-        products: product._id,
-      },
-    });
-    const data = await Product.findByIdAndUpdate({ _id: id }, body, {
-      new: true,
-    });
-    if (data.length === 0) {
+
+    var images = await uploadImage(files);
+    if (images[0] == null) {
       return res.status(400).json({
-        message: "Cập nhật sản phẩm thất bại",
+        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
       });
     }
-    return res.status(200).json(data);
+    body.images = images;
+
+    const product = await Product.create(body);
+    // await Category.findOneAndUpdate(product.categoryId, {
+    //   $addToSet: {
+    //     products: product._id,
+    //   },
+    // });
+    if (product.length === 0) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại",
+      });
+    }
+    return res.status(200).json(product);
   } catch (error) {
     return res.status(400).json({
-      message: error,
+      message: error.message,
     });
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    const files = req.files;
+    console.log(files);
+    const { error } = ProductSchema.validate(body, { abortEarly: false });
+    if (error) {
+      const errors = error.details.map((err) => err.message);
+      return res.status(400).json({
+        message: errors,
+      });
+    }
+   
+    var images = await uploadImage(files);
+    if (images[0] == null) {
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+      });
+    }
+    body.images = images;
+    
+
+    const product = await Product.findByIdAndUpdate(id,body);
+    // await Category.findOneAndUpdate(product.categoryId, {
+    //   $addToSet: {
+    //     products: product._id,
+    //   },
+    // });
+    if (product.length === 0) {
+      
+      return res.status(400).json({
+        message: "Thêm sản phẩm thất bại",
+        
+      });
+    }
+    
+    res.status(303).set("Location", "/api/admin/products").send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+
+
 
 exports.viewProduct = async (req, res) => {
   try {

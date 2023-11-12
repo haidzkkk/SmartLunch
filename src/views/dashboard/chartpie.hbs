@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pie Chart</title>
+  <!-- Bạn cần thêm đường dẫn đến thư viện Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Địa điểm hiển thị biểu đồ -->
+  <canvas id="myPieChart" width="400" height="400"></canvas>
+
+  <script>
+    // Dữ liệu phần trăm và màu sắc
+    var data = {
+      labels: ["Phần 1", "Phần 2", "Phần 3"],
+      datasets: [{
+        data: [30, 40, 30],
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
+      }]
+    };
+
+    // Cấu hình biểu đồ
+    var options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      title: {
+        display: true,
+        text: 'Biểu đồ Pie'
+      }
+    };
+
+    // Lấy đối tượng canvas và vẽ biểu đồ pie
+    var ctx = document.getElementById("myPieChart").getContext("2d");
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: data,
+      options: options
+    });
+  </script>
+</body>
+</html>

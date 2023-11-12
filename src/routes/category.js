@@ -7,6 +7,7 @@ var upload = require('../config/configApp').upload
 var router = express.Router();
 
 router.get("/category", categoryController.getAllCategory)
+router.get("/categorys", categoryController.getAllCategories)
 router.get("/category/delete", categoryController.getAllDelete)
 router.get("/category/:id", categoryController.getCategoryById)
 router.delete("/category/:id", authenticate, authorization, categoryController.removeCategory)
