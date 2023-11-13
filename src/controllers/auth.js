@@ -16,7 +16,6 @@ exports.getUserUI = async (req, res) => {
         const data = await response.json();
         res.render('user/user', { data, layout: "layouts/home" });
 }
-
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
