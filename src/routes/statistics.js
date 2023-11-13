@@ -1,9 +1,7 @@
 var express = require('express');
+var statisticsController = require('../controllers/statistics');
 var router = express.Router();
-router.get('/admin/statistics', (req, res) => {
-    res.render("statistics/statistics");
-  });
-  router.get('/barchart', (req, res) => {
-    res.render("statistics/bar");
-  });
+
+  router.get('/admin/statistics', statisticsController.getStatistics);
+  router.get('/barchart', statisticsController.getUser);
 module.exports = router;
