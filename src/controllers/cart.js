@@ -122,12 +122,15 @@ exports.getOne = async (req, res) => {
         const cart = await Cart.findOne({userId:req.user.id}).populate("couponId").populate("userId")
         if(!cart){
             return res.status(400).json({
-                message: 'Không tìm thấy giỏ hàng',
-                data:[]
+                message: 'Không tìm thấy giỏ hàng'
             })
         }
 
-        console.log(cart);
+        if(cart.products.length <= 0){
+            return res.status(400).json({
+                message: 'Không có sản phẩm'
+            }) 
+        }
 
         return res.status(200).json(cart)
     } catch (error) {
@@ -261,6 +264,7 @@ exports.clearUserCart = async (req, res) => {
         await handleCouponTotal(cartExist)
 
         var cartPopulate = await Cart.findOne({ userId: userId }).populate("userId").populate("couponId");
+        console.log(cartPopulate);
         return res.status(200).json(cartPopulate)
     } catch (error) {
         console.error(error);
