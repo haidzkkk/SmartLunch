@@ -30,6 +30,7 @@ var addressRouter = require('./src/routes/address.js');
 var recycleRouter = require('./src/routes/recycle.js');
 var adminRouter = require('./src/routes/admin.js');
 var statisticsRouter = require('./src/routes/statistics.js');
+var deliveryRouter = require('./src/routes/delivery.js')
 const socketController = require('./src/controllers/socket');
 
 dotenv.config();
@@ -84,6 +85,7 @@ app.use('/api', uploadRouter);
 app.use('/api', favouriteRouter);
 app.use('/api', addressRouter);
 app.use('/api', recycleRouter);
+app.use('/api', deliveryRouter);
 socketController.initializeSocketServer()
 
 app.listen(process.env.PORT, async () =>{

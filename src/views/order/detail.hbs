@@ -39,11 +39,11 @@
   <div class="container">
     <h3>Chi tiết đơn hàng</h3>
     <div id="order-details">
-      <p><strong>Tên: </strong><span id="name">Tên đơn hàng</span></p>
-      <p><strong>Số điện thoại: </strong><span id="phone">Số điện thoại</span></p>
-      <p><strong>Địa chỉ: </strong><span id="address">Địa chỉ</span></p>
-      <p><strong>Ghi chú: </strong><span id="notes">Ghi chú</span></p>
-      <p><strong>Tổng cộng: </strong><span id="total">Tổng cộng</span></p>
+      <p><strong>Tên: </strong><span id="name">Đang tải...</span></p>
+      <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
+      <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
+      <p><strong>Ghi chú: </strong><span id="notes">Đang tải...</span></p>
+      <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
     </div>
   </div>
@@ -62,14 +62,14 @@
         dataType: 'json',
         success: function (data) {
           // Cập nhật thông tin chi tiết trang
-          $('#name').text(data.name);
-          $('#phone').text(data.phone);
-          $('#address').text(data.address);
-          $('#notes').text(data.notes);
-          $('#total').text(data.total);
+          $('#name').text(data.address.recipientName || 'Không có tên');
+          $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
+          $('#address').text(data.address.addressLine || 'Không có địa chỉ');
+          $('#notes').text(data.notes || 'Không có ghi chú');
+          $('#total').text(data.total || 'Không có tổng cộng');
 
           // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
-          var statusText = data.status.status_name;
+          var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
           $('#status').text(statusText);
         },
         error: function (error) {
