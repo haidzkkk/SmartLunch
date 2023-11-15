@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <script>
+        // Define a function to fetch data asynchronously
+        async function fetchData() {
+            const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+            const productsData = await response.json();
+            
+            // Sorting the data by views and getting the top 5 items
+            var topFiveItems = productsData.sort((a, b) => b.views - a.views).slice(0, 5);
+
+            // Extracting product names and views
+            var xValues = topFiveItems.map(item => item.product_name);
+            var yValues = topFiveItems.map(item => item.views);
+
+            // Creating a bar chart
+            new Chart("myChart", {
+                type: "bar",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: "Views",
+                        backgroundColor: ["#FF0000", "#FF3300", "#FF00FF", "#CC99CC", "#FFFF00"],
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Top 5 đồ ăn có view cao nhất"
+                    }
+                }
+            });
+        }
+
+        // Call the fetchData function
+        fetchData();
+    </script>
+</body>
+</html>
