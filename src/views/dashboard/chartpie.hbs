@@ -14,10 +14,10 @@
   <script>
     // Dữ liệu phần trăm và màu sắc
     var data = {
-      labels: ["Phần 1", "Phần 2", "Phần 3"],
+      labels: ["Đơn thành công", "Đơn hủy"],
       datasets: [{
-        data: [30, 40, 30],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
+        data: [{{statusCount.orderCount}}, {{statusCount.cancelCount}}],
+        backgroundColor: ["#FF0000", "#777777"]
       }]
     };
 

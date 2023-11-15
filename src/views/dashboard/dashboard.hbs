@@ -27,60 +27,14 @@
     </div>
     <div class="row">
 
-        <div class="col">
 
-            <canvas id="myLineChart"></canvas>
-
-            <script>
-                // Dữ liệu cho 12 tháng
-                var months = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-                var data = {
-                    labels: months,
-                    datasets: [{
-                        label: 'Doanh số',
-                        data: [150, 200, 180, 250, 220, 300, 280, 350, 320, 400, 380, 450],
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 2,
-                        pointRadius: 5,
-                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-                        fill: true
-                    }]
-                };
-
-                // Cấu hình biểu đồ
-                var options = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    title: {
-                        display: true,
-                        text: 'Doanh số 2023',
-                        fontSize: 18
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                };
-
-                // Lấy đối tượng canvas và vẽ biểu đồ đường
-                var ctx = document.getElementById("myLineChart").getContext("2d");
-                ctx.canvas.width = 600;
-                ctx.canvas.height = 400;
-                var myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    data: data,
-                    options: options
-                });
-            </script>
+           <iframe src="http://localhost:3000/api/linegraph" frameborder="0" style="height: 600px"></iframe>
+           </div>
 </body>
 
-</div>
+<div class="row">
 <div class="col">
-    <iframe src="http://localhost:3000/chartpie" frameborder="0" style="width:100%;height: 100%;"></iframe>
+    <iframe src="http://localhost:3000/api/getorderpie" frameborder="0" style="width:100%;height: 100%;"></iframe>
 </div>
 <div class="col">
     <div class="row">
@@ -151,7 +105,7 @@
     </div>
 
 </div>
-
+</div>
 </div>
 </div>
 

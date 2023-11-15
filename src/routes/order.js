@@ -20,4 +20,5 @@ routerOrder.get("/orders/delivering",authenticate, routerController.getOrderBySh
 routerOrder.get("/getAllorderUi",routerController.getAllOrderUI)
 routerOrder.get("/getByIdOder/:id",routerController.getbyIdOrderUI)
 
+
 module.exports = routerOrder;
