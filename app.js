@@ -88,6 +88,7 @@ app.use('/api', favouriteRouter);
 app.use('/api', addressRouter);
 app.use('/api', recycleRouter);
 app.use('/api', bannerRouter);
+app.use('/api', deliveryRouter);
 
 socketController.initializeSocketServer()
 

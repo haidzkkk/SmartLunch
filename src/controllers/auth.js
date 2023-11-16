@@ -572,6 +572,76 @@ exports.signin = async (req, res) => {
     }
 }
 
+//dang nhap app delivery
+exports.signinShipper = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        //validate
+        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                messages: errors
+            })
+        }
+
+        const user = await Auth.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                messages: 'Tài Khoản không tồn tại'
+            })
+        }
+
+        if (user.role!=="shipper") {
+            return res.status(404).json({
+                messages: 'Tài Khoản không được cấp quyền'
+            })
+        }
+
+        const isVerify = await user.verified;
+        if (!isVerify) {
+            return res.status(400).json({
+                message: 'Please verify the account first'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                messages: 'Sai mật khẩu'
+            })
+        }
+
+        if (user && password) {
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+        
+            refreshTokens.push(refreshToken);
+            //luu vao cookies
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,//khong cho truy cap cookie nay ra duoc
+                secure: false,
+                path: "/",
+                // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+                sameSite: "strict"
+            })
+
+            const { password, ...users } = user._doc
+
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            })
+
+        }
+    } catch (error) {
+        return res.status(400).json({
+            messages: error
+        })
+    }
+}
+
 
 // Generate Access Token
 const generateAccessToken = (user) => {
