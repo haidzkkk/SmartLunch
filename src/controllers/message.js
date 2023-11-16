@@ -3,6 +3,7 @@ var configApp = require('../config/configApp');
 var { uploadImage } = require('../controllers/upload');
 const { updateRoomSocket } = require('./room');
 var { sendMessageToClient, sendRoomToClient } = require('../controllers/socket');
+var notificationController = require('../controllers/notification')
 
 exports.getMessage = async(req, res, next) =>{
     try{
@@ -51,12 +52,29 @@ exports.postMessage = async(req, res, next) =>{
         var roomUpdate = await updateRoomSocket(messageAdd.roomId, messageAdd.type, 
             {userIdSend: messageAdd.userIdSend, messSent: messageAdd.message, timeSent: messageAdd.time})
 
-        // giử cho cả 2
-        if(roomUpdate != null){
-            sendRoomToClient(roomUpdate.shopUserId.id ,roomUpdate)
-            sendRoomToClient(roomUpdate.userUserId.id ,roomUpdate)
-        }
+        // giử data socket cho cả 2
         sendMessageToClient(messageAdd.roomId, messageAdd)
+        if(roomUpdate != null){
+            sendRoomToClient(roomUpdate)
+            
+
+        // giử thông báo
+            if(messageAdd.userIdSend._id.toString() != roomUpdate.shopUserId._id.toString()){
+                notificationController.sendNotifiChat(
+                    roomUpdate.shopUserId._id, 
+                    roomUpdate.userUserId.first_name + " đã giử tin nhắn cho bạn",
+                    messageAdd.message, 
+                    roomUpdate.userUserId._id
+                    )
+            }else{
+                notificationController.sendNotifiChat(
+                    roomUpdate.userUserId._id, 
+                    roomUpdate.shopUserId.first_name + " đã giử tin nhắn cho bạn",
+                    messageAdd.message, 
+                    roomUpdate.shopUserId._id
+                    )
+            }
+        }
     
         res.status(200).json(messageAddPopulate)  
     }catch(err){

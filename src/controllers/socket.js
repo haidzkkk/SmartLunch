@@ -38,14 +38,9 @@ exports.initializeSocketServer = ()=>{
     httpServer.listen(process.env.PORT_SOCKET);
 } 
 
-exports.sendRoomToClient = (userId, room) =>{
-    console.log(`link room socket: client-listen-room-${userId}`);
-    if(userId != room.userUserId._id){
-        const temp = room.shopUserId;
-        room.shopUserId = room.userUserId;
-        room.userUserId = temp;
-    }
-    io.emit(`client-listen-room-${userId}`, room)
+exports.sendRoomToClient = (room) =>{
+    io.emit(`client-listen-room-${room.shopUserId._id}`, room)
+    io.emit(`client-listen-room-${room.userUserId._id}`, room)
 } 
 
 exports.sendMessageToClient = (roomId, message) =>{

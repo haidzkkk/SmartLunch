@@ -82,13 +82,14 @@ exports.create = async (req, res) => {
             })
         }
 
-        // const orderCheck = await Order.findById(commentBody.orderId).populate("status")
-        // if(!orderCheck){
-        //     return res.status(404).json({
-        //         message: "đơn hàng không tồn tại.",
-        //      });
-        // }
-        // if(orderCheck.status.status_name != "Đã giao"){
+        const orderCheck = await Order.findById(commentBody.orderId).populate("status")
+        if(!orderCheck){
+            return res.status(404).json({
+                message: "đơn hàng không tồn tại.",
+             });
+        }
+
+        // if(orderCheck.status._id != "6526a6e6adce6a54f6f67d7d"){
         //     return res.status(404).json({
         //         message: "Bạn không có điều kiện để comment.",
         //      });
@@ -96,6 +97,7 @@ exports.create = async (req, res) => {
 
          // Check if the product exists
         const product = await Product.findById(commentBody.productId);
+        console.log(commentBody.productId);
         if (!product) {
              return res.status(404).json({
                 message: "Sản phẩm không tồn tại.",

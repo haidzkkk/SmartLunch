@@ -33,5 +33,7 @@ router.get('/deletebyadmin/:id', authController.removeByAdmin);
 router.get('/singin', authController.signin);
 router.post('/login',authController.loginAdmin)
 
+router.post('/update/tokendevice',authenticate, authController.updateToken)
+router.post("/logout/mobile", authenticate, authController.logoutMobile)
 
 module.exports = router;
