@@ -1,10 +1,13 @@
 var  Joi = require("joi")
 exports.CommentSchema = Joi.object({
-    userId: Joi.string().required().messages({
-        'any.required': 'userId không được để trống.',
-    }),
     productId: Joi.string().required().messages({
         'any.required': 'productId không được để trống.',
+    }),
+    orderId: Joi.string().required().messages({
+        'any.required': 'orderId không được để trống.',
+    }),
+    sizeId: Joi.string().required().messages({
+        'any.required': 'sizeId không được để trống.',
     }),
     description: Joi.string().required().messages({
         'any.required': 'description không được để trống.',

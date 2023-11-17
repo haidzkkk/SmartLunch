@@ -294,22 +294,43 @@ exports.updateOrder = async (req, res) => {
         const id = req.params.id;
         const shipperId = req.query.shipperId
         const body = req.body;
-        if (shipperId) {
-            body.shipperId = shipperId;
+
+        // Tìm đơn hàng dựa trên ID
+        const order = await Order.findById(id)
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        if (!order) {
+            return res.status(404).json({
+                message: "Đơn hàng không tồn tại"
+            });
         }
-        const order = await Order.findByIdAndUpdate(id, body, { new: true })
+
+        // Kiểm tra nếu shipperId null thì mới cập nhật
+        if (shipperId && !order.shipperId) {
+            body.shipperId = shipperId;
+        }else if(shipperId && order.shipperId){
+            return res.status(404).json({
+                message: "Đơn hàng đã được nhận trước đó"
+            })
+        }
+       
+        const orderUpdate = await Order.findByIdAndUpdate(id, body, { new: true })
         .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
         .populate('statusPayment')
-        order.address = await order.address.populate('userId')
-        if (!order) {
+        orderUpdate.address = await orderUpdate.address.populate('userId')
+        if (!orderUpdate) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             })
         }
-        return res.status(200).json(order)
+        return res.status(200).json(orderUpdate)
     } catch (error) {
         return res.status(400).json({
             message: error.message
