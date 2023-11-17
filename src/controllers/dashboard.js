@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 exports.getSum= async (req, res) => {
     const responseUser = await fetch('http://localhost:3000/api/users');
     const dataUser = await responseUser.json();

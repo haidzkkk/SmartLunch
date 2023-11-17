@@ -89,7 +89,30 @@
         <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="margin: auto;margin-top: 20px; padding: 20px;display: flex;
   justify-content: center;">Create</button>
       </div>
-
+<table id="datatable" class="table table-striped " style="width:100%">
+      <thead>
+        <tr>
+          <th style="color: #FF593E;text-align: center">Email</th>
+          <th style="color: #FF593E;text-align: center">Role</th>
+          <th style="color: #FF593E;text-align: center">CreatedAt</th>
+          <th style="color: #FF593E;text-align: center">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each data}}
+        <tr>
+          <td>{{this.email}}</td>
+          <td>{{this.role}}</td>
+          <td>{{this.createdAt}}</td>
+          <td><a href="/api/admin/oder_shipper/{{this._id}}" style="text-decoration: none">
+            <p  class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="margin: auto; padding: 10px;display: flex;
+  justify-content: center;font-size: 10px;">Xem các đơn hàng</p></a>
+          
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const shipperForm = document.getElementById("shipperForm");

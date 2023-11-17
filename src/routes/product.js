@@ -44,7 +44,7 @@ router.patch("/products/restore/:id", authenticate, authorization, productContro
 
 router.get("/products/views/:id",authenticate, productController.viewProduct);
 router.get("/category/products/:categoryId", productController.getProductByCategoryId)
-router.get('/admin/products', productController.getProductUI);
+router.get('/admin/products', authenticate,productController.getProductUI);
 router.get('/admin/products/:id', upload.array("images", 10),productController.getProductByIdUI);
 router.get('/productbyadmin/products', productController.getProduct);
 router.get("/deletebyadmin/products/:id",productController.removeProduct);

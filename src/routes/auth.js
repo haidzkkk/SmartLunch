@@ -10,6 +10,8 @@ const multer = require('multer');
 const ab = multer();
 router.get("/getCurrentUser",authenticate,authController.getCurrentUser)
 router.get("/users",authController.getAll)
+router.get("/shipper",authController.getAllShipper)
+
 router.get("/users/:id",authenticate,authController.getOneById)
 router.delete("/users/:id",authenticate,authorization,authController.removeByAdmin)
 router.patch("/users",authenticate, authController.updateUser)

@@ -14,20 +14,21 @@ const fetch = require('node-fetch');
 
 
 exports.getShipperCreateUI = async (req, res) => {
-  
-    res.render("user/shipper", {  layout: "Layouts/home" });
-  };
+    const response = await fetch('http://localhost:3000/api/shipper');
+    const data = await response.json();
+    res.render("user/shipper", { data, layout: "Layouts/home" });
+};
 
 exports.getUserUI = async (req, res) => {
 
-        const response = await fetch('http://localhost:3000/api/users');
-        const data = await response.json();
-        res.render('user/user', { data, layout: "layouts/home" });
+    const response = await fetch('http://localhost:3000/api/users');
+    const data = await response.json();
+    res.render('user/user', { data, layout: "layouts/home" });
 }
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', {data ,  layout: "layouts/home" });
+    res.render('user/detail', { data, layout: "layouts/home" });
 };
 
 exports.getUserByAdmin = async (req, res) => {
@@ -76,6 +77,21 @@ exports.getAll = async (req, res) => {
         });
     }
 };
+// Lấy tất cả người dùng
+exports.getAllShipper = async (req, res) => {
+    try {
+        const data = await Auth.find();
+        const shipperUsers = data.filter(user => user.role === 'shipper');
+        return res.status(200).json(
+            shipperUsers
+        );
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message || "Lỗi xảy ra"
+        });
+    }
+};
+
 
 // Lấy một người dùng theo ID
 exports.getOneById = async (req, res) => {
@@ -554,7 +570,7 @@ exports.signin = async (req, res) => {
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
-        
+
             refreshTokens.push(refreshToken);
             //luu vao cookies
             res.cookie("refreshToken", refreshToken, {
@@ -738,11 +754,11 @@ exports.loginAdmin = async (req, res) => {
                 messages: 'Sai mật khẩu'
             })
         }
-      
+
         if (user && password) {
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
-        
+
             refreshTokens.push(refreshToken);
             //luu vao cookies
             res.cookie("refreshToken", refreshToken, {
@@ -755,20 +771,20 @@ exports.loginAdmin = async (req, res) => {
             return res.status(200).json({
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                role : user.role
+                role: user.role
             })
 
         }
-   
-      
 
-       
+
+
+
     } catch (error) {
         return res.status(400).json({
             messages: error
         })
     }
-    
+
 }
 
 // fun Lấy một người dùng theo ID
@@ -789,15 +805,15 @@ exports.searchAuth = async (req, res) => {
         const textSearch = req.params.text
         const users = await Auth.find({
             $and: [
-              {
-                $or: [
-                  { first_name: { $regex: new RegExp(textSearch, "i") } },
-                  { last_name: { $regex: new RegExp(textSearch, "i") } },
-                ],
-              },
-              { _id: { $ne: curentUser._id } },
+                {
+                    $or: [
+                        { first_name: { $regex: new RegExp(textSearch, "i") } },
+                        { last_name: { $regex: new RegExp(textSearch, "i") } },
+                    ],
+                },
+                { _id: { $ne: curentUser._id } },
             ],
-          });
+        });
         res.status(200).json(users)
     } catch (error) {
         return res.status(400).json({
@@ -810,7 +826,7 @@ exports.searchAuth = async (req, res) => {
 
 
 
-exports.signupShipper  = async (req, res) => {
+exports.signupShipper = async (req, res) => {
     try {
         const { first_name, last_name, email, phone, password } = req.body;
         const { error } = authSchema.signupSchema.validate(req.body, { abortEarly: false });
@@ -839,9 +855,9 @@ exports.signupShipper  = async (req, res) => {
             phone,
             email,
             password: hashedPassword,
-            role : "shipper"
+            role: "shipper"
         });
-        res.status(303).set('Location', '/api/admin/users').send();
+        res.status(303).set('Location', '/api/admin/shipper/create').send();
 
     } catch (error) {
         return res.status(400).json({
