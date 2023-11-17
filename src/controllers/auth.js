@@ -5,7 +5,7 @@ var authSchema = require('../schemas/auth')
 var nodemailer = require('nodemailer')
 var UserOTPVerification = require('./../models/UserOTPVerification')
 const { json } = require('body-parser')
-// var sendNotificationToUser = require('../controllers/notification').sendNotificationToUser;
+var notificationController = require('../controllers/notification');
 var { uploadImage, updateImage } = require('../controllers/upload');
 const { log } = require('handlebars')
 let refreshTokens = [];
@@ -16,11 +16,10 @@ exports.getUserUI = async (req, res) => {
         const data = await response.json();
         res.render('user/user', { data, layout: "layouts/home" });
 }
-
 exports.getUserByIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/userbyadmin/' + req.params.id);
     const data = await response.json();
-    res.render('user/detail', { data }, { layout: "layouts/home" });
+    res.render('user/detail', {data ,  layout: "layouts/home" });
 };
 
 exports.getUserByAdmin = async (req, res) => {
@@ -179,7 +178,6 @@ exports.updateAvatarUser = async (req, res) => {
         });
     }
 };
-
 
 // Đăng ký người dùng
 exports.signup = async (req, res) => {
@@ -514,6 +512,7 @@ const sendVerificationEmail = async (userId) => {
 exports.signin = async (req, res) => {
     try {
         const { email, password } = req.body;
+
         //validate
         const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
         if (error) {
@@ -559,7 +558,76 @@ exports.signin = async (req, res) => {
             })
 
             const { password, ...users } = user._doc
-            //sendNotificationToUser(users._id, `${user.email} đã đăng nhập thành công`)
+
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            })
+
+        }
+    } catch (error) {
+        return res.status(400).json({
+            messages: error
+        })
+    }
+}
+
+//dang nhap app delivery
+exports.signinShipper = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        //validate
+        const { error } = authSchema.signinSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                messages: errors
+            })
+        }
+
+        const user = await Auth.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                messages: 'Tài Khoản không tồn tại'
+            })
+        }
+
+        if (user.role!=="shipper") {
+            return res.status(404).json({
+                messages: 'Tài Khoản không được cấp quyền'
+            })
+        }
+
+        const isVerify = await user.verified;
+        if (!isVerify) {
+            return res.status(400).json({
+                message: 'Please verify the account first'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                messages: 'Sai mật khẩu'
+            })
+        }
+
+        if (user && password) {
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+        
+            refreshTokens.push(refreshToken);
+            //luu vao cookies
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,//khong cho truy cap cookie nay ra duoc
+                secure: false,
+                path: "/",
+                // Ngăn chặn tấn công CSRF -> Những cái http, request chỉ được đến từ sameSite
+                sameSite: "strict"
+            })
+
+            const { password, ...users } = user._doc
 
             return res.status(200).json({
                 accessToken: accessToken,
@@ -618,7 +686,6 @@ exports.logout = async (req, res) => {
         return res.status(500).json({ message: error })
     }
 }
-
 //Refresh Token
 exports.refreshToken = async (req, res) => {
     try {
@@ -799,6 +866,28 @@ exports.searchAuth = async (req, res) => {
     }
 }
 
+exports.updateToken = async (req, res) => {
+    try {
+        const tokenDevice = req.body.tokenFcm;
+        console.log(tokenDevice);
+        const user = await Auth.findByIdAndUpdate(req.user._id, {tokenFcm: tokenDevice});
+        res.status(200).json(user);
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+exports.logoutMobile = async (req, res) => {
+    try{
+        const user = await Auth.findByIdAndUpdate(req.user._id, {tokenFcm: ""});
+        res.status(200).json(user);
+    }catch(err){
+        console.log(err);
+        return res.status(400).json()  
+    }
+}
 
 
 
