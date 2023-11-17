@@ -118,31 +118,34 @@
 </body>
 
 <script>
-  function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+ function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.accessToken) {
-          localStorage.setItem("accessToken", data.accessToken);
-          if (data.role == "admin") {
-            window.location.href = "api/admin/products";
-          } else {
-            document.getElementById("message").innerText = "Bạn không có quyền";
-          }
+  fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.accessToken) {
+      // Lưu token vào cookie
+      document.cookie = `accessToken=${data.accessToken}; path=/`;
 
-        } else {
-          document.getElementById("message").innerText = "Đăng nhập thất bại";
-        }
-      });
-  }
+      if (data.role == "admin") {
+        // Chuyển hướng đến trang admin
+        window.location.href = "/api/admin/products";
+      } else {
+        document.getElementById("message").innerText = "Bạn không có quyền";
+      }
+    } else {
+      document.getElementById("message").innerText = "Đăng nhập thất bại";
+    }
+  });
+}
+
 </script>
 </html>

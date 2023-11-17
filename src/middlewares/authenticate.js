@@ -2,26 +2,40 @@ var jwt = require('jsonwebtoken')
 var Auth = require('../models/auth')
 var category= require('../models/category')
 
-exports.authenticate = async(req,res,next)=>{
-    try{
-        if(!req.headers.authorization){
-            return res.status(203).json({
+exports.authenticate = async (req, res, next) => {
+    try {
+        let token = req.headers.authorization;
+
+        // Kiểm tra xem có tồn tại accessToken trong cookies không
+        if (req.cookies.accessToken) {
+            token = "Bearer " + req.cookies.accessToken;
+        }
+
+        console.log("Token: " + token);
+
+        if(!token){
+            return res.status(401).json({
                 message:"Bạn chưa đăng nhập!"
             })
         }
-        const token = req.headers.authorization.split(" ")[1]
-        const {id} = jwt.verify(token,process.env.JWT_REFRESH_KEY)
-        const auth = await Auth.findById(id)
-        if(!auth){
-            return res.status(203).json({
+        // Tách phần token từ header
+        token = token.split(" ")[1];
+
+        const { id } = jwt.verify(token, process.env.JWT_REFRESH_KEY);
+        const auth = await Auth.findById(id);
+
+        if (!auth) {
+            return res.status(404).json({
                 message: "Không tìm thấy người dùng"
-            })
+            });
         }
-        req.user = auth
-        next()
-    }catch(error){
-        return res.status(400).json({
-            message : error.message
-        })
+
+        // Lưu thông tin người dùng vào req.user để sử dụng trong các middleware khác
+        req.user = auth;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            message: error.message
+        });
     }
-}
+};

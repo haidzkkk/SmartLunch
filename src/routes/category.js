@@ -15,6 +15,7 @@ router.delete("/category/force/:id", authenticate, authorization, categoryContro
 router.post("/category", authenticate,authorization, upload.array("images", 1), categoryController.addCategory)
 router.patch("/category/:id", authenticate, authorization, upload.array("images", 1), categoryController.updateCategory)
 router.patch("/category/restore/:id", authenticate, authorization, categoryController.restoreCategory)
+router.get("/categorys", authenticate,categoryController.getAllCategories)
 
 
 
