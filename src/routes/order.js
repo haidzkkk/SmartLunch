@@ -4,7 +4,7 @@ var  routerController =  require ("../controllers/order.js")
 const authorization  = require('../middlewares/authorization').authorization;
 const authenticate = require('../middlewares/authenticate').authenticate
 
-
+var routerOrder = express.Router();
 
 routerOrder.post("/order", authenticate,routerController.createOrder);
 routerOrder.get("/order/:id",authenticate, routerController.getOrderById)
