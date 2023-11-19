@@ -1,4 +1,5 @@
 var Auth = require('../models/auth')
+const Notification = require('../models/notification'); 
 const admin = require('firebase-admin');
 const serviceAccount = require('../config/smart-lunch-44a85-firebase-adminsdk-wspia-5f25e67145.json'); // Cần lấy serviceAccountKey từ Firebase Console
 // Cấu hình Firebase Admin SDK
@@ -8,6 +9,7 @@ admin.initializeApp({
 
 var TYPE_LOGIN = "TYPE_LOGIN"
 var TYPE_CHAT = "TYPE_CHAT"
+var TYPE_COUPONS = "TYPE_COUPONS"
 
 var sendFCMNotification = (fcmToken, title, body, type, idUrl, imageUrl) => {
     const message = {
@@ -40,16 +42,16 @@ var sendFCMNotification = (fcmToken, title, body, type, idUrl, imageUrl) => {
         });
 }
 
-// giử đến 1 user
-exports.sendNotificationToUser = async (userId, title, message)  => {
+// giửi đến 1 user
+exports.sendNotificationToUser = async (userId, title, message, type)  => {
     try{
         var user = await Auth.findById(userId);
         if(user.tokenFcm != null){
             console.log(user);
-            sendFCMNotification(user.tokenFcm, title, message)  
+            sendFCMNotification(user.tokenFcm, title, message,type,"myAvatarUrl")  
         }
     }catch(e){
-
+        console.log(e);
     }
 }
 
@@ -91,5 +93,40 @@ exports.sendNotifiChat= async (toUserId, title, message, userId)  => {
         console.log(e);
     }
 }
+
+exports.notifications = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const isRead = req.query.isRead;
+
+        let userNotifications;
+        if (isRead !== undefined) {
+            userNotifications = await Notification.find({ userId, isRead });
+        } else {
+            userNotifications = await Notification.find({ userId });
+        }
+
+        res.status(200).json(userNotifications);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.readNotification = async (req, res) => {
+    try {
+      const notificationId = req.params.id;
+      const notification = await Notification.findById(notificationId);
+  
+      if (!notification) {
+        return res.status(404).json({ error: "Thông báo không tồn tại." });
+      }
+      notification.isRead = true;
+      await notification.save();
+      res.status(200).json(notification);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Lỗi trong quá trình xử lý." });
+    }
+  };
 
 
