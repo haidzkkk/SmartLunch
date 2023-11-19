@@ -12,8 +12,8 @@ routerOrder.post("/order", authenticate, routerController.createOrder);
 routerOrder.get("/order/:id", authenticate, routerController.getOrderById)
 routerOrder.delete("/order/:id", authenticate, authorization, routerController.removeOrder);
 routerOrder.get("/userId/order", authenticate, routerController.getOrderByUserId);
-routerOrder.get("/getAllorder", authenticate, routerController.getAllOrder)
-routerOrder.patch("/order/:id", authenticate, routerController.updateOrder);
+routerOrder.get("/getAllorder",  routerController.getAllOrder)
+routerOrder.patch("/order/:id",  routerController.updateOrder);
 routerOrder.patch("/order/payment/:id", authenticate, routerController.updatePaymentOrder);
 routerOrder.get("/orders/delivering",authenticate, routerController.getOrderByShipper)
 
