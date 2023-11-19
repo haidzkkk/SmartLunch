@@ -334,12 +334,13 @@ exports.updateOrder = async (req, res) => {
                 message: "Đơn hàng không tồn tại"
             });
         }
-        handleShipperId(requestedShipperId, order, requestBody);
-        const updatedOrder = await updateOrderById(requestedOrderId, requestBody);
+        handleShipperId(shipperId, order, body);
+        const updatedOrder = await updateOrderById(id, body);
         const notificationMessage = await createNotificationMessage(updatedOrder);
         await sendNotificationToUser(updatedOrder, notificationMessage);
         return res.status(200).json(updatedOrder);
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             message: error.message
         });
