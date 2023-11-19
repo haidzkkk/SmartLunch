@@ -38,8 +38,8 @@ exports.getbyIdOrderUI = async (req, res) => {
     const response = await fetch(
       "http://localhost:3000/api/order/" + req.params.id
     );
-    const data = await response.json();
-    res.render("order/detail", { data, layout: "Layouts/home" });
+    // const data = await response.json();
+    res.render("order/detail", {  layout: "Layouts/home" });
   };
 
 exports.getOrderByUserId = async (req, res) => {
