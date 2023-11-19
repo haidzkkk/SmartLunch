@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -80,68 +80,328 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="bordered-table">
-      <h3>Order Table -Đơn hàng thành công</h3>
-      <table id="confirmedTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th class="name-column">Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-         <tbody>
-        {{#each successfulOrders}}
-        <tr>
-          <td>{{@index}}</td>
-          <td>{{this.address.recipientName}}</td>
-          <td maxlength="10">{{this.address.phoneNumber}}</td>
-          <td>{{this.address.addressLine}}</td>
-          <td>{{this.total}}</td>
-          <td>{{this.status.status_name}}</td>  
-        </tr>
-        {{/each}}
-      </tbody>
-      </table>
-    </div>
+  <div class="container mt-4">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" id="tab-delivered" data-toggle="tab" href="#table-delivered">Giao hàng thành công</a>
+      </li>
 
-    <div class="bordered-table">
-      <h3>Order Table -Đơn hàng thất bại "</h3>
-      <table id="shippingTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th class="name-column">Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th class="detail-column">Detail</th>
-          </tr>
-        </thead>
+      <li class="nav-item">
+        <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Giao
+          thất bại </a>
+      </li>
+
+    </ul>
+    <div class="container">
+          <div class="tab-pane fade show active" id="table-confirmed">
+      <div class="bordered-table" id="table-delivered">
+        <h3>Order Table -Đơn hàng thành công</h3>
+        <table id="table-delivered" class="table table-striped">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody>
-        {{#each failedOrders}}
-        <tr>
-          <td>{{@index}}</td>
-          <td>{{this.address.recipientName}}</td>
-          <td maxlength="10">{{this.address.phoneNumber}}</td>
-          <td>{{this.address.addressLine}}</td>
-          <td>{{this.total}}</td>
-          <td>{{this.status.status_name}}</td>  
-          <td><a href="/api/admin/coupons/{{this._id}} " style="text-decoration: none"><svg
-                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="color: #FF593E;"
-                class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                <path
-                  d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-              </svg></a></td>
-        </tr>
-        {{/each}}
-      </tbody>
-      </table>
+            {{#each successfulOrders}}
+            <tr>
+              <td>{{@index}}</td>
+              <td>{{this.address.recipientName}}</td>
+              <td maxlength="10">{{this.address.phoneNumber}}</td>
+              <td>{{this.address.addressLine}}</td>
+              <td>{{this.total}}</td>
+              <td>{{this.status.status_name}}</td>
+              <td><a href="/api//getByIdOder/{{this._id}} " style="text-decoration: none"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    style="color: #FF593E;" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+                  </svg></a></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bordered-table">
+        <h3>Order Table -Đơn hàng thất bại "</h3>
+        <table id="tab-delivered_refund_ordel" class="table table-striped">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each failedOrders}}
+            <tr>
+              <td>{{@index}}</td>
+              <td>{{this.address.recipientName}}</td>
+              <td maxlength="10">{{this.address.phoneNumber}}</td>
+              <td>{{this.address.addressLine}}</td>
+              <td>{{this.total}}</td>
+              <td>{{this.status.status_name}}</td>
+              <td><a href="/api/getByIdOder/{{this._id}} " style="text-decoration: none"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    style="color: #FF593E;" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+                  </svg></a></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
     </div>
   </div>
+  <script>
+    var statusTableMap = {
+    'delivered': '6526a6e6adce6a54f6f67d7d',
+    'tab-delivered_cancel': '653bc0a72006e5791beab35b', 
+  };
+  </script>
+
+</body> --}}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Your Page Title</title>
+</head>
+
+<body>
+
+  <div class="container mt-4">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" id="tab-delivered" data-toggle="tab" href="#table-delivered">Giao hàng thành công</a>
+      </li>
+   
+        <li class="nav-item">
+        <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Hủy đơn hàng </a>
+
+</li>
+ 
+    </ul>
+
+    <div class="tab-content mt-2">
+    
+      <div class="tab-pane fade show active" id="table-delivered">
+        <table class="table" id="table-delivered">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+     <div class="tab-pane fade" id="tab-delivered_cancel">
+    <table class="table" id="tab-delivered_cancel">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+        <div class="tab-pane fade" id="tab-delivered_refund_order">
+        <table class="table" id="tab-delivered_refund_order">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+ <script>
+    $(document).ready(function () {
+  var statusTableMap = {
+
+    'delivered': '6526a6e6adce6a54f6f67d7d',
+    'tab-delivered_cancel': '653bc0a72006e5791beab35b',
+
+    
+ 
+  };
+
+  function updateTables(tables) {
+    tables.forEach(function (pair) {
+      var tabId = pair.tabId;
+      var tableId = pair.tableId;
+      updateTable(tabId, tableId);
+    });
+  }
+
+function updateTable(tabId, tableId) {
+    console.log("Cập nhật bảng cho tab:", tabId);
+    var currentPath = window.location.pathname;
+    var pathArray = currentPath.split('/');
+    var shipperId = pathArray[pathArray.length - 1];
+    $.ajax({
+        url: "http://localhost:3000/api/orders/delivering/"+ shipperId,
+        type: "GET",
+        success: function (data) {
+            console.log("Dữ liệu nhận được:", data);
+            var orders = Array.isArray(data) ? data : [];
+            $('#' + tableId + ' tbody').empty();
+            $.each(orders, function (index, order) {
+                console.log("ID status của order:", order.status ? order.status._id : null);
+                console.log("tabId:", tabId);
+                console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
+                if (order.status && order.status._id === statusTableMap[tabId]) {
+                    var productName = order.products[0].product_name;
+                    var phone = order.address.phoneNumber;
+                    var status = order.status.status_name;
+                    var address = order.address.addressLine;
+                    var total = order.total;
+
+                    var row = '<tr>' +
+                        '<td>' + (index + 1) + '</td>' +
+                        '<td>' + productName + '</td>' +
+                        '<td>' + phone + '</td>' +
+                        '<td>' + address + '</td>' +
+                        '<td>' + total + '</td>' +
+                        '<td>' + status + '</td>';
+
+                    // Xác định nút tương ứng
+                    if (tabId === 'confirmed') {
+                        row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
+                            '</tr>';
+                    } else {
+                       row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
+                    }
+
+                    row += '</tr>';
+
+                    $('#' + tableId + ' tbody').append(row);
+                } else {
+                    console.log("bbbb");
+                }
+            });
+            bindConfirmButton();
+        },
+        error: function (error) {
+            console.log("Lỗi khi truy xuất dữ liệu:", error);
+        }
+    });
+}
+
+
+function bindConfirmButton() {
+    console.log('Binding confirm button click event');
+    $('.confirm-button').unbind('click');
+    $('.confirm-button').on('click', function () {
+        var idorder = $(this).data('order-id');
+        console.log('Confirm button clicked for order ID:', idorder);
+        confirmOrder(idorder);
+    });
+}
+
+
+function confirmOrder(idorder) {
+    // Gọi API PATCH khi nhấp vào nút xác nhận
+////////////////
+ $.ajax({
+    url: 'http://localhost:3000/api/order/' + idorder,
+    method: 'PATCH',
+    data: { status: '65264c102d9b3bb388078976' }, // Thay thế 'new_status_id' bằng ID trạng thái mới thực sự
+    dataType: 'json',
+    success: function (response) {
+      
+     console.log('Phản hồi từ API:', response);
+  
+        updateTable('confirmed', 'tab-confirmed');
+        },
+    
+    error: function (error) {
+      // Xử lý lỗi
+      console.log('Lỗi:', error);
+    }
+  });
+  
+}
+
+$(document).on('click', '.detail-button', function () {
+    var idorder = $(this).data('order-id');
+    // Chuyển hướng đến trang chi tiết với idorder
+    window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
+});
+
+
+  // Sử dụng sự kiện của tab trong Bootstrap
+  $('.nav-tabs a').on('shown.bs.tab', function (e) {
+    var tabId = $(e.target).attr('id').replace('tab-', '');
+    console.log("tabId:", tabId);
+    var tableId = 'table-' + tabId;
+    updateTable(tabId, tableId);
+    if (tabId === 'confirmed') {
+      bindConfirmButton();
+    }
+  });
+
+  // Nạp dữ liệu cho tab đang hoạt động ban đầu
+  var tablesToUpdate = [
+    { tabId: 'confirmed', tableId: 'tab-confirmed' },
+    { tabId: 'pending', tableId: 'table-pending' },
+    { tabId: 'confirmed-orders', tableId: 'table-confirmed-orders' },
+    { tabId: 'delivered', tableId: 'table-delivered' },
+    { tabId: 'tab-delivered_cancel', tableId: 'tab-delivered_refund_order' },
+   { tabId: 'tab-delivered_refund_return', tableId: 'tab-delivered_refund' },
+  ];
+
+  updateTables(tablesToUpdate);
+});
+</script>
+
+
 </body>
+
+</html>
