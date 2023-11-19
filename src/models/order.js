@@ -13,13 +13,15 @@ const orderSchema = mongoose.Schema({
   },
   products: [
     {
-      productId: { type: mongoose.Schema.Types.ObjectId, required: true },
+      productId: String,
       product_name: String,
-      product_price: Number,
       image: String,
       purchase_quantity: Number,
       sizeId: String,
       sizeName: String,
+      product_price: Number,
+      product_discount: Number,
+      total: Number,
     }
   ],
   discount: {
