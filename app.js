@@ -32,7 +32,7 @@ var adminRouter = require('./src/routes/admin.js');
 var bannerRouter = require('./src/routes/banner.js');
 var statisticsRouter = require('./src/routes/statistics.js');
 var deliveryRouter = require('./src/routes/delivery.js')
-
+var notificationRouter = require('./src/routes/notification.js')
 const socketController = require('./src/controllers/socket');
 
 dotenv.config();
@@ -88,6 +88,8 @@ app.use('/api', favouriteRouter);
 app.use('/api', addressRouter);
 app.use('/api', recycleRouter);
 app.use('/api', bannerRouter);
+app.use('/api', deliveryRouter);
+app.use('/api', notificationRouter);
 
 socketController.initializeSocketServer()
 

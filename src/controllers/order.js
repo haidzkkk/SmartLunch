@@ -4,7 +4,11 @@ var Coupon = require("../models/coupons.js");
 var Product = require("../models/product");
 var Address = require('../models/address');
 var Cart = require('../models/cart.js');
+const fetch = require('node-fetch');
 var Status = require('../models/status')
+var Notification = require('../models/notification.js')
+var notificationController = require('../controllers/notification')
+var TYPE_ORDER = "TYPE_ORDER"
 
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
@@ -12,24 +16,33 @@ exports.getAllOrderUI = async (req, res) => {
     res.render('order/order', { data, layout: "Layouts/home" });
 };
 
+exports.getOderbyshipperUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/orders/delivering/'+ req.params.id);
+    const data = await response.json(); 
+    const successfulOrders = [];
+    const failedOrders = [];
+    if (Array.isArray(data)) {
+      data.forEach(order => {
+        const orderStatus = order.status.status_name;
+
+        if (orderStatus === "Giao hàng thành công" ) {
+          successfulOrders.push(order);
+        } else if (orderStatus === "Hủy đơn hàng thành công") {
+          failedOrders.push(order);
+        }
+      });
+    }
+    res.render('user/oder_Shipper', { failedOrders, successfulOrders,layout :"Layouts/home"});
+};
+
 exports.getbyIdOrderUI = async (req, res) => {
     const response = await fetch(
         "http://localhost:3000/api/order/" + req.params.id
     );
-    const data = await response.json();
-    res.render("order/detail", { data, layout: "Layouts/home" });
-};
+    // const data = await response.json();
+    res.render("order/detail", {  layout: "Layouts/home" });
+  };
 
-
-// exports.getbyIdOrderUI = async (req, res) => {
-//     const response = await fetch(
-//       "http://localhost:3000/api/order/" + req.params.id
-//     );
-//     const data = await response.json();
-//     res.render("order/detail", { data, layout: "Layouts/home" });
-//   };
-
-// lấy thông tin về các đơn hàng của một người dùng dựa trên ID của người dùng
 exports.getOrderByUserId = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -85,6 +98,33 @@ exports.getOrderByShipper = async (req, res) => {
         });
     }
 };
+exports.getOrderByShipperId = async (req, res) => {
+    try {
+        const shipperId = req.params.id;
+        const statusId = req.query.statusId;
+        const query = {
+            shipperId: shipperId,
+        };
+        if (statusId) {
+            query.status = statusId;
+        }
+        const orders = await Order.find(query)
+            .populate('products.productId')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        for (const order of orders) {
+            await order.address.populate('userId');
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message,
+        });
+    }
+};
 
 
 // lấy đơn hàng
@@ -96,6 +136,7 @@ exports.getOrderById = async (req, res) => {
         .populate('status')
         .populate('address')
         .populate('statusPayment')
+
         order.address = await order.address.populate('userId')
 
         if (!order || order.length === 0) {
@@ -124,9 +165,9 @@ exports.getAllOrder = async (req, res) => {
         .populate('address')
         .populate('statusPayment')
 
-        for (const order of orders) {
-            await order.address.populate('userId');
-        }
+        // for (const order of orders) {
+        //     await order.address.populate('userId');
+        // }
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -275,7 +316,6 @@ exports.createOrder = async (req, res) => {
 // cập nhật
 exports.updateOrder = async (req, res) => {
     try {
-
         const id = req.params.id;
         const shipperId = req.query.shipperId
         const body = req.body;
@@ -288,19 +328,82 @@ exports.updateOrder = async (req, res) => {
         .populate('address')
         .populate('statusPayment')
         order.address = await order.address.populate('userId')
+
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
-            })
+            });
         }
-        return res.status(200).json(order)
+        handleShipperId(requestedShipperId, order, requestBody);
+        const updatedOrder = await updateOrderById(requestedOrderId, requestBody);
+        const notificationMessage = await createNotificationMessage(updatedOrder);
+        await sendNotificationToUser(updatedOrder, notificationMessage);
+        return res.status(200).json(updatedOrder);
     } catch (error) {
         return res.status(400).json({
             message: error.message
-        })
+        });
     }
-}
+};
 
+const findOrderById = async (id) => {
+    return await Order.findById(id)
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment');
+};
+
+const handleShipperId = (shipperId, order, body) => {
+    if (shipperId && !order.shipperId) {
+        body.shipperId = shipperId;
+    } else if (shipperId && order.shipperId) {
+        throw new Error("Đơn hàng đã được nhận trước đó");
+    }
+};
+
+const updateOrderById = async (id, body) => {
+    const updatedOrder = await Order.findByIdAndUpdate(id, body, { new: true })
+        .populate('products.productId')
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment');
+    
+    if (!updatedOrder) {
+        throw new Error("Đơn hàng không tồn tại");
+    }
+
+    updatedOrder.address = await updatedOrder.address.populate('userId');
+    return updatedOrder;
+};
+
+const createNotificationMessage = async (order) => {
+    const orderStatus = await Status.findById(order.status);
+    if (order.shipperId) {
+        return `Đơn hàng ${order._id} shipper đã nhận đơn. ${orderStatus.status_description}`;
+    } else {
+        return `Đơn hàng ${order._id}. ${orderStatus.status_description}`;
+    }
+};
+
+const sendNotificationToUser = async (order, message) => {
+    try {
+        const orderStatus = await Status.findById(order.status);
+        notificationController.sendNotificationToUser(order.userId, orderStatus.status_name, message,TYPE_ORDER);
+        await Notification.create({
+            userId: order.userId,
+            title: orderStatus.status_name,
+            content: message,
+            type: TYPE_ORDER,
+            idUrl: order._id
+        });
+    } catch (error) {
+        console.error('Error sending and saving notification:', error);
+        throw new Error('Failed to send and save notification');
+    }
+};
 
 // truyển thành đã thanh toán
 exports.updatePaymentOrder = async (req, res) => {
@@ -312,6 +415,7 @@ exports.updatePaymentOrder = async (req, res) => {
         .populate('status')
         .populate('address')
         .populate('statusPayment')
+
         order.address = await order.address.populate('userId')
 
         if (!order) {

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,84 +14,19 @@
   <div class="container mt-4">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" id="tab-confirmed" data-toggle="tab" href="#table-confirmed">Đang chờ xác nhận</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="tab-confirmed-orders" data-toggle="tab" href="#table-confirmed-orders">Đã xác nhận đơn hàng</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="tab-pending" data-toggle="tab" href="#table-pending">Đang giao hàng </a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" id="tab-delivered" data-toggle="tab" href="#table-delivered">Giao hàng thành công</a>
       </li>
    
         <li class="nav-item">
         <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Hủy đơn hàng </a>
-      </li>
 
-    <li class="nav-item">
-    <a class="nav-link" id="tab-delivered_refund_aaa" data-toggle="tab" href="#tab-delivered_refund">Hoàn hàng </a>
 </li>
  
     </ul>
 
     <div class="tab-content mt-2">
-      <div class="tab-pane fade show active" id="table-confirmed">
-        <table class="table" id="tab-confirmed">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Xác nhận</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
-          </tbody>
-        </table>
-      </div>
-      <div class="tab-pane fade" id="table-pending">
-        <table class="table" id="table-pending">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
-          </tbody>
-        </table>
-      </div>
-      <div class="tab-pane fade" id="table-confirmed-orders">
-        <table class="table" id="table-confirmed-orders">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
-          </tbody>
-        </table>
-      </div>
-      <div class="tab-pane fade" id="table-delivered">
+    
+      <div class="tab-pane fade show active" id="table-delivered">
         <table class="table" id="table-delivered">
           <thead>
             <tr>
@@ -144,25 +80,6 @@
           </tbody>
         </table>
       </div>
-    <div class="tab-pane fade" id="tab-delivered_refund">
-        <table class="table" id="tab-delivered_refund">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
-          </tbody>
-        </table>
-      </div>
- 
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -172,12 +89,10 @@
  <script>
     $(document).ready(function () {
   var statusTableMap = {
-    'confirmed': '65264bc32d9b3bb388078974',
-    'pending': '65264c672d9b3bb388078978',
-    'confirmed-orders': '65264c102d9b3bb388078976',
+
     'delivered': '6526a6e6adce6a54f6f67d7d',
     'tab-delivered_cancel': '653bc0a72006e5791beab35b',
-    'tab-delivered_refund_return': '6555a1f5b7eb118e522069a5'
+
     
  
   };
@@ -192,8 +107,11 @@
 
 function updateTable(tabId, tableId) {
     console.log("Cập nhật bảng cho tab:", tabId);
+    var currentPath = window.location.pathname;
+    var pathArray = currentPath.split('/');
+    var shipperId = pathArray[pathArray.length - 1];
     $.ajax({
-        url: "http://localhost:3000/api/getAllOrder",
+        url: "http://localhost:3000/api/orders/delivering/"+ shipperId,
         type: "GET",
         success: function (data) {
             console.log("Dữ liệu nhận được:", data);

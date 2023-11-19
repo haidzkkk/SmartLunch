@@ -1,9 +1,12 @@
 const DeliveryOrder = require('../models/delivery');
 const Order = require('../models/order')
 var { uploadImage } = require('../controllers/upload');
-
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+var Status = require('../models/status')
+var Notification = require('../models/notification.js')
+var notificationController = require('../controllers/notification')
+var TYPE_ORDER = "TYPE_ORDER"
 
 exports.createDeliveryOrder = async (req, res) => {
     try {
@@ -11,11 +14,17 @@ exports.createDeliveryOrder = async (req, res) => {
         const files = req.files;
         const formData = req.body;
 
+        if (!formData.orderCode || !formData.status) {
+            return res.status(400).json({
+                message: "orderCode và status là bắt buộc"
+            });
+        }
+
         formData.orderCode = new ObjectId(formData.orderCode);
         formData.status = new ObjectId(formData.status);
 
         var images = await uploadImage(files);
-        if (images[0] == null) {
+        if (!images || images.length === 0) {
             return res.status(400).json({
                 message: "Thêm ảnh thất bại, chưa có ảnh tải lên",
             });
@@ -25,18 +34,56 @@ exports.createDeliveryOrder = async (req, res) => {
 
         const deliveryOrder = await DeliveryOrder.create(formData);
 
-        await Order.updateOne(
-            { _id: formData.orderCode },
-            { $set: { status: formData.status } }
-        );
-        const result = await DeliveryOrder.findById(deliveryOrder._id).populate('status' )
+        const updatedOrder = await Order.findByIdAndUpdate(
+            formData.orderCode,
+            { status: formData.status },
+            { new: true }
+        ).populate('status');
+
+        if (!updatedOrder) {
+            return res.status(404).json({
+                message: "Đơn hàng không tồn tại hoặc không thể cập nhật trạng thái"
+            });
+        }
+
+        await sendNotificationToUser(updatedOrder);
+        
+        const result = await DeliveryOrder.findById(deliveryOrder._id).populate('status');
         res.status(201).json(result);
+    
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: error });
+        res.status(500).json({ error: error.message });
     }
 };
 
+const sendNotificationToUser = async (order) => {
+    try {
+        if (!order) {
+            throw new Error('Invalid order data');
+        }
+
+        const orderStatus = await Status.findById(order.status);
+        if (!orderStatus) {
+            throw new Error('Invalid order status data');
+        }
+
+        const notificationMessage = `Đơn hàng ${order._id}. ${orderStatus.status_description}`;
+
+        notificationController.sendNotificationToUser(order.userId, orderStatus.status_name, notificationMessage, TYPE_ORDER);
+
+        await Notification.create({
+            userId: order.userId,
+            title: orderStatus.status_name,
+            content: notificationMessage,
+            type: TYPE_ORDER,
+            idUrl: order._id
+        });
+    } catch (error) {
+        console.error('Error sending and saving notification:', error);
+        throw new Error('Failed to send and save notification');
+    }
+};
 
 exports.getAllDeliveryOrders = async (req, res) => {
     try {
