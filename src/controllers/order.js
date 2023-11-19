@@ -2,22 +2,23 @@ var Order = require("../models/order.js");
 var orderSchema = require("../schemas/order").orderSchema;
 var Coupon = require("../models/coupons.js");
 var Product = require("../models/product");
-var Address = require('../models/address'); 
+var Address = require('../models/address');
+var Cart = require('../models/cart.js');
 var Status = require('../models/status')
 
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
     const data = await response.json();
-    res.render('order/order', { data ,layout :"Layouts/home"});
+    res.render('order/order', { data, layout: "Layouts/home" });
 };
 
 exports.getbyIdOrderUI = async (req, res) => {
     const response = await fetch(
-      "http://localhost:3000/api/order/" + req.params.id
+        "http://localhost:3000/api/order/" + req.params.id
     );
     const data = await response.json();
     res.render("order/detail", { data, layout: "Layouts/home" });
-  };
+};
 
 
 // exports.getbyIdOrderUI = async (req, res) => {
@@ -40,15 +41,14 @@ exports.getOrderByUserId = async (req, res) => {
             query.status = statusId;
         }
         const orders = await Order.find(query)
-        .populate('products.productId')
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment');
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
 
-    for (const order of orders) {
-        await order.address.populate('userId');
-    }
+        for (const order of orders) {
+            await order.address.populate('userId');
+        }
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -70,12 +70,10 @@ exports.getOrderByShipper = async (req, res) => {
             query.status = statusId;
         }
         const orders = await Order.find(query)
-            .populate('products.productId')
-            .populate('userId')
-            .populate('status')
-            .populate('address')
-            .populate('statusPayment');
-
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
         for (const order of orders) {
             await order.address.populate('userId');
         }
@@ -94,13 +92,12 @@ exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
         const order = await Order.findById(id)
-        .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
         .populate('statusPayment')
         order.address = await order.address.populate('userId')
-        
+
         if (!order || order.length === 0) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
@@ -122,11 +119,10 @@ exports.getAllOrder = async (req, res) => {
             query.status = statusId;
         }
         const orders = await Order.find(query)
-            .populate('products.productId')
-            .populate('userId')
-            .populate('status')
-            .populate('address')
-            .populate('statusPayment');
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
 
         for (const order of orders) {
             await order.address.populate('userId');
@@ -177,6 +173,7 @@ exports.createOrder = async (req, res) => {
     try {
         const body = req.body;
         body.userId = req.user.id
+
         const { error } = orderSchema.validate(body, { abortEarly: false });
         if (error) {
             const errors = error.details.map((err) => err.message);
@@ -187,21 +184,57 @@ exports.createOrder = async (req, res) => {
 
         // check address có tồn tại
         const address = await Address.findOne({ _id: body.address, isRemove: false });
-        if(address == null) return res.status(400).json({ message: 'Không tìm thấy address' });
+        if (address == null) return res.status(400).json({ message: 'Không tìm thấy address' });
+
+        var products = []
+        var myCart = await Cart.findOne({ userId: req.user.id })
+            .populate('products.productId')
+            .populate('products.sizeId');
+
+        // kiểm tra cart và 
+        if (!myCart) {
+            return res.status(404).json({message: 'Không tìm thấy giỏ hàng'});
+        }
 
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
-        if (body.couponId !== null) {
-            // Tăng số lượng phiếu giảm giá đã sử dụng lên 1
-            const coupon = await Coupon.findById(body.couponId);
-            if (coupon) {
-                if (coupon.coupon_quantity > 0) {
-                    coupon.coupon_quantity -= 1;
-                    await coupon.save();
-                } else {
-                    return res.status(400).json({ message: 'Phiếu giảm giá đã hết lượt sử dụng' });
-                }
+        const coupon = await Coupon.findById(myCart.couponId);
+        if (coupon) {
+            if (coupon.coupon_quantity > 0) {
+                coupon.coupon_quantity -= 1;
+                await coupon.save();
+            } else {
+                return res.status(404).json({ message: 'Phiếu giảm giá đã hết lượt sử dụng' });
             }
         }
+        
+        // tạo list products
+        myCart.products.forEach((productCart) => {
+            if(productCart.productId && productCart.productId.isActive){
+                var discount = 0
+                var total = 0
+                if (coupon) {
+                    discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
+                }
+                total = (productCart.sizeId.size_price * productCart.purchase_quantity) - (discount * productCart.purchase_quantity )
+    
+                const newProductOrder = {
+                    productId: productCart.productId._id,
+                    image: productCart.productId.images[0].url,
+                    product_name: productCart.productId.product_name,
+                    purchase_quantity: productCart.purchase_quantity,
+                    sizeId: productCart.sizeId._id,
+                    sizeName: productCart.sizeId.size_name,
+                    product_price: productCart.sizeId.size_price,
+                    product_discount: productCart.sizeId.size_price - discount,
+                    total: total
+                };
+                products.push(newProductOrder);
+            }
+        })
+
+        body.products = products
+        body.total = myCart.total
+        body.discount = myCart.total - myCart.totalCoupon
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
         for (const item of body.products) {
@@ -223,11 +256,10 @@ exports.createOrder = async (req, res) => {
         }
 
         const result = await Order.findById(order._id)
-        .populate('products.productId')
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
         result.address = await result.address.populate('userId')
 
         return res.status(200).json(result)
@@ -251,7 +283,6 @@ exports.updateOrder = async (req, res) => {
             body.shipperId = shipperId;
         }
         const order = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
@@ -276,13 +307,12 @@ exports.updatePaymentOrder = async (req, res) => {
     try {
         const id = req.params.id;
         const isPayment = req.query.isPayment
-        const order = await Order.findByIdAndUpdate(id, {isPayment: isPayment}, { new: true })
-            .populate('products.productId')
-            .populate('userId')
-            .populate('status')
-            .populate('address')
-            .populate('statusPayment')
-            order.address = await order.address.populate('userId')
+        const order = await Order.findByIdAndUpdate(id, { isPayment: isPayment }, { new: true })
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
 
         if (!order) {
             return res.status(404).json({

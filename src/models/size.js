@@ -9,7 +9,12 @@ const sizeSchema = new mongoose.Schema(
     size_price: {
         type: Number,
         required: true
-    }
+    },
+    productId: {
+        type: mongoose.Types.ObjectId,
+        ref: "Product",
+        required: true
+      },
   },
   {
     collection: 'sizes'

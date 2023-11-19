@@ -25,46 +25,38 @@ const ressetCart = async (idUser) =>{
 }
 
 
-const addProductToCart = async (cartExist, productToAdd) => {
+const addProductToCart = async (cartExist, productCart) => {
     try {
         const productExistIndex = cartExist.products.findIndex((product) =>
-            product.productId === productToAdd.productId &&
-            product.sizeId === productToAdd.sizeId
+            String(product.productId._id) === String(productCart.productId) &&
+            String(product.sizeId._id) === String(productCart.sizeId)
         );
 
         if (productExistIndex !== -1) {
-            const size = await Size.findById(productToAdd.sizeId);
-            const updatedProductPrice = productToAdd.product_price + size.size_price;
             const existingProduct = cartExist.products[productExistIndex];
-            existingProduct.purchase_quantity += productToAdd.purchase_quantity;
-            existingProduct.product_price = updatedProductPrice;
-
-
+            console.log(existingProduct);
+            console.log(`${existingProduct.productId.isActive} && ${existingProduct.purchase_quantity + productCart.purchase_quantity >= 0}`);
+            if(existingProduct.productId.isActive && existingProduct.purchase_quantity + productCart.purchase_quantity >= 0){
+                existingProduct.purchase_quantity += productCart.purchase_quantity;
+            }
         } else {
-            const size = await Size.findById(productToAdd.sizeId);
-            const  name_size = size.size_name
-            const newProduct = {
-                productId: productToAdd.productId,
-                product_name: productToAdd.product_name,
-                product_price: productToAdd.product_price + size.size_price,
-                image: productToAdd.image,
-                purchase_quantity: productToAdd.purchase_quantity,
-                sizeId: productToAdd.sizeId,
-                 sizeName: name_size,
-            };
-         console.log(name_size);
-            cartExist.products.push(newProduct);
+            if(productCart.purchase_quantity >= 0){
+                const newProduct = {
+                    productId: productCart.productId,
+                    purchase_quantity: productCart.purchase_quantity,
+                    sizeId: productCart.sizeId,
+                };
+                cartExist.products.push(newProduct);
+            }
         }
-
      
-    // Tính toán lại tổng giá trị của giỏ hàng sau khi thêm/sửa sản phẩm
-    cartExist.total = cartExist.products.reduce((total, item) => total + item.purchase_quantity * item.product_price, 0);
-
     // Lưu giỏ hàng sau khi cập nhật (không có phiếu giảm giá)
-    const cartUpdated = await cartExist.save();
-    await handleCouponTotal(cartUpdated)
+    await cartExist.save();
 
-    return cartUpdated;
+    await handleTotalCart(cartExist)
+    await handleCouponTotal(cartExist)
+
+    return cartExist;
     } catch (error) {
         throw error;
     }
@@ -73,7 +65,7 @@ const addProductToCart = async (cartExist, productToAdd) => {
 exports.createCart = async (req, res) => {
     try {
         const userId = req.user.id;
-        const productNeedToAdd = req.body;
+        const productCartAdd = req.body;
         const userExist = await Auth.findById(userId);
 
         if (!userExist) {
@@ -83,7 +75,6 @@ exports.createCart = async (req, res) => {
         }
 
         const { error } = cartSchema.validate(req.body, { abortEarly: false });
-
         if (error) {
             const errors = error.details.map((err) => err.message);
             return res.status(400).json({
@@ -91,8 +82,11 @@ exports.createCart = async (req, res) => {
             });
         }
 
-        let cartExist = await Cart.findOne({ userId: userId });
-
+        let cartExist = await Cart.findOne({ userId: userId })
+                                .populate("couponId")
+                                .populate("userId")
+                                .populate('products.productId')
+                                .populate('products.sizeId');
         if (!cartExist) {
             const newCart = await Cart.create({
                 userId,
@@ -102,13 +96,34 @@ exports.createCart = async (req, res) => {
             cartExist = newCart;
         }
 
-        await addProductToCart(cartExist, productNeedToAdd);
+        const productExist = await Product.findById(productCartAdd.productId);
+        if(!productExist){
+            return res.status(400).json({
+                message: 'Product không tồn tại',
+            });
+        }
 
-        var cartDetail = await Cart.findOne({ userId: userId }).populate("userId").populate("couponId");
-        
-        return res.status(200).json(cartDetail);
+        const sizeExist = await Size.findById(productCartAdd.sizeId);
+        if(!sizeExist){
+            return res.status(400).json({
+                message: 'Size không tồn tại',
+            });
+        }
+
+        await addProductToCart(cartExist, productCartAdd);
+
+        var cartDetail = await Cart.findOne({ userId: userId })                            
+                                .populate("couponId")
+                                .populate("userId")
+                                .populate('products.productId')
+                                .populate('products.sizeId');
+        if(!cartDetail){
+            return res.status(200).json(cartDetail);
+        }else{
+            return res.status(404).json({message: "Khong tim thay cart"});
+        }
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         return res.status(400).json({
             message: 'Thêm vào giỏ hàng không thành công',
         });
@@ -119,7 +134,11 @@ exports.createCart = async (req, res) => {
 exports.getOne = async (req, res) => {
 
     try {
-        const cart = await Cart.findOne({userId:req.user.id}).populate("couponId").populate("userId")
+        const cart = await Cart.findOne({userId:req.user.id})
+                        .populate("couponId")
+                        .populate("userId")
+                        .populate('products.productId')
+                        .populate('products.sizeId');
         if(!cart){
             return res.status(400).json({
                 message: 'Không tìm thấy giỏ hàng'
@@ -131,9 +150,12 @@ exports.getOne = async (req, res) => {
                 message: 'Không có sản phẩm'
             }) 
         }
+        await handleTotalCart(cart)
+        await handleCouponTotal(cart)
 
         return res.status(200).json(cart)
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
 
             message : error.message
@@ -147,51 +169,34 @@ exports.changeQuantity = async (req, res) => {
         const { idProduct = '' } = req.query;
         const { purchase_quantity, sizeId } = req.body;
 
-        // Kiểm tra xem người dùng có tồn tại không
-        const userExist = await Auth.findOne({ _id: idUser });
-
-        if (!userExist) {
-            return res.status(404).json({
-                message: 'Vui lòng đăng nhập!' // Vui lòng đăng nhập
-            });
-        }
-
         // Tìm giỏ hàng của người dùng
-        const cart = await Cart.findOne({ userId: idUser });
+        const cart = await Cart.findOne({ userId: idUser })
+            .populate("couponId")
+            .populate("userId")
+            .populate('products.productId')
+            .populate('products.sizeId');
 
-        // Khởi tạo biến để theo dõi sự tồn tại của sản phẩm
-        let productExists = false;
+        if(!cart){
+            return res.status(400).json({
+                message: 'Sản phẩm không tồn tại!', // Sản phẩm không tồn tại
+                data: {}
+            });
+        }    
+
         // Duyệt qua các sản phẩm trong giỏ hàng
         cart.products.forEach((product, index) => {
-            if (product.productId.toString() === idProduct.toString() && product.sizeId.toString() === sizeId) {
+            if (product.productId._id.toString() === idProduct.toString() && product.sizeId._id.toString() === sizeId) {
                 productExists = product;
                 cart.products[index].purchase_quantity = purchase_quantity;
             }
         });
 
-        if (productExists) {
-            // Tính toán tổng chi phí cập nhật của các món hàng trong giỏ
-            const totalUpdated = cart.products.reduce((total, product) => {
-                return (total += product.purchase_quantity * product.product_price);
-            }, 0);
+        await handleTotalCart(cart)
+        await handleCouponTotal(cart)
 
-            // Cập nhật giỏ hàng với thông tin sản phẩm đã được sửa đổi và tổng chi phí
-            const cartUpdated = await Cart.findOneAndUpdate(
-                { userId: idUser },
-                { $set: { products: cart.products, total: totalUpdated } },
-                { new: true }
-            ).populate("couponId").populate("userId");
-
-            await handleCouponTotal(cartUpdated)
-
-            return res.status(200).json(cartUpdated);
-        }
-
-        return res.status(400).json({
-            message: 'Sản phẩm không tồn tại!', // Sản phẩm không tồn tại
-            data: {}
-        });
+        return res.status(200).json(cart);
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             message: error.message
         });
@@ -200,21 +205,9 @@ exports.changeQuantity = async (req, res) => {
 
 exports.removeProduct = async (req, res) => {
     try {
-        const idUser = req.user.id;
         const { idProduct = '', sizeId = '' } = req.query;
-        const userExist = await Auth.findOne({ _id: idUser });
-
-        if (!userExist) {
-            return res.status(404).json({
-                message: 'Vui lòng đăng nhập!'
-            });
-        }
-
-        const cart = await Cart.findOne({ userId: idUser });
-
-        // Check if the product with the specified idProduct and sizeId exists in the cart
-        const productToRemove = cart.products.find((product) => product.productId === idProduct && product.sizeId === sizeId);
-
+        const cart = await Cart.findOne({ userId: req.user.id });
+        const productToRemove = cart.products.find((product) => String(product.productId) == String(idProduct) && String(product.sizeId) == String(sizeId));
         if (!productToRemove) {
             return res.status(404).json({
                 message: 'Sản phẩm không tồn tại trong giỏ hàng!'
@@ -222,22 +215,23 @@ exports.removeProduct = async (req, res) => {
         }
 
         // Filter out the product that matches the idProduct and sizeId
-        const productsUpdated = cart.products.filter((product) => product.productId !== idProduct || product.sizeId !== sizeId);
-
-        const totalUpdated = productsUpdated.reduce((total, product) => {
-            return (total += product.purchase_quantity * product.product_price);
-        }, 0);
+        const productsUpdated = cart.products.filter((product) => String(product.productId) !== idProduct || String(product.sizeId) !== sizeId);
 
         const cartUpdated = await Cart.findOneAndUpdate(
-            { userId: idUser },
-            { $set: { products: productsUpdated, total: totalUpdated } },
-            { new: true }
-        );
-        await handleCouponTotal(cartUpdated)
-        var cartPopulate = await Cart.findOne({ userId: userId }).populate("userId").populate("couponId");
+            { userId: req.user.id },
+            { $set: { products: productsUpdated} },
+            { new: true })
+                .populate("couponId")
+                .populate("userId")
+                .populate('products.productId')
+                .populate('products.sizeId');
 
-        return res.status(200).json(cartPopulate);
+        await handleTotalCart(cartUpdated)
+        await handleCouponTotal(cartUpdated)
+
+        return res.status(200).json(cartUpdated);
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             message: error.message
         });
@@ -318,7 +312,11 @@ exports.applyCounpon = async(req,res)=>{
         }
         await handleCouponTotal(cart)
 
-        var cartDetail = await Cart.findOne({ userId: userId }).populate("userId").populate("couponId");
+        var cartDetail = await Cart.findOne({ userId: userId })
+                            .populate("couponId")
+                            .populate("userId")
+                            .populate('products.productId')
+                            .populate('products.sizeId');
         return res.status(200).json(cartDetail);
     } catch (error) {
         console.log(error);
@@ -340,7 +338,11 @@ exports.removeCoupon = async (req, res) => {
         cart.couponId = null;
         await handleCouponTotal(cart)
 
-        const cartPopulate = await Cart.findOne({ userId }).populate("couponId").populate("userId");
+        const cartPopulate = await Cart.findOne({ userId })
+                                .populate("couponId")
+                                .populate("userId")
+                                .populate('products.productId')
+                                .populate('products.sizeId');
 
         return res.status(200).json(cartPopulate);
     } catch (error) {
@@ -348,12 +350,28 @@ exports.removeCoupon = async (req, res) => {
     }
 };
 
+const handleTotalCart = async(cart) =>{
+    var totalCart = 0
+    if (cart && cart.products) {
+        cart.products.forEach((productCart) => {
+          // Kiểm tra xem productCart và sizeId có tồn tại không
+          if (productCart && productCart.sizeId && productCart.productId.isActive) {
+            totalCart += productCart.purchase_quantity * productCart.sizeId.size_price;
+          }
+        });
+      }
+      cart.total = totalCart
+      await cart.save();
+}
+
 // tính tiền nếu có mã giảm giá
 const handleCouponTotal = async (cart) => {
     var totalCoupon = 0
     var coupond = await Coupon.findById(cart.couponId)
-    if(coupond != null){
+    if(coupond != null && cart.total > coupond.min_purchase_amount){
         totalCoupon = (cart.total / 100) * coupond.discount_amount
+    }else{
+        cart.couponId = null
     }
     cart.totalCoupon = totalCoupon
     await cart.save();

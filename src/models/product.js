@@ -31,11 +31,20 @@ const productsSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "Category",
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    deleted: {
+        type: Boolean,
+        default: false
+    },
 
 },
-    { timestamps: true, versionKey: false });
+{ timestamps: true, versionKey: false });
 productsSchema.plugin(mongoosePaginate);
-productsSchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
+productsSchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true }
+);
 
 
 let productModel = mongoose.model("Product", productsSchema)
