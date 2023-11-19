@@ -24,14 +24,13 @@
     h3 {
       text-align: center;
     }
-
   </style>
 </head>
 
 <body>
   <div class="container">
-  <a href="/api/admin/products/create" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Create new product</a>
- <h3>Coupon table</h3>
+    <a href="/api/admin/products/create" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Create new product</a>
+    <h3>Coupon table</h3>
     <table id="datatable" class="table table-striped " style="width:100%">
       <thead>
         <tr>
@@ -46,25 +45,41 @@
         {{#each data}}
         <tr>
           <td>{{this.product_name}}</td>
-          <td >{{this.product_price}}</td>
+          <td>{{this.product_price}}</td>
           <td>{{this.description}}</td>
-          <td>{{this.categoryId}}</td>
-          <td><a href="/api/admin/products/{{this._id}} " style="text-decoration: none"><svg
-                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="color: #FF593E;"
-                class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                <path
-                  d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-              </svg></a></td>
+          <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
+          <td><a href="/api/admin/products/{{this._id}}" style="text-decoration: none"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="color: #FF593E;"
+              class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+              <path
+                d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+            </svg></a></td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-      </div>
+  </div>
 </body>
-    <script>
-        $(document).ready(function () {
-    $('#datatable').DataTable({
+<script>
+  $(document).ready(function () {
+    $('#datatable').DataTable();
+
+    // Lấy danh sách danh mục từ API và cập nhật tên danh mục cho từng sản phẩm
+    $.get('http://localhost:3000/api/categorys', function (categories) {
+      const categoryMap = {};
+
+      // Duyệt qua danh sách danh mục và tạo bản đồ ánh xạ
+      categories.forEach(function (category) {
+        categoryMap[category._id] = category.category_name;
+      });
+
+      // Duyệt qua các ô trong cột Category và cập nhật tên danh mục
+      $('.category-cell').each(function () {
+        const categoryId = $(this).data('category-id'); // Lấy categoryId từ thuộc tính data
+        const categoryName = categoryMap[categoryId]; // Tìm tên danh mục tương ứng
+        $(this).text(categoryName); // Cập nhật nội dung của ô thành tên danh mục
+      });
     });
   });
-    </script>
+</script>
 </html>

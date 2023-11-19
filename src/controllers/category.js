@@ -34,7 +34,16 @@ exports.removeCategory = async (req, res) => {
     });
   }
 };
-
+exports.getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({ deleted: false });
+    return res.status(200).json(categories);
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+}
 exports.updateCategoryUI = async (req, res) => {
   try {
     const id = req.params.id;

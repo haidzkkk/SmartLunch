@@ -51,13 +51,13 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     // Trích xuất ID đơn hàng từ trang web
-    var orderId = '{{data._id}}'; // Đảm bảo rằng bạn có thể trích xuất được ID đơn hàng từ trang web của bạn
+    var idorder = window.location.href.split('/').pop(); // Lấy ID từ URL trang chi tiết
 
     // Hàm cập nhật trạng thái đơn hàng
     function updateStatus() {
       // Gửi yêu cầu AJAX để lấy trạng thái
       $.ajax({
-        url: 'http://localhost:3000/api/order/' + orderId,
+        url: 'http://localhost:3000/api/order/' + idorder,
         method: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -78,10 +78,11 @@
         }
       });
     }
-    // Cập nhật trạng thái mỗi 30 giây
-    setInterval(updateStatus, 30000);
-    // Gọi hàm cập nhật trạng thái lần đầu
-    updateStatus();
+
+    // Gọi hàm cập nhật trạng thái khi trang được tải
+    $(document).ready(function () {
+      updateStatus();
+    });
   </script>
 </body>
 </html>
