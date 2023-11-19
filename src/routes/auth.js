@@ -6,17 +6,22 @@ const authenticate = require('../middlewares/authenticate').authenticate
 var upload = require('../config/configApp').upload
 
 var router = express.Router();
-
+const multer = require('multer');
+const ab = multer();
 router.get("/getCurrentUser",authenticate,authController.getCurrentUser)
 router.get("/users",authController.getAll)
+router.get("/shipper",authController.getAllShipper)
+
 router.get("/users/:id",authenticate,authController.getOneById)
 router.delete("/users/:id",authenticate,authorization,authController.removeByAdmin)
 router.patch("/users",authenticate, authController.updateUser)
 router.patch("/users/uploadAvatar",authenticate, upload.array("images", 1), authController.uploadAvatarUser)
 router.patch("/users/updateAvatar/:publicId",authenticate, upload.array("images", 1), authController.updateAvatarUser)
 router.post("/signup",authController.signup)
+router.post("/singupShipper",ab.none(),authController.signupShipper)
 
 router.post('/signin', authController.signin)
+router.post('/signinDeliveryApp', authController.signinShipper);
 router.post("/logout", authenticate, authController.logout)
 router.post("/refresh", authController.refreshToken)
 router.post("/verifyOTP", authController.verifyOTP)
@@ -30,8 +35,11 @@ router.get('/admin/users', authController.getUserUI);
 router.get('/admin/users/:id', authController.getUserByIdUI);
 router.get('/userbyadmin/:id', authController.getUserByAdmin);
 router.get('/deletebyadmin/:id', authController.removeByAdmin);
-router.get('/singin', authController.signin);
 router.post('/login',authController.loginAdmin)
+router.get("/admin/shipper/create", authController.getShipperCreateUI);
 
+
+router.post('/update/tokendevice',authenticate, authController.updateToken)
+router.post("/logout/mobile", authenticate, authController.logoutMobile)
 
 module.exports = router;

@@ -1,266 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Hiển thị dữ liệu API theo trạng thái</title>
-  <!-- CSS styles for your page -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.4.0/css/searchPanes.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css"> <!-- Your custom CSS file -->
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-    }
-
-    .bordered-table {
-      border: 1px solid #ccc;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-
-    h3 {
-      text-align: center;
-      color: #333;
-    }
-
-    table.table-striped {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    table.table-striped th, table.table-striped td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .name-column {
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      cursor: help;
-    }
-
-    .btn {
-      background-color: #FF593E;
-      color: #fff;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .dataTables_info {
-      display: none;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Your Page Title</title>
 </head>
+
 <body>
-  <div class="container">
-    <div class="bordered-table">
-      <h3>Order Table - Xác nhận</h3>
-      <table id="confirmedTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th class="name-column">Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Notes</th>
-            <th>Total</th>
-            <th>Status</th> <!-- Giữ "Status" trong bảng Xác nhận -->
-          </tr>
-        </thead>
-      </table>
-    </div>
 
-    <div class="bordered-table">
-      <h3>Order Table - Đang giao</h3>
-      <table id="shippingTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th class="name-column">Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Notes</th>
-            <th>Total</th>
-            <th>Status</th> <!-- Giữ "Status" trong bảng Đang giao -->
-          </tr>
-        </thead>
-      </table>
-    </div>
+  <div class="container mt-4">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" id="tab-confirmed" data-toggle="tab" href="#table-confirmed">Đang chờ xác nhận</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tab-confirmed-orders" data-toggle="tab" href="#table-confirmed-orders">Đã xác nhận đơn hàng</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tab-pending" data-toggle="tab" href="#table-pending">Đang giao hàng </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tab-delivered" data-toggle="tab" href="#table-delivered">Giao hàng thành công</a>
+      </li>
+   
+        <li class="nav-item">
+        <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Hủy đơn hàng </a>
+      </li>
 
-    <div class="bordered-table">
-      <h3>Order Table - Đang chuẩn bị</h3>
-      <table id="preparingTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th class="name-column">Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Notes</th>
-            <th>Total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+    <li class="nav-item">
+    <a class="nav-link" id="tab-delivered_refund_aaa" data-toggle="tab" href="#tab-delivered_refund">Hoàn hàng </a>
+</li>
+ 
+    </ul>
+
+    <div class="tab-content mt-2">
+      <div class="tab-pane fade show active" id="table-confirmed">
+        <table class="table" id="tab-confirmed">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Xác nhận</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="table-pending">
+        <table class="table" id="table-pending">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="table-confirmed-orders">
+        <table class="table" id="table-confirmed-orders">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="table-delivered">
+        <table class="table" id="table-delivered">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+     <div class="tab-pane fade" id="tab-delivered_cancel">
+    <table class="table" id="tab-delivered_cancel">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+        <div class="tab-pane fade" id="tab-delivered_refund_order">
+        <table class="table" id="tab-delivered_refund_order">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+    <div class="tab-pane fade" id="tab-delivered_refund">
+        <table class="table" id="tab-delivered_refund">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th class="name-column">Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="detail-column">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
+          </tbody>
+        </table>
+      </div>
+ 
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-  <!-- JavaScript libraries -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
-
-  <script>
+ <script>
     $(document).ready(function () {
-      var tableIndices = {
-        'confirmedTable': 1,
-        'shippingTable': 1,
-        'preparingTable': 1
-      };
+  var statusTableMap = {
+    'confirmed': '65264bc32d9b3bb388078974',
+    'pending': '65264c672d9b3bb388078978',
+    'confirmed-orders': '65264c102d9b3bb388078976',
+    'delivered': '6526a6e6adce6a54f6f67d7d',
+    'tab-delivered_cancel': '653bc0a72006e5791beab35b',
+    'tab-delivered_refund_return': '6555a1f5b7eb118e522069a5'
+    
+ 
+  };
 
-      function initializeDataTable(tableId) {
-        if (!$.fn.dataTable.isDataTable('#' + tableId)) {
-          $('#' + tableId).DataTable({
-            paging: false,
-          });
-        }
-      }
+  function updateTables(tables) {
+    tables.forEach(function (pair) {
+      var tabId = pair.tabId;
+      var tableId = pair.tableId;
+      updateTable(tabId, tableId);
+    });
+  }
 
-      // Mảng để lưu trữ các đơn đặt hàng có trạng thái "đang chuẩn bị" cùng với trạng thái tương ứng
-      var preparingOrders = [];
-
-      // AJAX request to fetch data
-      $.ajax({
-        url: 'http://localhost:3000/api/getAllorder',
-        method: 'GET',
-        dataType: 'json',
+function updateTable(tabId, tableId) {
+    console.log("Cập nhật bảng cho tab:", tabId);
+    $.ajax({
+        url: "http://localhost:3000/api/getAllOrder",
+        type: "GET",
         success: function (data) {
-          data.forEach(function (order) {
-            var productNames = order.products.map(function (product) {
-              return product.product_name;
-            }).join(', ');
+            console.log("Dữ liệu nhận được:", data);
+            var orders = Array.isArray(data) ? data : [];
+            $('#' + tableId + ' tbody').empty();
+            $.each(orders, function (index, order) {
+                console.log("ID status của order:", order.status ? order.status._id : null);
+                console.log("tabId:", tabId);
+                console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
+                if (order.status && order.status._id === statusTableMap[tabId]) {
+                    var productName = order.products[0].product_name;
+                    var phone = order.address.phoneNumber;
+                    var status = order.status.status_name;
+                    var address = order.address.addressLine;
+                    var total = order.total;
 
-            var nameLink = productNames;
-            var phone = order.address.phoneNumber;
-            var address = order.address.addressLine;
-            var notes = order.notes;
-            var total = order.total;
-            var status = order.status;
+                    var row = '<tr>' +
+                        '<td>' + (index + 1) + '</td>' +
+                        '<td>' + productName + '</td>' +
+                        '<td>' + phone + '</td>' +
+                        '<td>' + address + '</td>' +
+                        '<td>' + total + '</td>' +
+                        '<td>' + status + '</td>';
 
-            if (status.status_name.toLowerCase() === 'đang chuẩn bị') {
-              // Thay "Status" thành nút "Action" trong bảng Đang chuẩn bị
-              var targetTable = 'preparingTable';
-              initializeDataTable(targetTable);
-              var table = $('#' + targetTable).DataTable();
-              var currentIndex = tableIndices[targetTable];
-              var button = '<button class="btn btn-action" data-order-id="' + order._id + '" data-status-id="' + status._id + '">Action</button>';
-              table.row.add([
-                currentIndex,
-                nameLink,
-                phone,
-                address,
-                notes,
-                total,
-                button,
-              ]).draw();
-              tableIndices[targetTable]++;
+                    // Xác định nút tương ứng
+                    if (tabId === 'confirmed') {
+                        row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
+                            '</tr>';
+                    } else {
+                       row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
+                    }
 
-              // Lưu đơn đặt hàng và trạng thái tương ứng vào mảng preparingOrders
-              preparingOrders.push({ orderId: order._id, statusId: status._id });
-            } else {
-              // Giữ nguyên "Status" trong các bảng còn lại
-              var targetTable = 'confirmedTable';
-              if (status.status_name.toLowerCase() === 'đang giao') {
-                targetTable = 'shippingTable';
-              }
-              initializeDataTable(targetTable);
-              var table = $('#' + targetTable).DataTable();
-              var currentIndex = tableIndices[targetTable];
-              table.row.add([
-                currentIndex,
-                nameLink,
-                phone,
-                address,
-                notes,
-                total,
-                status.status_name,
-              ]).draw();
-              tableIndices[targetTable]++;
-            }
-          });
+                    row += '</tr>';
 
-          // Bắt sự kiện khi nút "Action" trong bảng "Đang chuẩn bị" được nhấn
-          $('#preparingTable tbody').on('click', 'button.btn-action', function () {
-            var orderId = $(this).data('order-id');
-            var statusId = $(this).data('status-id');
-
-            // Gọi API PATCH để cập nhật trạng thái từ "đang chuẩn bị" thành "đang giao"
-            $.ajax({
-              url: 'http://localhost:3000/api/order/' + orderId,
-              method: 'PATCH',
-              data: { status: '65435b342b44ca2d4c364a71' },
-              dataType: 'json',
-              success: function (response) {
-                // Xử lý dữ liệu từ API (response) theo cách bạn muốn
-                console.log('API response:', response);
-
-                // Sau khi cập nhật thành công, bạn có thể làm các thay đổi cần thiết trên bảng
-                // Ví dụ: Xóa hàng khỏi bảng "Đang chuẩn bị" và thêm vào bảng "Đang giao"
-                var preparingTable = $('#preparingTable').DataTable();
-                var shippingTable = $('#shippingTable').DataTable();
-                // Xóa hàng khỏi bảng "Đang chuẩn bị"
-                preparingTable.row($(this).parents('tr')).remove().draw();
-                // Tìm đơn đặt hàng và trạng thái tương ứng trong mảng preparingOrders và cập nhật trạng thái thành "đang giao"
-                var orderIndex = preparingOrders.findIndex(function (item) {
-                  return item.orderId === orderId && item.statusId === statusId;
-                });
-                if (orderIndex !== -1) {
-                  preparingOrders.splice(orderIndex, 1);
+                    $('#' + tableId + ' tbody').append(row);
+                } else {
+                    console.log("bbbb");
                 }
-                // Thêm đơn đặt hàng vào bảng "Đang giao"
-                shippingTable.row.add([
-                  preparingOrders.length + 1,
-                  nameLink,
-                  phone,
-                  address,
-                  notes,
-                  total,
-                  'đang giao',
-                ]).draw();
-              },
-              error: function (error) {
-                console.log('Error:', error);
-              }
             });
-          });
+            bindConfirmButton();
         },
         error: function (error) {
-          console.log('Error:', error);
+            console.log("Lỗi khi truy xuất dữ liệu:", error);
         }
-      });
     });
-  </script>
+}
+
+
+function bindConfirmButton() {
+    console.log('Binding confirm button click event');
+    $('.confirm-button').unbind('click');
+    $('.confirm-button').on('click', function () {
+        var idorder = $(this).data('order-id');
+        console.log('Confirm button clicked for order ID:', idorder);
+        confirmOrder(idorder);
+    });
+}
+
+
+function confirmOrder(idorder) {
+    // Gọi API PATCH khi nhấp vào nút xác nhận
+////////////////
+ $.ajax({
+    url: 'http://localhost:3000/api/order/' + idorder,
+    method: 'PATCH',
+    data: { status: '65264c102d9b3bb388078976' }, // Thay thế 'new_status_id' bằng ID trạng thái mới thực sự
+    dataType: 'json',
+    success: function (response) {
+      
+     console.log('Phản hồi từ API:', response);
+  
+        updateTable('confirmed', 'tab-confirmed');
+        },
+    
+    error: function (error) {
+      // Xử lý lỗi
+      console.log('Lỗi:', error);
+    }
+  });
+  
+}
+
+$(document).on('click', '.detail-button', function () {
+    var idorder = $(this).data('order-id');
+    // Chuyển hướng đến trang chi tiết với idorder
+    window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
+});
+
+
+  // Sử dụng sự kiện của tab trong Bootstrap
+  $('.nav-tabs a').on('shown.bs.tab', function (e) {
+    var tabId = $(e.target).attr('id').replace('tab-', '');
+    console.log("tabId:", tabId);
+    var tableId = 'table-' + tabId;
+    updateTable(tabId, tableId);
+    if (tabId === 'confirmed') {
+      bindConfirmButton();
+    }
+  });
+
+  // Nạp dữ liệu cho tab đang hoạt động ban đầu
+  var tablesToUpdate = [
+    { tabId: 'confirmed', tableId: 'tab-confirmed' },
+    { tabId: 'pending', tableId: 'table-pending' },
+    { tabId: 'confirmed-orders', tableId: 'table-confirmed-orders' },
+    { tabId: 'delivered', tableId: 'table-delivered' },
+    { tabId: 'tab-delivered_cancel', tableId: 'tab-delivered_refund_order' },
+   { tabId: 'tab-delivered_refund_return', tableId: 'tab-delivered_refund' },
+  ];
+
+  updateTables(tablesToUpdate);
+});
+</script>
+
+
 </body>
+
 </html>

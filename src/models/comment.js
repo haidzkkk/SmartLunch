@@ -12,10 +12,21 @@ const CommentSchema = new mongoose.Schema({
     ref: "Product",
     required: true
   },
+  orderId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Order",
+    required: true
+  },
+  sizeId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Size",
+    required: true
+  },
   description: {
     type: String,
     required: true
   },
+  images : {type: Array, require: false},
   rating: {
     type: Number,
     required: true

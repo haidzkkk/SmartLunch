@@ -17,10 +17,9 @@ const orderSchema = mongoose.Schema({
       product_name: String,
       product_price: Number,
       image: String,
-      consignee_name: String,
       purchase_quantity: Number,
       sizeId: String,
-   
+      sizeName: String,
     }
   ],
   discount: {
@@ -34,11 +33,7 @@ const orderSchema = mongoose.Schema({
   status: {
     type: mongoose.Types.ObjectId,
     ref: "Status",
-    default: '65488caa8cd8c0661be05f78'
-  },
-  phone: {
-    type: String,
-    required: true
+    default: '65264bc32d9b3bb388078974'
   },
   shipperId: {
     type: mongoose.Types.ObjectId,
@@ -50,10 +45,6 @@ const orderSchema = mongoose.Schema({
     ref: "Address",
     required: true
   },
-  consignee_name: {
-    type: String,
-    required: true
-  },
   notes: {
     type: String,
     required: false
@@ -63,10 +54,12 @@ const orderSchema = mongoose.Schema({
     ref: "Status",
     default: '654892638cd8c0661be05f7c'
   },
-  payerId: {
-    type: String
-  }
-}, 
+  isPayment: {
+    type: Boolean,
+    default: false
+  },
+},
+
   { timestamps: true, versionKey: false });
   let orderModel= mongoose.model("Order", orderSchema)
   module.exports =orderModel

@@ -16,11 +16,9 @@ exports.orderSchema = Joi.object({
     total: Joi.number().min(0).required().messages({
         "number.min": "Không được nhập số âm"
     }),
-    consignee_name: Joi.string(),
-    phone: Joi.string(),
-    status: Joi.string(),
+    status: Joi.string().allow(null),
     statusPayment: Joi.string().allow(null),
     address: Joi.string(),
     notes: Joi.string().allow(null),
-    payerId: Joi.string()
+    isPayment: Joi.boolean().allow(null),
 })

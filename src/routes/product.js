@@ -26,30 +26,38 @@ router.get(
   "/products/restore/:id",
   productController.restoreProduct
 );
-router.get("/products/views/:id", productController.viewProduct);
-router.get("/category/products/:categoryId",productController.getProductByCategoryId);
-router.get("/admin/products", productController.getProductUI);
-router.get("/admin/products/create", productController.getProductCreateUI);
-router.get("/admin/products/preview", productController.getProductPreview);
-router.get("/admin/products/:id", productController.getProductByIdUI);
+// router.get("/products/views/:id", authenticate,productController.viewProduct);
+// router.get("/category/products/:categoryId",authenticate,productController.getProductByCategoryId);
+// router.get('/admin/products',authenticate, productController.getProductUI);
+router.get("/admin/products/create", authenticate,productController.getProductCreateUI);
+// router.get("/admin/products/preview",authenticate, productController.getProductPreview);
+// router.get("/admin/products/:id",authenticate, productController.getProductByIdUI);
 // router.post("/admin/create/products",upload.array("images", 10), productController.addProductUi);
 router.get("/productbyadmin/products", productController.getProduct);
 router.delete("/products/:id", authenticate, authorization, productController.remove);
-router.delete("/products/force/:id", authenticate, authorization, productController.removeForce);
+router.delete("/products/force/:id", productController.removeForce);
 router.post("/products", authenticate, authorization , upload.array("images", 10), productController.addProduct);
+
 router.post("/products/:id", authenticate, authorization,upload.array("images", 10), productController.updateProduct);
+
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 
-
-router.get("/products/views/:id", productController.viewProduct);
+router.get("/products/views/:id",authenticate, productController.viewProduct);
 router.get("/category/products/:categoryId", productController.getProductByCategoryId)
-router.get('/admin/products', productController.getProductUI);
-router.get('/admin/products/:id', productController.getProductByIdUI);
-router.get('/productbyadmin/products', productController.getProduct);
-router.get("/deletebyadmin/products/:id", productController.removeProduct);
-router.get("/remove/products/:id", productController.remove);
 
-router.post("/updatebyadmin/products/:id", productController.updateProductUI);
+router.get('/admin/products', authenticate,productController.getProductUI);
+router.get('/admin/products/:id', upload.array("images", 10),productController.getProductByIdUI);
+router.get('/productbyadmin/products', productController.getProduct);
+router.get("/deletebyadmin/products/:id",productController.removeProduct);
+router.get("/remove/products/:id", productController.remove);
+router.post("/updatebyadmin/products/:id", upload.array("images", 10) ,productController.updateProduct);
+
+router.get('/admin/products', productController.getProductUI);
+router.get('/admin/products/:id',authenticate, upload.array("images", 10),productController.getProductByIdUI);
+router.get('/productbyadmin/products',authenticate, productController.getProduct);
+router.get("/deletebyadmin/products/:id",authenticate,productController.removeProduct);
+router.get("/remove/products/:id",authenticate, productController.remove);
+router.post("/updatebyadmin/products/:id",authenticate, upload.array("images", 10) ,productController.updateProduct);
 
 module.exports = router;
 

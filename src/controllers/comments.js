@@ -1,36 +1,38 @@
 
 var Comment = require("../models/comment")
-var CommentSchema = require("../schemas/comment").CommentSchema
 var Product = require("../models/product")
+var Order = require("../models/order")
 var Auth = require("../models/auth")
-
+var CommentSchema = require("../schemas/comment").CommentSchema
+var { uploadImage } = require('../controllers/upload');
 
 
 exports.getCommentFromProduct = async (req, res) => {
     try {
+        const limitPosition = req.query.limitPosition
         const { productId } = req.params;
-        const comments = await Comment.find({ productId: productId }).populate({
-            path: 'userId',
-            select: 'last_name email avatar',
-        });
+
+        if (!limitPosition) {
+
+        }
+
+        const comments = await Comment.find({ productId: productId })
+        .populate("userId")
+        .populate("productId")
+        .populate("sizeId")
+        .sort({ createdAt: -1 })
+        .limit(limitPosition)
+        .exec();
+
+        console.log(productId + " 0 " + comments);
+
         if (!comments || comments.length === 0) {
             return res.status(404).json({
                 message: 'Không tìm thấy theo sản phẩm bình luận',
             });
         }
 
-        const formattedComments = comments.map(comment => ({
-            _id: comment._id,
-            userId: comment.userId,
-            productId: comment.productId,
-            description: comment.description,
-            formattedCreatedAt: comment.formattedCreatedAt,
-        }));
-
-        return res.status(200).json({
-            message: 'Lấy bình luận theo sản phẩm thành công',
-            comments: formattedComments,
-        });
+        return res.status(200).json(comments);
     } catch (error) {
         res.status(400).json({
             message: error.message,
@@ -62,7 +64,16 @@ exports.getOneComment = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const { userId, rating, description, productId } = req.body;
+    //     {
+    //     productId,
+    //     orderId,
+    //     sizeId,
+    //     description,
+    //     rating,
+    //     }
+        const commentBody = req.body;
+        var files = req.files 
+
         const { error } = CommentSchema.validate(req.body, { abortEarly: false });
         if (error) {
             const errors = error.details.map((err) => err.message);
@@ -70,66 +81,64 @@ exports.create = async (req, res) => {
                 message: errors
             })
         }
-        if (!userId) {
-            return res.status(401).json({
-              message: "Bạn phải đang nhập mới được đánh giá sản phẩm!",
-            });
-        }
-         // Check if the product exists
-        const product = await Product.findById(productId);
 
+        const orderCheck = await Order.findById(commentBody.orderId).populate("status")
+        if(!orderCheck){
+            return res.status(404).json({
+                message: "đơn hàng không tồn tại.",
+             });
+        }
+
+        // if(orderCheck.status._id != "6526a6e6adce6a54f6f67d7d"){
+        //     return res.status(404).json({
+        //         message: "Bạn không có điều kiện để comment.",
+        //      });
+        // }
+
+         // Check if the product exists
+        const product = await Product.findById(commentBody.productId);
+        console.log(commentBody.productId);
         if (!product) {
              return res.status(404).json({
                 message: "Sản phẩm không tồn tại.",
              });
         }
-          // Check if the user exists
-        const user = await Auth.findById(userId);
-
-          if (!user) {
-          return res.status(404).json({
-          message: "Người dùng không tồn tại.",
-          });
-        }
 
           // Check if the user already reviewed the product
-    const existingComment = await Comment.findOne({ userId, productId });
-
+        const existingComment = await Comment.findOne({ 
+            userId: req.user._id, 
+            productId: commentBody.productId,
+            orderId: commentBody.orderId
+        });
         if (existingComment) {
           return res.status(401).json({
           message: "Bạn đã đánh giá sản phẩm này trước đó.",
          });
         }
-        const user_fullName = user?.user_fullName;
-        const user_avatar = user?.user_avatar;
-        const comment = await Comment.create({
-        user_fullName,
-        user_avatar,
-        userId,
-        rating,
-        description,
-        productId,
-    });
-       const comments = await Comment.find({ productId });
-        const totalRating = comments.reduce(
-         (totalRating, rating) => totalRating + rating.rating,
-        0
-      );
-     // Tính toán số lượng sao và lươtj đánh giá
-        const reviewCount = comments.length;
+
+        commentBody.images = await uploadImage(files)
+        commentBody.userId = req.user._id
+        const comment = await Comment.create(commentBody)
+
+    
+        const comments = await Comment.find({ productId: comment.productId });
+        const totalRating = comments.reduce((totalRating, rating) => totalRating + rating.rating, 0);
+      
+      // Tính toán số lượng sao và lươtj đánh giá
+         const reviewCount = comments.length;
          const averageScore = totalRating / reviewCount;
- 
          product.average_score = Math.round(averageScore);
          product.review_count = reviewCount;
         await product.save();
-     if (user) {
-       return res.status(200).json({
-         message: "Bạn đã đánh giá thành công sản phẩm này!",
-         success: true,
-         comment,
-       });
-     }
+        
+        var commentPopulate = await Comment.findById(comment._id)
+        .populate("userId")
+        .populate("productId")
+        .populate("sizeId")
+
+       return res.status(200).json(commentPopulate);
     } catch (error) {
+        console.log("Lỗi tạo comment: " + error);
         return res.status(400).json({
             message: error,
         });
