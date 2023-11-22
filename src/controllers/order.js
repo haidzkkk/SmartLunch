@@ -165,9 +165,9 @@ exports.getAllOrder = async (req, res) => {
         .populate('address')
         .populate('statusPayment')
 
-        // for (const order of orders) {
-        //     await order.address.populate('userId');
-        // }
+        for (const order of orders) {
+            await order.address.populate('userId');
+        }
 
         return res.status(200).json(orders);
     } catch (error) {
