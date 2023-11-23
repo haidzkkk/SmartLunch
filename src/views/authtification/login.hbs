@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,22 +76,22 @@
                   </div>
 
                   <form id="loginForm">
-                    <p>Please login to your account</p>
 
                     <div class="form-outline mb-4">
-                      <input type="email" class="form-control" placeholder="Email address" id="email" required />
-                      <label class="form-label" for="form2Example11">Username</label>
+                      <label class="form-label" for="form2Example11">Tên đăng nhập</label>
+                      <input type="email" class="form-control" placeholder="Email" id="email" required />
+
                     </div>
 
                     <div class="form-outline mb-4">
+                      <label class="form-label" for="form2Example22">Mật khẩu</label>
                       <input type="password" class="form-control" id="password" placeholder="Password" required />
-                      <label class="form-label" for="form2Example22">Password</label>
+
                     </div>
                     <p id="message"></p>
                     <div class="text-center pt-1 mb-5 pb-1">
                       <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button"
-                        onclick="login()">Log
-                        in</button>
+                        onclick="login()">Đăng nhập</button>
                     </div>
                     <div class="d-flex align-items-center justify-content-center pb-4">
 
@@ -118,34 +119,35 @@
 </body>
 
 <script>
- function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-  fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.accessToken) {
-      // Lưu token vào cookie
-      document.cookie = `accessToken=${data.accessToken}; path=/`;
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.accessToken) {
+          // Lưu token vào cookie
+          document.cookie = `accessToken=${data.accessToken}; path=/`;
 
-      if (data.role == "admin") {
-        // Chuyển hướng đến trang admin
-        window.location.href = "/api/admin/products";
-      } else {
-        document.getElementById("message").innerText = "Bạn không có quyền";
-      }
-    } else {
-      document.getElementById("message").innerText = "Đăng nhập thất bại";
-    }
-  });
-}
+          if (data.role == "admin") {
+            // Chuyển hướng đến trang admin
+            window.location.href = "/dashboard";
+          } else {
+            document.getElementById("message").innerText = "Bạn không có quyền";
+          }
+        } else {
+          document.getElementById("message").innerText = "Đăng nhập thất bại";
+        }
+      });
+  }
 
 </script>
+
 </html>

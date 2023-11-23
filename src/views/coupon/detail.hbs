@@ -17,23 +17,22 @@
     <i style="float: right; font-size: small; text-">
       ID: {{data._id}}
     </i>
-    <h3>Detail Coupon</h3>
     <p></p>
     <form action="http://localhost:3000/api/coupons/{{data._id}}" method="post" id="updateForm">
       <div class="mb-3">
-        <label class="form-label">Coupon name</label>
+        <label class="form-label">Tên mã giảm giá</label>
         <input class="form-control" name="coupon_name" id="coupon_name" value="{{data.coupon_name}}" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Coupon code</label>
+        <label class="form-label">Code</label>
         <input class="form-control" name="coupon_code" id="coupon_code" value="{{data.coupon_code}}" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Coupon content</label>
+        <label class="form-label">Nội dung</label>
         <input class="form-control" name="coupon_content" id="coupon_content" value="{{data.coupon_content}}"
           required="true">
         <div id="emailHelp" class="form-text"></div>
@@ -42,11 +41,11 @@
 
       <div class="row">
         <div class="col">
-          <label class="form-label">Coupon quantity</label>
+          <label class="form-label">Số lượng</label>
           <input type="number" class="form-control" name="coupon_quantity" id="coupon_quantity"
             value="{{data.coupon_quantity}}" required="true">
           <div id="emailHelp" class="form-text"></div>
-          <div id="emailHelp" class="form-text">Please price only number</div>
+          <div id="emailHelp" class="form-text">Hãy nhập số</div>
         </div>
 
         <div class="col">
@@ -54,7 +53,7 @@
           <input type="number" class="form-control" name="discount_amount" id="discount_amount"
             value="{{data.discount_amount}}" required="true">
           <div id="emailHelp" class="form-text"></div>
-          <div id="emailHelp" class="form-text">Please price only number</div>
+          <div id="emailHelp" class="form-text">Hãy nhập số</div>
         </div>
       </div>
       <div class="row">
@@ -63,16 +62,16 @@
           <input type="number" class="form-control" name="min_purchase_amount" id="min_purchase_amount"
             value="{{data.min_purchase_amount}}" required="true">
           <div id="emailHelp" class="form-text"></div>
-          <div id="emailHelp" class="form-text">Please price only number</div>
+          <div id="emailHelp" class="form-text">Hãy nhập số</div>
         </div>
         <div class="col">
-          <label class="form-label">Coupon expiration date</label>
+          <label class="form-label">Ngày hết hạn</label>
           <input type="datetime-local" class="form-control" name="expiration_date" id="expiration_date"
             value="{{data.expiration_date}}" required="true">
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
-      <button type="submit" class="btn">Update</button>
+      <button type="submit" class="btn">Cập nhật</button>
     </form>
     <script>
       document.getElementById('updateForm').addEventListener('submit', function (event) {
@@ -88,7 +87,7 @@
       });
     </script>
     <form action="http://localhost:3000/api/delete/coupons/{{data._id}}" method="get" id="deleteForm">
-      <button type="submit" onclick="abc()" class="btn" style="float: right">Delete</button>
+      <button type="submit" onclick="abc()" class="btn" style="float: right">Xóa</button>
     </form>
     <dir class="m-5 pb-5"></dir>
     <script>
