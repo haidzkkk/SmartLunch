@@ -17,7 +17,6 @@
     <i style="float: right; font-size: small; text-">
       ID: {{data._id}}
     </i>
-    <h3>Detail User</h3>
     <p></p>
     <img src="{{data.avatar.url}}" class="rounded mx-auto d-block" width="200px" height="200px" alt="">
     <form>
@@ -29,26 +28,26 @@
       </div>
       <div class="row">
         <div class="col">
-          <label class="form-label">First name</label>
+          <label class="form-label">Tên</label>
           <input class="form-control" name="coupon_name" id="coupon_name" disabled="disabled"
             value="{{data.first_name}}">
         </div>
         <div class="col">
-          <label class="form-label">Last name</label>
+          <label class="form-label">Họ</label>
           <input class="form-control" name="coupon_code" id="coupon_code" disabled="disabled"
             value="{{data.last_name}}">
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <label class="form-label">Gender</label>
+          <label class="form-label">Giới tính</label>
           <input class="form-control" name="coupon_quantity" id="gender" name="gender" disabled="disabled"
             value="{{data.gender}}">
           <div id="emailHelp" class="form-text"></div>
         </div>
 
         <div class="col">
-          <label class="form-label">Birthday</label>
+          <label class="form-label">Ngày sinh</label>
           <input class="form-control" name="coupon_quantity" id="coupon_quantity" disabled="disabled"
             value="{{data.birthday}}">
           <div id="emailHelp" class="form-text"></div>
@@ -56,7 +55,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Phone</label>
+        <label class="form-label">Số điện thoại</label>
         <input class="form-control" name="min_purchase_amount" id="min_purchase_amount" disabled="disabled"
           value="{{data.phone}}">
         <div id="emailHelp" class="form-text"></div>
@@ -69,7 +68,7 @@
           <div id="emailHelp" class="form-text"></div>
         </div>
         <div class="col">
-          <label class="form-label">Verified</label>
+          <label class="form-label">Xác minh</label>
           <input class="form-control" name="min_purchase_amount" id="min_purchase_amount" disabled="disabled"
             value="{{data.verified}}">
           <div id="emailHelp" class="form-text"></div>
@@ -95,7 +94,7 @@
           <div id="emailHelp" class="form-text"></div>
         </div>
         <div class="col">
-          <label class="form-label">CreatedAt</label>
+          <label class="form-label">Ngày tham gia</label>
           <input type="datetime" class="form-control" name="min_purchase_amount" id="min_purchase_amount"
             disabled="disabled" value="{{data.createdAt}}">
           <div id="emailHelp" class="form-text"></div>
@@ -104,7 +103,7 @@
     </form>
     <form action="http://localhost:3000/api/deletebyadmin/{{data._id}}" method="get" id="deleteForm">
       <div class="d-grid gap-2 col-6 mx-auto m-5 pb-5 ">
-        <button type="submit" onclick="abc()" class="btn text-center">Delete</button>
+        <button type="submit" onclick="abc()" class="btn text-center">Xóa</button>
       </div>
     </form>
     <script>
