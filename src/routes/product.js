@@ -43,6 +43,7 @@ router.post("/products/:id", authenticate, authorization,upload.array("images", 
 router.patch("/products/restore/:id", authenticate, authorization, productController.restoreProduct);
 
 router.get("/products/views/:id",authenticate, productController.viewProduct);
+router.get("/products/search/:text",authenticate, productController.searchProductByName);
 router.get("/category/products/:categoryId", productController.getProductByCategoryId)
 
 router.get('/admin/products', authenticate,productController.getProductUI);
