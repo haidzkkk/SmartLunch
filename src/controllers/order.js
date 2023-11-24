@@ -155,9 +155,13 @@ exports.getOrderById = async (req, res) => {
 exports.getAllOrder = async (req, res) => {
     try {
         const statusId = req.query.statusId;
+        const statusPaymentId = req.query.statusPaymentId;
         const query = {};
         if (statusId) {
             query.status = statusId;
+            if(statusPaymentId){
+                query.statusPayment = statusPaymentId;
+            }
         }
         const orders = await Order.find(query)
         .populate('userId')
@@ -322,12 +326,6 @@ exports.updateOrder = async (req, res) => {
         if (shipperId) {
             body.shipperId = shipperId;
         }
-        const order = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
-        order.address = await order.address.populate('userId')
 
         if (!order) {
             return res.status(404).json({
@@ -345,15 +343,6 @@ exports.updateOrder = async (req, res) => {
             message: error.message
         });
     }
-};
-
-const findOrderById = async (id) => {
-    return await Order.findById(id)
-        .populate('products.productId')
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment');
 };
 
 const handleShipperId = (shipperId, order, body) => {

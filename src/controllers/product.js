@@ -86,6 +86,26 @@ exports.getProduct = async (req, res) => {
   }
 };
 
+exports.searchProductByName= async(req,res)=>{
+  try {
+    const textSearch = req.params.text
+    const products = await Product.find({
+        $and: [
+            {
+                $or: [
+                    { product_name: { $regex: new RegExp(textSearch, "i") } },
+                ],
+            }
+        ],
+    });
+    res.status(200).json(products)
+} catch (error) {
+    return res.status(400).json({
+        message: error.message
+    })
+}
+}
+
 
 exports.getAll = async (req, res) => {
   const {
@@ -294,7 +314,7 @@ exports.viewProduct = async (req, res) => {
 
 exports.getProductByCategoryId = async (req, res) => {
   try {
-    const categoryId = req.params.categoryId; // Lấy categoryId từ tham số URL
+    const categoryId = req.params.categoryId;
 
     // Tìm tất cả sản phẩm có categoryId tương ứng
     const products = await Product.find({ categoryId: categoryId });
