@@ -19,5 +19,7 @@ exports.CommentSchema = Joi.object({
         'number.max': 'rating phải nhỏ hơn hoặc bằng 5.',
         'any.required': 'rating không được để trống.',
     }),
+    sizeName: Joi.string().allow(null),
+    sizePrice: Joi.string().allow(null),
     formattedCreatedAt: Joi.string().optional(),
 }).options({ abortEarly: false });
