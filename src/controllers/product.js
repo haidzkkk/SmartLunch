@@ -1,7 +1,5 @@
 var Product = require("../models/product.js");
-var Category = require("../models/category.js");
 var ProductSchema = require("../schemas/product.js").ProductSchema;
-const cloudinary = require("cloudinary").v2;
 var { uploadImage, updateImage } = require("../controllers/upload");
 const fetch = require('node-fetch');
 const { response } = require("express");
@@ -13,10 +11,8 @@ exports.getProductUI = async (req, res) => {
 };
 
 exports.getProductCreateUI = async (req, res) => {
-  const token = res.locals.token;
-  console.log("aaaaaaaaaa");
-  console.log("Token:", token);
-  res.render('product/create', { layout: 'Layouts/home', token });
+
+  res.render('product/create', { layout: 'Layouts/home' });
 }
 exports.getProductPreview = async (req, res) => {
   
@@ -229,11 +225,6 @@ exports.addProduct = async (req, res) => {
     body.images = images;
 
     const product = await Product.create(body);
-    // await Category.findOneAndUpdate(product.categoryId, {
-    //   $addToSet: {
-    //     products: product._id,
-    //   },
-    // });
     if (product.length === 0) {
       return res.status(400).json({
         message: "Thêm sản phẩm thất bại",
@@ -271,11 +262,6 @@ exports.updateProduct = async (req, res) => {
     
 
     const product = await Product.findByIdAndUpdate(id,body);
-    // await Category.findOneAndUpdate(product.categoryId, {
-    //   $addToSet: {
-    //     products: product._id,
-    //   },
-    // });
     if (product.length === 0) {
       
       return res.status(400).json({
@@ -293,7 +279,35 @@ exports.updateProduct = async (req, res) => {
 };
 
 
+exports.toggleActive = async (req, res) => {
+  try {
+    const productId = req.params.productId;
 
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Sản phẩm không tồn tại",
+      });
+    }
+
+    // Đảo ngược trạng thái isActive
+    product.isActive = !product.isActive;
+
+    // Lưu sản phẩm đã cập nhật
+    await product.save();
+
+    res.status(200).json({
+      message: "Trạng thái isActive đã được cập nhật",
+      isActive: product.isActive,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Đã xảy ra lỗi khi cập nhật trạng thái isActive",
+      error: err,
+    });
+  }
+};
 
 exports.viewProduct = async (req, res) => {
   try {

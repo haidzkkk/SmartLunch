@@ -21,12 +21,16 @@
     <form action="http://localhost:3000/api/coupons/{{data._id}}" method="post" id="updateForm">
       <div class="mb-3">
         <label class="form-label">Tên mã giảm giá</label>
-        <input class="form-control" name="coupon_name" id="coupon_name" value="{{data.coupon_name}}" required="true">
+
+        <input class="form-control" name="coupon_name" id="coupon_name" value="{{data.coupon_content}}" required="true">
+
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Code</label>
+n
+        <label class="form-label">Mã</label>
+
         <input class="form-control" name="coupon_code" id="coupon_code" value="{{data.coupon_code}}" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
@@ -49,7 +53,7 @@
         </div>
 
         <div class="col">
-          <label class="form-label">Coupon discount amount</label>
+          <label class="form-label">Phần %</label>
           <input type="number" class="form-control" name="discount_amount" id="discount_amount"
             value="{{data.discount_amount}}" required="true">
           <div id="emailHelp" class="form-text"></div>
@@ -58,7 +62,8 @@
       </div>
       <div class="row">
         <div class="col">
-          <label class="form-label">Coupon min purchase amount</label>
+          <label class="form-label">Giá được áp dụng mã
+          </label>
           <input type="number" class="form-control" name="min_purchase_amount" id="min_purchase_amount"
             value="{{data.min_purchase_amount}}" required="true">
           <div id="emailHelp" class="form-text"></div>
@@ -71,7 +76,10 @@
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
-      <button type="submit" class="btn">Cập nhật</button>
+
+      <button type="submit" class="btn" style="margin-top: 30px;">Cập nhật</button>
+
+
     </form>
     <script>
       document.getElementById('updateForm').addEventListener('submit', function (event) {
@@ -82,12 +90,15 @@
           if (window.location.href.includes('/api/admin/coupons')) {
             window.location.href = 'http://localhost:3000/api/admin/coupons';
           } else {
+
           }
         }
       });
     </script>
     <form action="http://localhost:3000/api/delete/coupons/{{data._id}}" method="get" id="deleteForm">
-      <button type="submit" onclick="abc()" class="btn" style="float: right">Xóa</button>
+
+      <button type="submit" onclick="abc()" class="btn" style="float: right;margin-top: -30px">Xóa</button>
+
     </form>
     <dir class="m-5 pb-5"></dir>
     <script>

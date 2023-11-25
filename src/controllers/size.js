@@ -59,21 +59,40 @@ exports.createSize = async (req, res, next) => {
   try {
     const sizeBody = req.body;
 
-    const product = await Product.findById(sizeBody.productId)
-    if(!product){
+    // Kiểm tra sự tồn tại của sản phẩm
+    const product = await Product.findById(sizeBody.productId);
+    if (!product) {
       return res.status(404).json({
         message: "Sản phẩm không tồn tại",
       });
     }
 
-    await Size.create(sizeBody);
-    res.status(303).set('Location', '/api/admin/size').send();
+    console.log("Size Body:", sizeBody);
+
+    // Tạo một đối tượng Size mới
+    const newSize = new Size({
+      size_name: sizeBody.size_name,
+      size_price: sizeBody.size_price,
+      productId: sizeBody.productId,
+    });
+
+    // Lưu đối tượng Size vào cơ sở dữ liệu
+    await newSize.save();
+
+    // Định dạng lại phản hồi và chuyển hướng
+    res.status(201).json({
+      message: "Kích thước đã được tạo thành công",
+      size: newSize,
+    });
   } catch (err) {
-    return res.status(400).json({
-      message: err,
+    console.error("Error creating size:", err);
+    return res.status(500).json({
+      message: "Có lỗi xảy ra khi tạo kích thước",
+      error: err.message,
     });
   }
 };
+
 
 exports.removeSize = async (req, res) => {
   try {

@@ -7,11 +7,54 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Your Page Title</title>
 </head>
+<style>
+.table th,
+.table td {
 
+  overflow: hidden;
+ 
+}
+
+/* Chỉnh kích thước cột */
+.table th:first-child,
+.table td:first-child {
+  width: 60px;
+}
+
+/* Xóa kích thước cố định cho các cột không cần */
+.table th.detail-column,
+.table td.detail-column,
+.table th.confirm-column,
+.table td.confirm-column {
+  width: auto;
+  max-width: 150px; /* Đặt chiều rộng tối đa cho các cột không có kích thước cố định */
+}
+
+.container {
+  max-width: 100%; /* Đặt chiều rộng tối đa cho container */
+}
+
+.nav-tabs {
+  overflow-x: auto; /* Cho phép cuộn nếu nội dung quá rộng */
+  white-space: nowrap; /* Ngăn chúng xuống dòng */
+}
+
+.nav-item {
+  width: auto; /* Đặt chiều rộng tự động cho các tab */
+}
+ .btn {
+      background-color: #FF593E;
+      color: aliceblue;
+    }
+
+
+</style>
 <body>
-
+ <h3>Bảng đơn hàng </h3>
   <div class="container mt-4">
+   
     <ul class="nav nav-tabs">
+      
       <li class="nav-item">
         <a class="nav-link active" id="tab-confirmed" data-toggle="tab" href="#table-confirmed">Đang chờ xác nhận</a>
       </li>
@@ -32,7 +75,6 @@
     <li class="nav-item">
     <a class="nav-link" id="tab-delivered_refund_aaa" data-toggle="tab" href="#tab-delivered_refund">Hoàn hàng </a>
 </li>
- 
     </ul>
 
     <div class="tab-content mt-2">
@@ -41,11 +83,11 @@
           <thead>
             <tr>
               <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
               <th class="detail-column">Xác nhận</th>
             </tr>
           </thead>
@@ -59,12 +101,12 @@
           <thead>
             <tr>
               <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -76,13 +118,13 @@
         <table class="table" id="table-confirmed-orders">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+           <th>STT</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -94,13 +136,13 @@
         <table class="table" id="table-delivered">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+            <th>STT</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -113,12 +155,12 @@
           <thead>
             <tr>
               <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -130,13 +172,13 @@
         <table class="table" id="tab-delivered_refund_order">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+             <th>STT</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -148,13 +190,13 @@
         <table class="table" id="tab-delivered_refund">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th class="detail-column">Detail</th>
+           <th>STT</th>
+              <th class="name-column">Tên sản phẩm</th>
+              <th>Số đt</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -169,144 +211,152 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
- <script>
+  <script>
     $(document).ready(function () {
-  var statusTableMap = {
-    'confirmed': '65264bc32d9b3bb388078974',
-    'pending': '65264c672d9b3bb388078978',
-    'confirmed-orders': '65264c102d9b3bb388078976',
-    'delivered': '6526a6e6adce6a54f6f67d7d',
-    'tab-delivered_cancel': '653bc0a72006e5791beab35b',
-    'tab-delivered_refund_return': '6555a1f5b7eb118e522069a5'
-    
- 
-  };
+      var sttCounter = 0;
+      var statusTableMap = {
+        'confirmed': '65264bc32d9b3bb388078974',
+        'pending': '65264c672d9b3bb388078978',
+        'confirmed-orders': '65264c102d9b3bb388078976',
+        'delivered': '6526a6e6adce6a54f6f67d7d',
+        'tab-delivered_cancel': '653bc0a72006e5791beab35b',
+        'tab-delivered_refund': '6555a1f5b7eb118e522069a5',
+        'hoanhang': '6560466ed13bcf53cec8deea'
+      };
 
-  function updateTables(tables) {
-    tables.forEach(function (pair) {
-      var tabId = pair.tabId;
-      var tableId = pair.tableId;
-      updateTable(tabId, tableId);
-    });
-  }
+      function updateTables(tables) {
+        tables.forEach(function (pair) {
+          var tabId = pair.tabId;
+          var tableId = pair.tableId;
+          updateTable(tabId, tableId);
+        });
+      }
 
-function updateTable(tabId, tableId) {
-    console.log("Cập nhật bảng cho tab:", tabId);
-    $.ajax({
-        url: "http://localhost:3000/api/getAllOrder",
-        type: "GET",
-        success: function (data) {
+      function updateTable(tabId, tableId) {
+        console.log("Cập nhật bảng cho tab:", tabId);
+        $.ajax({
+          url: "http://localhost:3000/api/getAllOrder",
+          type: "GET",
+          success: function (data) {
             console.log("Dữ liệu nhận được:", data);
             var orders = Array.isArray(data) ? data : [];
             $('#' + tableId + ' tbody').empty();
             $.each(orders, function (index, order) {
-                console.log("ID status của order:", order.status ? order.status._id : null);
-                console.log("tabId:", tabId);
-                console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
-                if (order.status && order.status._id === statusTableMap[tabId]) {
-                    var productName = order.products[0].product_name;
-                    var phone = order.address.phoneNumber;
-                    var status = order.status.status_name;
-                    var address = order.address.addressLine;
-                    var total = order.total;
+              console.log("ID status của order:", order.status ? order.status._id : null);
+              console.log("tabId:", tabId);
+              console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
+              if (order.status && order.status._id === statusTableMap[tabId]) {
+                var productName = order.products[0].product_name;
+                var phone = order.address.phoneNumber;
+                var status = order.status.status_name;
+                var address = order.address.addressLine;
+                var total = order.total;
 
-                    var row = '<tr>' +
-                        '<td>' + (index + 1) + '</td>' +
-                        '<td>' + productName + '</td>' +
-                        '<td>' + phone + '</td>' +
-                        '<td>' + address + '</td>' +
-                        '<td>' + total + '</td>' +
-                        '<td>' + status + '</td>';
-
-                    // Xác định nút tương ứng
-                    if (tabId === 'confirmed') {
-                        row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
-                            '</tr>';
-                    } else {
-                       row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
-                    }
-
-                    row += '</tr>';
-
-                    $('#' + tableId + ' tbody').append(row);
+                var row = '<tr>' +
+                  '<td>' + (index + 1) + '</td>' +
+                  '<td>' + productName + '</td>' +
+                  '<td>' + phone + '</td>' +
+                  '<td>' + address + '</td>' +
+                  '<td>' + total + '</td>' +
+                  '<td>' + status + '</td>';
+                if (tabId === 'tab-delivered_cancel') {
+                  row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+                    '</tr>';
+                } else if (tabId === 'confirmed') {
+                  row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
+                    '</tr>';
                 } else {
-                    console.log("bbbb");
+                  row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
                 }
+
+                row += '</tr>';
+
+                $('#' + tableId + ' tbody').append(row);
+              } else {
+                console.log("bbbb");
+              }
             });
-            bindConfirmButton();
-        },
-        error: function (error) {
+            bindButtons(tabId);
+          },
+          error: function (error) {
             console.log("Lỗi khi truy xuất dữ liệu:", error);
-        }
+          }
+        });
+      }
+
+    function bindButtons(tabId) {
+  console.log('Binding buttons click events for tab:', tabId);
+  if (tabId === 'tab-delivered_cancel') {
+    // Bind click event for the refund button
+    $('.refund-button').unbind('click');
+    $('.refund-button').on('click', function () {
+      var idorder = $(this).data('order-id');
+     window.location.href = 'http://localhost:3000/api/getByIdOder2/' + idorder;
     });
+  } else if (tabId === 'confirmed') {
+    bindConfirmButton();
+  } else {
+    // Bind click event for the detail button
+    $('.detail-button').unbind('click');
+    $('.detail-button').on('click', function () {
+      var idorder = $(this).data('order-id');
+      // Redirect to the detail page with order id
+      window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
+    });
+  }
 }
 
 
-function bindConfirmButton() {
-    console.log('Binding confirm button click event');
-    $('.confirm-button').unbind('click');
-    $('.confirm-button').on('click', function () {
-        var idorder = $(this).data('order-id');
-        console.log('Confirm button clicked for order ID:', idorder);
-        confirmOrder(idorder);
-    });
-}
+      function bindConfirmButton() {
+        console.log('Binding confirm button click event');
+        $('.confirm-button').unbind('click');
+        $('.confirm-button').on('click', function () {
+          var idorder = $(this).data('order-id');
+          console.log('Confirm button clicked for order ID:', idorder);
+          confirmOrder(idorder);
+        });
+      }
 
-
-function confirmOrder(idorder) {
-    // Gọi API PATCH khi nhấp vào nút xác nhận
-////////////////
- $.ajax({
+    function confirmOrder(idorder) {
+  $.ajax({
     url: 'http://localhost:3000/api/order/' + idorder,
     method: 'PATCH',
-    data: { status: '65264c102d9b3bb388078976' }, // Thay thế 'new_status_id' bằng ID trạng thái mới thực sự
+    data: { status: '65264c102d9b3bb388078976' },
     dataType: 'json',
     success: function (response) {
-      
-     console.log('Phản hồi từ API:', response);
-  
-        updateTable('confirmed', 'tab-confirmed');
-        },
-    
+      console.log('Phản hồi từ API:', response);
+      // After successfully confirming the order, update the table data
+      var tabId = 'confirmed'; // Replace with the appropriate tabId
+      var tableId = 'tab-' + tabId;
+      updateTable(tabId, tableId);
+    },
     error: function (error) {
-      // Xử lý lỗi
       console.log('Lỗi:', error);
     }
   });
-  
 }
 
-$(document).on('click', '.detail-button', function () {
-    var idorder = $(this).data('order-id');
-    // Chuyển hướng đến trang chi tiết với idorder
-    window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
-});
+      // Bootstrap tab event
+      $('.nav-tabs a').on('shown.bs.tab', function (e) {
+        var tabId = $(e.target).attr('id').replace('tab-', '');
+        console.log("tabId:", tabId);
+        var tableId = 'table-' + tabId;
+        updateTable(tabId, tableId);
+      });
 
+      // Initial data load for active tab
+      var tablesToUpdate = [
+        { tabId: 'confirmed', tableId: 'tab-confirmed' },
+        { tabId: 'pending', tableId: 'table-pending' },
+        { tabId: 'confirmed-orders', tableId: 'table-confirmed-orders' },
+        { tabId: 'delivered', tableId: 'table-delivered' },
+        { tabId: 'tab-delivered_cancel', tableId: 'tab-delivered_refund_order' },
+        { tabId: 'hoanhang', tableId: 'tab-delivered_refund' },
+      ];
 
-  // Sử dụng sự kiện của tab trong Bootstrap
-  $('.nav-tabs a').on('shown.bs.tab', function (e) {
-    var tabId = $(e.target).attr('id').replace('tab-', '');
-    console.log("tabId:", tabId);
-    var tableId = 'table-' + tabId;
-    updateTable(tabId, tableId);
-    if (tabId === 'confirmed') {
-      bindConfirmButton();
-    }
-  });
-
-  // Nạp dữ liệu cho tab đang hoạt động ban đầu
-  var tablesToUpdate = [
-    { tabId: 'confirmed', tableId: 'tab-confirmed' },
-    { tabId: 'pending', tableId: 'table-pending' },
-    { tabId: 'confirmed-orders', tableId: 'table-confirmed-orders' },
-    { tabId: 'delivered', tableId: 'table-delivered' },
-    { tabId: 'tab-delivered_cancel', tableId: 'tab-delivered_refund_order' },
-   { tabId: 'tab-delivered_refund_return', tableId: 'tab-delivered_refund' },
-  ];
-
-  updateTables(tablesToUpdate);
-});
-</script>
+      updateTables(tablesToUpdate);
+    });
+  </script>
 
 
 </body>

@@ -1,10 +1,16 @@
 var Coupon = require("../models/coupons.js")
 var CouponSchema = require("../schemas/coupons.js")
+var { uploadImage, updateImage } = require('../controllers/upload');
 
 exports.getCouponUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons');
     const data = await response.json();
     res.render('coupon/coupon', { data ,layout :"Layouts/home"});
+};
+
+exports.getAddCouponUI = async (req, res) => {
+ 
+    res.render('coupon/addCoupon', {  layout :"Layouts/home"});
 };
 exports.getCouponIdUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons/' + req.params.id);
@@ -15,17 +21,71 @@ exports.getCouponIdUI = async (req, res) => {
 
 exports.createCoupons = async (req, res) => {
     try {
-        var coupon = req.body;
-        await Coupon.create(coupon);
+        const body = req.body;
+        const files = req.files;
+    
+        console.log("Received form data:", body);
+    
+        // Upload images and handle the response
+        var images = await uploadImage(files);
+        if (images[0] == null) {
+          return res.status(400).json({
+            message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+          });
+        }
+        body.coupon_images = images
+        console.log("Received form data:", images);
+        // Create a new coupon in the database
+        const createdCoupon = await Coupon.create(body);
+    
+        if (!createdCoupon) {
+            return res.status(400).json({
+                message: "Failed to create the coupon.",
+            });
+        }
+    
         res.status(303).set('Location', '/api/admin/coupons').send();
     } catch (error) {
-        return res.status(400).json({
-            message: error,
-        })
+        console.error("Error creating coupon:", error);
+        return res.status(500).json({
+            message: "Internal server error.",
+        });
     }
-}
+};
 
-
+exports.updateCoupon = async (req, res) => {
+    try {
+      const id = req.params.id;
+      const body = req.body;
+  
+      var files = req.files 
+  
+      const { error } = CouponSchema.validate(body, { abortEarly: false });
+      if (error) {
+        const errors = error.details.map((err) => err.message);
+        return res.status(400).json({
+          message: errors,
+        });
+      }
+      var images = await updateImage(files)
+      body.category_image = images
+  
+      const category = await Coupon.findOneAndUpdate({ _id: id }, body, {
+        new: true,
+      });
+      if (!category || category.length === 0) {
+        return res.status(400).json({
+          message: "Cập nhật danh mục thất bại",
+        });
+      }
+      res.status(303).set('Location', '/api/admin/coupons').send();
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+  };
+  
 exports.getOneCoupons = async (req, res) => {
     try {
         const coupon = await Coupon.findById(req.params.id);
@@ -43,7 +103,13 @@ exports.getOneCoupons = async (req, res) => {
 exports.getAllCoupons = async (req, res) => {
     try {
         const coupon = await Coupon.find();
+        if (!coupon) {
+            return res.status(404).json({
+                message: "Lấy tất cả phiếu giảm giá thất bại"
+            })
+        }
         return res.status(200).json(
+          
             coupon
         )
     } catch (error) {
@@ -52,7 +118,7 @@ exports.getAllCoupons = async (req, res) => {
         })
     }
 }
-
+  
 
 exports.removeCoupons = async (req, res) => {
     try {
