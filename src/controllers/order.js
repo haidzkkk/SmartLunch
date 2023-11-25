@@ -279,6 +279,7 @@ exports.createOrder = async (req, res) => {
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
         const coupon = await Coupon.findById(myCart.couponId);
         if (coupon) {
+            body.couponId = coupon._id
             if (coupon.coupon_quantity > 0) {
                 coupon.coupon_quantity -= 1;
                 await coupon.save();
@@ -335,6 +336,8 @@ exports.createOrder = async (req, res) => {
             })
         }
 
+        handleBoughtProduct(order)
+
         const result = await Order.findById(order._id)
             .populate('userId')
             .populate('status')
@@ -390,7 +393,6 @@ const handleShipperId = (shipperId, order, body) => {
 
 const updateOrderById = async (id, body) => {
     const updatedOrder = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
@@ -454,5 +456,25 @@ exports.updatePaymentOrder = async (req, res) => {
         return res.status(400).json({
             message: error.message
         })
+    }
+}
+
+const handleBoughtProduct = async (order) => {
+    try {
+        await order.populate('products.productId').execPopulate();
+
+        for (const product of order.products) {
+            const productId = product.productId;
+
+            // Kiểm tra xem productId có tồn tại không trước khi cập nhật
+            if (productId) {
+                const views = productId.bought + product.purchase_quantity;
+                productId.bought = views;
+                await productId.save();
+            }
+        }
+        console.log("Updated product bought values successfully.");
+    } catch (error) {
+        console.error("Error updating product bought values:", error);
     }
 }
