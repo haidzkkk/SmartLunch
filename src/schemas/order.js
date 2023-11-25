@@ -9,13 +9,9 @@ exports.orderSchema = Joi.object({
     }),
     couponId: Joi.string().allow(null),
     shiperId: Joi.string().allow(null), 
-    discount: Joi.number().min(0).required().messages({
-        "number.min": "Không được nhập số âm"
-    }),
-    products: Joi.array().required(),
-    total: Joi.number().min(0).required().messages({
-        "number.min": "Không được nhập số âm"
-    }),
+    discount: Joi.number().allow(null),
+    products: Joi.array().allow(null),
+    total: Joi.number().allow(null),
     status: Joi.string().allow(null),
     statusPayment: Joi.string().allow(null),
     address: Joi.string(),

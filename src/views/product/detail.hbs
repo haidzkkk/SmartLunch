@@ -10,45 +10,170 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
+  <style>
+    /* Reset some default styles */
+    body,
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+      padding: 0;
+    }
 
+    /* Global styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      margin-top: 20px;
+    }
+
+    .smartphone {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .row {
+      margin-bottom: 20px;
+    }
+
+    /* Product image styles */
+    #img-preview {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .row .col img {
+      width: 60%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .row .col img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Product details styles */
+    #name {
+      font-size: 1.5rem;
+      margin-top: 15px;
+    }
+
+    #price {
+      font-size: 1.5rem;
+      color: #FF593E;
+      margin-top: 15px;
+    }
+
+    /* Product description styles */
+    #descriptiontext {
+      color: #9CA4AB;
+      margin-top: 20px;
+    }
+
+    /* Sizes styles */
+    .h4 {
+      font-size: 1.2rem;
+    }
+
+    /* Three dots icon styles */
+    .bi-three-dots {
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    /* Update form styles */
+    #updateForm {
+      margin-top: 20px;
+    }
+
+    /* Remove form styles */
+    #removeForm {
+      margin-top: 20px;
+    }
+
+    /* Modal styles */
+    .modal-content {
+      border-radius: 10px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 576px) {
+      .smartphone {
+        padding: 10px;
+      }
+
+      #img-preview {
+        height: auto;
+      }
+    }
+    .col {
+
+}
+
+#removeForm {
+ 
+}
+
+.btn {
+  text-align: center;
+ 
+}
+  </style>
 <body>
   <div class="container">
     <div class="row">
+    <div class="col">
+  <div class="smartphone">
+    <!-- Main product image -->
+    <img src="{{data.images.0.url}}" alt="Product Image" width="430px" height="270px" id="img-preview">
+
+    <div class="row">
       <div class="col">
-        <div class="smartphone">
-          <img src="{{data.images.0.url}}" width="430px" height="270px" id="img-preview2">
-          <div class="row">
-            <div class="col">
-              <h2 style="margin-left: 20px; margin-top: 30px; font-size: x-large;" id="name">{{data.product_name}}</h2>
-            </div>
-            <div class="col">
-              <h2 style="margin-right: 24px; margin-top: 30px; color: #FF593E; font-size: x-large; float: right;"
-                id="price">{{data.product_price}}đ</h2>
-            </div>
-          </div>
-          <p style="margin-left: 20px; color: #9CA4AB;">⭐4.8 (1.2k)</p>
-          <h5 style="margin-left: 20px; margin-top: 25px;">Mô tả</h5>
-          <p style="margin-left: 20px; margin-right: 20px; color: #9CA4AB; margin-top: 20px;" id="descriptiontext">
-            {{data.description}}</p>
-          <h5 style="margin-left: 20px; margin-top: 25px;">Kích cỡ</h5>
-          <div class="row" style="margin-top: 25px; margin-left: 20px; margin-right: 20px;">
-            <div class="col">
-              <h4 class="h4">Size M</h4>
-            </div>
-            <div class="col">
-              <h4 class="h4">Size L</h4>
-            </div>
-            <div class="col">
-              <h4 class="h4">Size XL</h4>
-            </div>
-          </div>
-          <svg style="margin-left: 20px; margin-top: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-            fill="black" class="bi bi-three-dots" viewBox="0 0 16 16">
-            <path
-              d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-          </svg>
-        </div>
+        <img src="{{data.images.1.url}}" width="30px" height="30px" id="img-preview-small1">
       </div>
+      <div class="col">
+        <img src="{{data.images.2.url}}"  width="50px" height="50px" id="img-preview-small2">
+      </div>
+      <div class="col">
+        <img src="{{data.images.3.url}}"  width="50px" height="50px" id="img-preview-small3">
+      </div>
+    </div>
+
+    <!-- Product details -->
+    <div class="row">
+      <div class="col">
+        <h2 style="margin-left: 20px; margin-top: 30px; font-size: x-large;" id="name">{{data.product_name}}</h2>
+      </div>
+      <div class="col">
+        <h2 style="margin-right: 24px; margin-top: 30px; color: #FF593E; font-size: x-large; float: right;"
+          id="price">{{data.product_price}}đ</h2>
+      </div>
+    </div>
+
+
+
+    <!-- Product description -->
+    <h5 style="margin-left: 20px; margin-top: 25px;">Mô tả</h5>
+    <p style="margin-left: 20px; margin-right: 20px; color: #9CA4AB; margin-top: 20px;" id="descriptiontext">{{data.description}}</p>
+    <!-- Other content, like three dots -->
+    <svg style="margin-left: 20px; margin-top: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+      fill="black" class="bi bi-three-dots" viewBox="0 0 16 16">
+      <path
+        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+    </svg>
+  </div>
+</div>
+
       <div class="col">
         <div class="mb-3">
           <i style="float: right; font-size: small;">ID: {{data._id}}</i>
@@ -83,7 +208,7 @@
             </div>
             <div class="row">
               <div class="col">
-                <button type="submit" class="btn" style="float: right">Update</button>
+                <button type="submit" class="btn btn-primary" style="margin-top: 30px;">Update</button>
               </div>
             </div>
           </form>
@@ -91,13 +216,84 @@
       </div>
     </div>
   </div>
-  <div class="col">
-    <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
-      <button type="submit" class="btn" style="float: right">Move to recycle bin</button>
-    </form>
-  </div>
+<div class="col">
+  <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
+    <button type="submit" class="btn btn-primary" style="margin-top: -50px;">Move to recycle bin</button>
+  </form>
+</div>
 
+   <div class="row">
+      <div class="col">
+        <div class="smartphone">
+          <!-- Your existing content -->
+
+          <!-- Button to open Size modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sizeModal">
+            Add Size
+          </button>
+
+          <!-- Size Modal -->
+          <div class="modal" tabindex="-1" role="dialog" id="sizeModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Size</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Form to enter Size information -->
+                  <form id="sizeForm">
+                    <div class="mb-3">
+                      <label for="sizeName" class="form-label">Size Name</label>
+                      <input type="text" class="form-control" id="size_name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="priceSize" class="form-label">Price Size</label>
+                      <input type="number" class="form-control" id="size_price" required>
+                    </div>
+                    <input type="hidden" id="productId" value="{{data._id}}">
+
+                    <button type="button" class="btn btn-primary" onclick="addSize()">Add Size</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Your existing content -->
+
+        </div>
+      </div>
+    </div>
   <script>
+      function addSize() {
+  const sizeName = document.getElementById('size_name').value;
+  const priceSize = document.getElementById('size_price').value;
+  const productId = document.getElementById('productId').value;
+
+  const sizeData = {
+    size_name: sizeName,
+    size_price: priceSize,
+    productId: productId
+  };
+
+  $.ajax({
+    type: 'POST',
+    url: 'http://localhost:3000/api/size',
+    contentType: 'application/json',
+    data: JSON.stringify(sizeData),
+    success: function (response) {
+      console.log('Size added successfully:', response);
+      $('#sizeModal').modal('hide');
+    },
+    error: function (xhr, status, error) {
+      console.error('Error adding size:', error);
+
+      // Hiển thị thông báo lỗi cho người dùng
+      alert('Error adding size. Please check the console for more details.');
+    }
+  });
+}
     document.getElementById('updateForm').addEventListener('submit', function (event) {
       const confirmUpdate = confirm("Do you really want to update this?");
       if (!confirmUpdate) {

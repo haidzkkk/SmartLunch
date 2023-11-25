@@ -101,9 +101,9 @@ exports.notifications = async (req, res) => {
 
         let userNotifications;
         if (isRead !== undefined) {
-            userNotifications = await Notification.find({ userId, isRead });
+            userNotifications = await Notification.find({ userId, isRead }).sort({ timestamp: -1 });
         } else {
-            userNotifications = await Notification.find({ userId });
+            userNotifications = await Notification.find({ userId }).sort({ timestamp: -1 });
         }
 
         res.status(200).json(userNotifications);

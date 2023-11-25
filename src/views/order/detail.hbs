@@ -29,9 +29,9 @@
       font-weight: bold;
     }
 
-    .status-text {
-      font-weight: bold;
-      color: #007bff;
+  .btn {
+      background-color: #FF593E;
+      color: aliceblue;
     }
   </style>
 </head>
@@ -42,6 +42,10 @@
       <p><strong>Tên: </strong><span id="name">Đang tải...</span></p>
       <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
       <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
+      <p><strong>Tên sản phẩm: </strong><span id="productName">Đang tải...</span></p>
+      <p><strong>Giá sản phẩm: </strong><span id="productPrice">Đang tải...</span></p>
+      <p><strong>Số lượng sản phẩm: </strong><span id="productQuanlity">Đang tải...</span></p>
+      <p><strong>Kích cỡ : </strong><span id="productSize">Đang tải...</span></p>
       <p><strong>Ghi chú: </strong><span id="notes">Đang tải...</span></p>
       <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
@@ -50,39 +54,57 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // Trích xuất ID đơn hàng từ trang web
-    var idorder = window.location.href.split('/').pop(); // Lấy ID từ URL trang chi tiết
+  // Trích xuất ID đơn hàng từ trang web
+  var idorder = window.location.href.split('/').pop(); // Lấy ID từ URL trang chi tiết
 
-    // Hàm cập nhật trạng thái đơn hàng
-    function updateStatus() {
-      // Gửi yêu cầu AJAX để lấy trạng thái
-      $.ajax({
-        url: 'http://localhost:3000/api/order/' + idorder,
-        method: 'GET',
-        dataType: 'json',
-        success: function (data) {
-          // Cập nhật thông tin chi tiết trang
-          $('#name').text(data.address.recipientName || 'Không có tên');
-          $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
-          $('#address').text(data.address.addressLine || 'Không có địa chỉ');
-          $('#notes').text(data.notes || 'Không có ghi chú');
-          $('#total').text(data.total || 'Không có tổng cộng');
+  // Hàm cập nhật trạng thái đơn hàng
+  function updateStatus() {
+    // Gửi yêu cầu AJAX để lấy trạng thái
+    $.ajax({
+      url: 'http://localhost:3000/api/order/' + idorder,
+      method: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        // Cập nhật thông tin chi tiết trang
+        $('#name').text(data.address.recipientName || 'Không có tên');
+        $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
+        $('#address').text(data.address.addressLine || 'Không có địa chỉ');
 
-          // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
-          var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
-          $('#status').text(statusText);
-        },
-        error: function (error) {
-          console.log('Lỗi:', error);
-          $('#status').text('Lỗi khi tải trạng thái');
+        // Kiểm tra xem có sản phẩm nào không
+        if (data.products && data.products.length > 0) {
+          // Lấy thông tin của sản phẩm đầu tiên trong mảng
+          var product = data.products[0];
+          $('#productName').text(product.product_name || 'Không có tên sản phẩm');
+          $('#productPrice').text(product.product_price || 'Không có giá sản phẩm');
+          $('#productQuanlity').text(product.purchase_quantity || 'Không có số lượng sản phẩm');
+          $('#productSize').text(product.sizeName || 'Không có số lượng sản phẩm');
+        } else {
+          $('#productName').text('Không có tên sản phẩm');
+          $('#productPrice').text('Không có giá sản phẩm');
+          $('#productQuanlity').text('Không có số lượng sản phẩm');
+          $('#productSize').text('Không có số lượng sản phẩm');
         }
-      });
-    }
 
-    // Gọi hàm cập nhật trạng thái khi trang được tải
-    $(document).ready(function () {
-      updateStatus();
+        $('#notes').text(data.notes || 'Không có ghi chú');
+        $('#total').text(data.total || 'Không có tổng cộng');
+
+        // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
+        var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
+        $('#status').text(statusText);
+      },
+      error: function (error) {
+        console.log('Lỗi:', error);
+        $('#status').text('Lỗi khi tải trạng thái');
+      }
     });
-  </script>
+  }
+
+  // Gọi hàm cập nhật trạng thái khi trang được tải
+  $(document).ready(function () {
+    updateStatus();
+  });
+</script>
+</body>
+</html>
 </body>
 </html>
