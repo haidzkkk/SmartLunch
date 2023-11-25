@@ -43,6 +43,13 @@ exports.getbyIdOrderUI = async (req, res) => {
     res.render("order/detail", {  layout: "Layouts/home" });
   };
 
+  exports.getbyIdOrderUI2 = async (req, res) => {
+    const response = await fetch(
+        "http://localhost:3000/api/order/" + req.params.id
+    );
+    // const data = await response.json();
+    res.render("order/detail2", {  layout: "Layouts/home" });
+  };
 exports.getOrderByUserId = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -155,19 +162,26 @@ exports.getOrderById = async (req, res) => {
 exports.getAllOrder = async (req, res) => {
     try {
         const statusId = req.query.statusId;
+        const statusPaymentId = req.query.statusPaymentId;
         const query = {};
         if (statusId) {
             query.status = statusId;
+            if (statusPaymentId) {
+                query.statusPayment = statusPaymentId;
+            }
         }
         const orders = await Order.find(query)
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
 
-        // for (const order of orders) {
-        //     await order.address.populate('userId');
-        // }
+        for (const order of orders) {
+            // Check if order.address is not null before populating userId
+            if (order.address) {
+                await order.address.populate('userId');
+            }
+        }
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -177,6 +191,27 @@ exports.getAllOrder = async (req, res) => {
     }
 };
 
+exports.updateIsPayment = async (req, res) => {
+    const orderId = req.params.orderId;
+    const { isPayment } = req.body;
+  
+    try {
+      const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { $set: { isPayment: isPayment } },
+        { new: true }
+      );
+  
+      if (!updatedOrder) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+  
+      return res.status(200).json(updatedOrder);
+    } catch (error) {
+      console.error('Error updating isPayment:', error);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 
 // xóa order
 exports.removeOrder = async (req, res) => {

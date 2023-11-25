@@ -26,6 +26,10 @@ const couponSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        coupon_images: {
+            type: Array,
+            required: true
+        },
         min_purchase_amount: {
             type: Number,
             required: true
