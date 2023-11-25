@@ -21,12 +21,16 @@
     <form action="http://localhost:3000/api/coupons/{{data._id}}" method="post" id="updateForm">
       <div class="mb-3">
         <label class="form-label">Tên mã giảm giá</label>
+
         <input class="form-control" name="coupon_name" id="coupon_name" value="{{data.coupon_content}}" required="true">
+
         <div id="emailHelp" class="form-text"></div>
       </div>
 
       <div class="mb-3">
+n
         <label class="form-label">Mã</label>
+
         <input class="form-control" name="coupon_code" id="coupon_code" value="{{data.coupon_code}}" required="true">
         <div id="emailHelp" class="form-text"></div>
       </div>
@@ -72,7 +76,10 @@
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
+
       <button type="submit" class="btn" style="margin-top: 30px;">Cập nhật</button>
+
+
     </form>
     <script>
       document.getElementById('updateForm').addEventListener('submit', function (event) {
@@ -89,7 +96,9 @@
       });
     </script>
     <form action="http://localhost:3000/api/delete/coupons/{{data._id}}" method="get" id="deleteForm">
+
       <button type="submit" onclick="abc()" class="btn" style="float: right;margin-top: -30px">Xóa</button>
+
     </form>
     <dir class="m-5 pb-5"></dir>
     <script>

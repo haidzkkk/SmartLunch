@@ -1,21 +1,76 @@
-<div class="row">
-     <div class="col">
-     <iframe src="http://localhost:3000/api/chartuser" frameborder="0" height="400" width="600"></iframe>
-     </div>
-          <div class="col">
-     <iframe src="http://localhost:3000/api/chartorder" frameborder="0" height="400" width="600"></iframe>
-     </div>
-     </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decorated Tabs</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    /* Định dạng màu nền của tab active */
+    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+      background-color: #ff9900;
+      color: #fff; /* Màu chữ khi tab active */
+      border-color: #ff9900;
+    }
+    .abc{
+           background-color: #FF593E;
+           color: #FF593E;
+           font-weight: bold;
+    }
+        .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-     <div class="row">
+  </style>
+</head>
+<body>
 
-          <div class="col">
-     <iframe src="http://localhost:3000/api/linegraph" frameborder="0" height="400" width="600"></iframe>
-     </div>
-          <div class="col">
-     <iframe src="http://localhost:3000/api/getorderpie" frameborder="0" height="600" width="600"></iframe>
-     </div>
-     </div>
-     <div class="row">
-     <iframe src="http://localhost:3000/api/sortedbyview" frameborder="0" height="400" width="600"></iframe>
-     </div>
+<div class="container mt-5">
+  <!-- Tab links -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link abc" id="tab1" data-src="http://localhost:3000/api/chartuser" href="#">Thành Viên</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link abc" id="tab2" data-src="http://localhost:3000/api/chartorder" href="#">Đơn hàng</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link abc" id="tab3" data-src="http://localhost:3000/api/linegraph" href="#">Doanh số</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link abc" id="tab4" data-src="http://localhost:3000/api/getorderpie" href="#">Tỉ lệ</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link abc" id="tab5" data-src="http://localhost:3000/api/sortedbyview" href="#">Top sản phẩm</a>
+    </li>
+  </ul>
+
+  <!-- Tab content area -->
+  <div class="tab-content mt-3">
+    <div class="tab-pane fade show active" id="contentArea">
+      <!-- The iframe will be loaded here -->
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // Hiển thị nội dung của tab đầu tiên khi trang được tải
+
+    // Attach click event to each tab link
+    $('.abc').on('click', function (e) {
+      e.preventDefault();
+      const src = $(this).data('src');
+      $('#contentArea').html(`<iframe src="${src}" frameborder="0" height="500" width="700"></iframe>`);
+    });
+  });
+</script>
+
+</body>
+</html>
