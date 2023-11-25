@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,22 +76,25 @@
                   </div>
 
                   <form id="loginForm">
-                    <p>Please login to your account</p>
+
+                    <p>Xin hãy đăng nhập vào tài khoản của bạn</p>
 
                     <div class="form-outline mb-4">
-                      <input type="email" class="form-control" placeholder="Email address" id="email" required />
-                      <label class="form-label" for="form2Example11">Username</label>
+                      <label class="form-label" for="form2Example11">Email</label>
+                      <input type="email" class="form-control" placeholder="Vui lòng nhập email" id="email" required />
+
                     </div>
-
                     <div class="form-outline mb-4">
-                      <input type="password" class="form-control" id="password" placeholder="Password" required />
-                      <label class="form-label" for="form2Example22">Password</label>
+
+                      <label class="form-label" for="form2Example22">Mật Khẩu</label>
+                      <input type="password" class="form-control" id="password" placeholder="Nhập đúng mật khẩu" require
+
                     </div>
                     <p id="message"></p>
                     <div class="text-center pt-1 mb-5 pb-1">
                       <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button"
-                        onclick="login()">Log
-                        in</button>
+
+                        onclick="login()">Đăng nhập</button>
                     </div>
                     <div class="d-flex align-items-center justify-content-center pb-4">
 
@@ -105,8 +109,8 @@
                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
 
                   <h4 class="mb-4">SmartLunch Team💖</h4>
-                  <p class="small mb-0">Data is managed by the SmartLunch team. Only authorized members can log in. Any
-                    unauthorized actions are prohibited.</p>
+                  <p class="small mb-0">Dữ liệu được quản lý bởi nhóm SmartLunch. Chỉ những thành viên được ủy quyền mới có thể đăng nhập. Bất kỳ
+                     hành động trái phép đều bị cấm.</p>
                 </div>
               </div>
             </div>
@@ -118,34 +122,38 @@
 </body>
 
 <script>
- function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-  fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.accessToken) {
-      // Lưu token vào cookie
-      document.cookie = `accessToken=${data.accessToken}; path=/`;
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.accessToken) {
+          // Lưu token vào cookie
+          document.cookie = `accessToken=${data.accessToken}; path=/`;
 
-      if (data.role == "admin") {
-        // Chuyển hướng đến trang admin
-        window.location.href = "/api/admin/products";
-      } else {
-        document.getElementById("message").innerText = "Bạn không có quyền";
-      }
-    } else {
-      document.getElementById("message").innerText = "Đăng nhập thất bại";
-    }
-  });
-}
+          if (data.role == "admin") {
+            // Chuyển hướng đến trang admin
+
+
+            window.location.href = "/dashboard";
+
+          } else {
+            document.getElementById("message").innerText = "Bạn không có quyền";
+          }
+        } else {
+          document.getElementById("message").innerText = "Đăng nhập thất bại";
+        }
+      });
+  }
 
 </script>
+
 </html>

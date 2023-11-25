@@ -10,6 +10,14 @@ exports.getCategoryUI = async (req, res) => {
   const data = await response.json();
   res.render('category/category', { data,layout :"Layouts/home" });
 };
+
+exports.getCategoryCreateUI = async (req, res) => {
+  const token = res.locals.token;
+  console.log("aaaaaaaaaa");
+  console.log("Token:", token);
+  res.render('category/addCategory', { layout: 'Layouts/home', token });
+}
+
 exports.getCategoryByIdUI = async (req, res) => {
   const response = await fetch(
     "http://localhost:3000/api/category/" + req.params.id
@@ -97,6 +105,8 @@ exports.getAllCategory = async (req, res) => {
   }
 };
 
+
+
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find({ deleted: false });
@@ -137,6 +147,37 @@ exports.getCategoryById = async (req, res) => {
     });
   }
 };
+// exports.updateCategory = async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const body = req.body;
+//     const files = req.files;
+//     console.log(files);
+   
+//     var images = await uploadImage(files);
+//     if (images[0] == null) {
+//       return res.status(400).json({
+//         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+//       });
+//     }
+//     body.images = images;
+//     console.log(body);
+//     const product = await Category.findByIdAndUpdate(id,body);
+//     if (product.length === 0) {
+      
+//       return res.status(400).json({
+//         message: "Thêm sản phẩm thất bại",
+        
+//       });
+//     }
+    
+
+//   } catch (error) {
+//     return res.status(400).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
 
 exports.removeForce = async (req, res) => {
@@ -222,7 +263,7 @@ exports.updateCategory = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    const publicId = req.query.publicId;
+
     var files = req.files 
 
     const { error } = categorySchema.validate(body, { abortEarly: false });
@@ -232,8 +273,7 @@ exports.updateCategory = async (req, res) => {
         message: errors,
       });
     }
-
-    var images = await updateImage(files, publicId)
+    var images = await updateImage(files)
     body.category_image = images
 
     const category = await Category.findOneAndUpdate({ _id: id }, body, {
@@ -244,7 +284,7 @@ exports.updateCategory = async (req, res) => {
         message: "Cập nhật danh mục thất bại",
       });
     }
-    return res.status(200).json(category);
+    res.status(303).set('Location', '/api/admin/category').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,

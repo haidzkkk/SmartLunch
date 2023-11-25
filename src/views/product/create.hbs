@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Product</title>
+    <title>Sản phẩm</title>
     <style>
         .smartphone {
             position: relative;
@@ -60,38 +60,32 @@
 </head>
 <body>
     <div class="container">
-        <h3>Create Product</h3>
+        <h3>Tạo sản phẩm</h3>
         <form action="http://localhost:3000/api/products" method="post" id="productForm" enctype="multipart/form-data">
             <div class="row">
-                <div class="col">
-                    <div class="smartphone">
-                        <!-- Smartphone content -->
-                    </div>
-
-
-                </div>
+            
                 <div class="col">
                     <div class="mb-3">
-                        <label class="form-label">Product name</label>
+                        <label class="form-label">Tên sản phẩm</label>
                         <input class="form-control" name="product_name" id="product_name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label">Mô tả</label>
                         <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Price</label>
+                        <label class="form-label">Giá sản phẩm</label>
                         <input type="number" class="form-control" name="product_price" id="product_price" required>
                         <div id="emailHelp" class="form-text">Please enter only numbers</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Category</label>
+                        <label class="form-label">Danh mục</label>
                         <select class="form-control" name="categoryId" id="categoryId" required>
                             <!-- Categories will be populated from the API -->
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Image</label>
+                        <label class="form-label">Ảnh sản phẩm</label>
                         <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
                         <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
                     </div>
@@ -119,7 +113,7 @@
 
                 try {
                     // Fetch categories from the API
-                    const response = await fetch('http://localhost:3000/api/categorys');
+                    const response = await fetch('http://localhost:3000/api/categories');
                     const data = await response.json();
 
                     // Clear existing options in the select element
