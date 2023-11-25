@@ -19,6 +19,12 @@ exports.getShipperCreateUI = async (req, res) => {
     res.render("user/shipper", { data, layout: "Layouts/home" });
 };
 
+exports.getShipperDataUI = async (req, res) => {
+    const response = await fetch('http://localhost:3000/api/shipper');
+    const data = await response.json();
+    res.render("user/shipper_data", { data, layout: "Layouts/home" });
+};
+
 exports.getUserUI = async (req, res) => {
 
     const response = await fetch('http://localhost:3000/api/users');
@@ -68,8 +74,9 @@ exports.getCurrentUser = async (req, res) => {
 exports.getAll = async (req, res) => {
     try {
         const data = await Auth.find();
+        const memberUsers = data.filter(user => user.role === 'member');
         return res.status(200).json(
-            data
+            memberUsers
         );
     } catch (error) {
         return res.status(400).json({
@@ -947,7 +954,7 @@ exports.signupShipper = async (req, res) => {
             password: hashedPassword,
             role: "shipper"
         });
-        res.status(303).set('Location', '/api/admin/shipper/create').send();
+        res.status(303).set('Location', '/api/admin/shipper').send();
 
     } catch (error) {
         return res.status(400).json({

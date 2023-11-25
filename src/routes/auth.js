@@ -37,6 +37,8 @@ router.get('/userbyadmin/:id', authController.getUserByAdmin);
 router.get('/deletebyadmin/:id', authController.removeByAdmin);
 router.post('/login',authController.loginAdmin)
 router.get("/admin/shipper/create", authController.getShipperCreateUI);
+router.get("/admin/shipper", authController.getShipperDataUI);
+
 
 
 router.post('/update/tokendevice',authenticate, authController.updateToken)
