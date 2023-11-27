@@ -18,7 +18,7 @@
       ID: {{data._id}}
     </i>
 
-    <h3>Detail User</h3>
+    <h3>Thông Tin Người Dùng</h3>
     <form>
       <div class="mb-3">
         <label class="form-label">Email</label>
@@ -48,8 +48,11 @@
 
         <div class="col">
           <label class="form-label">Ngày sinh</label>
-          <input class="form-control" name="coupon_quantity" id="coupon_quantity" disabled="disabled"
-            value="{{data.birthday}}">
+          {{#if data.birthday}}
+          <input class="form-control" name="birthday" id="birthday" disabled="disabled" value="{{data.birthday}}">
+          {{else}}
+          <input class="form-control" name="birthday" id="birthday" disabled="disabled" value="chưa cập nhật">
+          {{/if}}
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
@@ -74,31 +77,28 @@
           <div id="emailHelp" class="form-text"></div>
         </div>
       </div>
-        <div class="col">
-          <label class="form-label">Ngày tham gia</label>
-          <input type="datetime" class="form-control" name="min_purchase_amount" id="min_purchase_amount"
-            disabled="disabled" value="{{data.createdAt}}">
-          <div id="emailHelp" class="form-text"></div>
-        </div>
+      <div class="col">
+        <label class="form-label">Ngày tham gia</label>
+        <input type="text" class="form-control" name="date" id="date" disabled="disabled"
+          value="{{data.createdAt }}">
+        <div id="emailHelp" class="form-text"></div>
       </div>
-    </form>
-    <form action="http://localhost:3000/api/deletebyadmin/{{data._id}}" method="get" id="deleteForm">
-      <div class="d-grid gap-2 col-6 mx-auto m-5 pb-5 ">
-        <button type="submit" onclick="abc()" class="btn text-center">Xóa</button>
-      </div>
-    </form>
-    <script>
-      document.getElementById('deleteForm').addEventListener('submit', function (event) {
-        const confirmDelete = confirm("Do you really want to delete this?");
-        if (!confirmDelete) {
-          event.preventDefault();
-        } else {
-          if (window.location.href.includes('/api/admin/users')) {
-            window.location.href = 'http://localhost:3000/api/admin/users';
-          } else {
-          }
-        }
-      });
-    </script>
+      <script>
+    // Chuyển đổi ngày giờ từ ISO format sang định dạng của Việt Nam
+    const isoDate = "{{ data.createdAt }}";
+    const date = new Date(isoDate);
+    const formattedDate = date.toLocaleString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh',
+    });
+    document.getElementById("date").value = formattedDate;
+</script>
+  </div>
+  </form>
   </div>
 </body>

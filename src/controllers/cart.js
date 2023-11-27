@@ -7,6 +7,7 @@ var cartSchema = require("../schemas/cart").cartSchema
 var Product = require("../models/product")
 var Size = require("../models/size")
 const { el } = require("date-fns/locale")
+const fetch = require('node-fetch');
 
 
 const ressetCart = async (idUser) =>{

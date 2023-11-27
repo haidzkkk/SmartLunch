@@ -1,4 +1,6 @@
 var Order = require("../models/order.js");
+const fetch = require('node-fetch');
+
  exports.getStatistics = async (req, res) => {
 
     res.render('statistics/statistics', {  layout: "layouts/home" });
