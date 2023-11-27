@@ -5,50 +5,89 @@
   <title>Chi tiết đơn hàng</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
   <style>
-    .container {
-      margin-top: 20px;
+     body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
     }
-    
+
+    .container {
+      margin-top: 50px;
+    }
+
     h3 {
       text-align: center;
       color: #FF593E;
     }
-    
+
     #order-details {
-      background-color: #f5f5f5;
-      border: 1px solid #ccc;
+      background-color: #ffffff;
+      border: 1px solid #dcdcdc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      border-radius: 5px;
     }
-    
+
     #order-details p {
-      margin: 0;
+      margin: 10px 0;
     }
-    
+
     #order-details strong {
       font-weight: bold;
     }
 
-  .btn {
-      background-color: #FF593E;
-      color: aliceblue;
+    .status-text {
+      font-weight: bold;
+      color: #007bff;
     }
+
+    .radio-group {
+      margin-top: 15px;
+    }
+
+    label {
+      margin-right: 10px;
+    }
+
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+    .product-container {
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-container p {
+  margin: 10px 0;
+}
+
+.product-container strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.product-container:hover {
+  border-color: #007bff;
+}
   </style>
 </head>
 <body>
   <div class="container">
     <h3>Chi tiết đơn hàng</h3>
-    <div id="order-details">
+    <<div id="order-details">
       <p><strong>Tên: </strong><span id="name">Đang tải...</span></p>
       <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
       <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
-      <p><strong>Tên sản phẩm: </strong><span id="productName">Đang tải...</span></p>
-      <p><strong>Giá sản phẩm: </strong><span id="productPrice">Đang tải...</span></p>
-      <p><strong>Số lượng sản phẩm: </strong><span id="productQuanlity">Đang tải...</span></p>
-      <p><strong>Kích cỡ : </strong><span id="productSize">Đang tải...</span></p>
       <p><strong>Ghi chú: </strong><span id="notes">Đang tải...</span></p>
+
+      <!-- Thêm phần hiển thị sản phẩm -->
+      <div id="products-section"></div>
+
       <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
+
     </div>
   </div>
 
@@ -69,28 +108,17 @@
         $('#name').text(data.address.recipientName || 'Không có tên');
         $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
         $('#address').text(data.address.addressLine || 'Không có địa chỉ');
-
-        // Kiểm tra xem có sản phẩm nào không
-        if (data.products && data.products.length > 0) {
-          // Lấy thông tin của sản phẩm đầu tiên trong mảng
-          var product = data.products[0];
-          $('#productName').text(product.product_name || 'Không có tên sản phẩm');
-          $('#productPrice').text(product.product_price || 'Không có giá sản phẩm');
-          $('#productQuanlity').text(product.purchase_quantity || 'Không có số lượng sản phẩm');
-          $('#productSize').text(product.sizeName || 'Không có số lượng sản phẩm');
-        } else {
-          $('#productName').text('Không có tên sản phẩm');
-          $('#productPrice').text('Không có giá sản phẩm');
-          $('#productQuanlity').text('Không có số lượng sản phẩm');
-          $('#productSize').text('Không có số lượng sản phẩm');
-        }
-
         $('#notes').text(data.notes || 'Không có ghi chú');
         $('#total').text(data.total || 'Không có tổng cộng');
 
+           displayProducts(data.products);
+        
+
+   
         // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
         var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
         $('#status').text(statusText);
+
       },
       error: function (error) {
         console.log('Lỗi:', error);
@@ -98,6 +126,27 @@
       }
     });
   }
+  function displayProducts(products) {
+      var productsSection = $('#products-section');
+      productsSection.empty(); // Xóa nội dung cũ
+
+      if (products && products.length > 0) {
+        for (var i = 0; i < products.length; i++) {
+          var product = products[i];
+          var productHtml = `
+            <div class="product-container">
+          <p><strong>Tên sản phẩm ${i + 1}: </strong>${product.product_name || 'Không có tên sản phẩm'}</p>
+          <p><strong>Giá sản phẩm: </strong>${product.product_price || 'Không có giá sản phẩm'}</p>
+          <p><strong>Số lượng sản phẩm: </strong>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</p>
+          <p><strong>Kích cỡ : </strong>${product.sizeName || 'Không có số lượng sản phẩm'}</p>
+        </div>
+          `;
+          productsSection.append(productHtml);
+        }
+      } else {
+        productsSection.append('<p>Không có sản phẩm</p>');
+      }
+    }
 
   // Gọi hàm cập nhật trạng thái khi trang được tải
   $(document).ready(function () {
