@@ -92,7 +92,6 @@ app.use('/api', deliveryRouter);
 app.use('/api', notificationRouter);
 
 socketController.initializeSocketServer()
-
 app.listen(process.env.PORT, async () =>{
   await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
   console.log(`server running on: http://localhost:3000`)
