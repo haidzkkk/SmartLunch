@@ -354,6 +354,26 @@ exports.createOrder = async (req, res) => {
     }
 }
 
+exports.searchOrder = async (req, res) => {
+    try {
+        const { productName } = req.body;
+
+        // Check if Orders is an array
+        if (!Array.isArray(Order)) {
+            throw new Error('Orders is not an array');
+        }
+
+        // Thực hiện tìm kiếm trong danh sách đơn hàng
+        const searchResults = Order.filter(order => {
+            return order.products.some(product => product.product_name.toLowerCase().includes(productName.toLowerCase()));
+        });
+
+        res.json({ results: searchResults });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
+    }
+};
 
 // cập nhật
 exports.updateOrder = async (req, res) => {
