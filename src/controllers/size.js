@@ -43,10 +43,11 @@ exports.getSizeById = async (req, res) => {
 exports.getSizeByProductId = async (req, res) => {
   try {
     const id = req.params.id;
-    const size = await Size.find({productId: id});
+    console.log("Lỗi id: " + id);
+    const sizes = await Size.find({productId: id});
 
     return res.status(200).json(
-      size
+      sizes
     );
   } catch (error) {
     return res.status(400).json({

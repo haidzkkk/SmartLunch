@@ -106,22 +106,25 @@ exports.searchProductByName= async(req,res)=>{
 exports.getAll = async (req, res) => {
   const {
     _limit = 10,
-    _sort = "createAt",
-    _order = "asc",
+    _sort = "createAt", 
+    _order = "desc",
     _page = 1,
-    q,
+    q,              // q: query tìm kiếm theo tên sp  -> api?_limit=10&_sort=bought&_order=desc&_page=1&q=iphone 
   } = req.query;
+  
   const options = {
     page: _page,
     limit: _limit,
     sort: {
-      [_sort]: _order == "desc" ? -1 : 1,
+      [_sort]: _order === "desc" ? -1 : 1,
     },
   };
-  const searchQuery = q ? { name: { $regex: q, $options: "i" } } : {};
+  
+  const searchQuery = q ? { product_name: { $regex: q, $options: "i" } } : {};
+  
   try {
-    const product = await Product.paginate(searchQuery, options);
-    return res.status(200).json(product);
+    const products = await Product.paginate(searchQuery, options);
+    return res.status(200).json(products);
   } catch (error) {
     return res.status(400).json({
       message: error,

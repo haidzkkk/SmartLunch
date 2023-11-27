@@ -27,7 +27,7 @@
 .table th.confirm-column,
 .table td.confirm-column {
   width: auto;
-  max-width: 150px; /* Đặt chiều rộng tối đa cho các cột không có kích thước cố định */
+  max-width: 100px; /* Đặt chiều rộng tối đa cho các cột không có kích thước cố định */
 }
 
 .container {
@@ -79,15 +79,16 @@
 
     <div class="tab-content mt-2">
       <div class="tab-pane fade show active" id="table-confirmed">
-        <table class="table" id="tab-confirmed">
+        <table class="table" id="tab-confirmed" >
           <thead>
             <tr>
               <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
-              <th>Địa chỉ</th>
+              <th>Điện thoại</th>
+              <th style="width: 140px;">Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
+              <th class="detail-column">Chi tiết </th>
               <th class="detail-column">Xác nhận</th>
             </tr>
           </thead>
@@ -102,7 +103,7 @@
             <tr>
               <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -120,7 +121,7 @@
             <tr>
            <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -138,7 +139,7 @@
             <tr>
             <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -156,7 +157,7 @@
             <tr>
               <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -174,7 +175,7 @@
             <tr>
              <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -192,7 +193,7 @@
             <tr>
            <th>STT</th>
               <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -263,7 +264,8 @@
                   row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
                     '</tr>';
                 } else if (tabId === 'confirmed') {
-                  row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
+                    row +=  '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+                    '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
                     '</tr>';
                 } else {
                   row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
@@ -271,7 +273,7 @@
 
                 row += '</tr>';
 
-                $('#' + tableId + ' tbody').append(row);
+                 $('#' + tableId + ' tbody').prepend(row);
               } else {
                 console.log("bbbb");
               }

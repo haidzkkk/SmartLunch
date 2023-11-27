@@ -159,14 +159,16 @@ background: #F7F7F7;">
 
                 <div class="position-sticky pt-3 sidebar-sticky rounded mx-auto d-block">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link " id="text" style="color: black" aria-current="page" href="/dashboard">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                    class="bi bi-house" viewBox="0 0 16 16">
+
+                         <li class="nav-item">
+                            <a class="nav-link" id="text" style="color: black" href="/api/getAllorderUi">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-calendar-range" viewBox="0 0 16 16">
+                                    <path d="M9 7a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1zM1 9h4a1 1 0 0 1 0 2H1V9z" />
                                     <path
-                                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
+                                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                                 </svg>
-                                Trang chủ
+                                Đơn hàng
                             </a>
                         </li>
                         <li class="nav-item">
@@ -206,17 +208,7 @@ background: #F7F7F7;">
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" id="text" style="color: black" href="/api/admin/size">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-arrows-angle-expand" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd"
-                                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707z" />
-                                </svg>
-                                Ảnh bìa
-
-                            </a>
-                        </li>
+              
                         <li class="nav-item">
                             <a class="nav-link" id="text" style="color: black" href="/api/admin/coupons">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -230,17 +222,7 @@ background: #F7F7F7;">
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" id="text" style="color: black" href="/api/getAllorderUi">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-calendar-range" viewBox="0 0 16 16">
-                                    <path d="M9 7a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1zM1 9h4a1 1 0 0 1 0 2H1V9z" />
-                                    <path
-                                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
-                                </svg>
-                                Đơn hàng
-                            </a>
-                        </li>
+                      
                         <li class="nav-item">
                             <a class="nav-link" id="text" style="color: black" href="/api/admin/category">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -255,6 +237,7 @@ background: #F7F7F7;">
 
                         </li>
                         <li class="nav-item">
+
                             <a class="nav-link" style="color: black; font-weight: bold" href="/api/admin/shipper">
                                 <svg id="truck-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -282,8 +265,6 @@ background: #F7F7F7;">
 
                                 <span style="margin-left: 14px;">Giao hàng</span>
                             </a>
-
-
                         </li>
 
 
