@@ -13,13 +13,14 @@
 
 <body>
   <div class="container">
+  <h3>Chi tiết sản phẩm</h3>
     <div class="row">
        <div class="col-md-6">
         <div class="mb-3">
         
           <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm" enctype="multipart/form-data">
             <div class="mb-3">
-              <label class="form-label">Image</label>
+              <label class="form-label">Ảnh</label>
               <div class="d-flex flex-column ">
                 <img src="{{data.images.0.url}}" alt="" class="form-control mb-3" id="img-preview" style="height: 200px; width: 200px">
                 <div class="d-flex">
@@ -33,17 +34,17 @@
       </div>
       <div class="col-md-6">
         <div class="mb-3">
-          <label class="form-label">Product name</label>
+          <label class="form-label">Tên sản phẩm</label>
           <input class="form-control" name="product_name" id="product_name" required="required" value="{{data.product_name}}">
           <div id="emailHelp" class="form-text"></div>
-          <label class="form-label">Description</label>
+          <label class="form-label">Địa chỉ</label>
           <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required">{{data.description}}</textarea>
           <div id="emailHelp" class="form-text"></div>
           <div class="mb-3">
-            <label class="form-label">Price</label>
+            <label class="form-label">Giá sản phẩm</label>
             <input type="number" class="form-control" name="product_price" id="product_price" required="required" value="{{data.product_price}}">
             <div id="emailHelp" class="form-text"></div>
-            <div id="emailHelp" class="form-text">Please enter a valid number</div>
+            <div id="emailHelp" class="form-text">Vui lòng nhập giá</div>
           </div>
           <div class="mb-3">
             <label class="form-label">Danh mục</label>
@@ -53,37 +54,37 @@
           </div>
 
           <div class="mb-3">
-            <button type="submit" class="btn btn-primary" style="float: right;">Update</button>
+            <button type="submit "class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="float: right;">Cập nhật</button>
           </div>
           </form>
         </div>
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sizeModal"style="margin-top: -60px;">
-      Add Size
+    <button type="button" class="btn btn-primary fa-lg gradient-custom-2 mb-3" data-bs-toggle="modal" data-bs-target="#sizeModal"style="margin-top: -60px;">
+      Thêm kích cỡ
     </button>
     <!-- Size Modal -->
     <div class="modal" tabindex="-1" role="dialog" id="sizeModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add Size</h5>
+            <h5 class="modal-title">Tạo mới kích cỡ</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <!-- Form to enter Size information -->
             <form id="sizeForm">
               <div class="mb-3">
-                <label for="sizeName" class="form-label">Size Name</label>
+                <label for="sizeName" class="form-label">Tên kích cỡ</label>
                 <input type="text" class="form-control" id="size_name" required>
               </div>
               <div class="mb-3">
-                <label for="priceSize" class="form-label">Price Size</label>
+                <label for="priceSize" class="form-label">Giá Kích cỡ</label>
                 <input type="number" class="form-control" id="size_price" required>
               </div>
               <input type="hidden" id="productId" value="{{data._id}}">
-              <button type="button" class="btn btn-primary"  onclick="addSize()">Add Size</button>
+              <button type="button" class="btn btn-primary fa-lg gradient-custom-2 mb-3"  onclick="addSize()">Thêm size cho sản phẩm</button>
             </form>
           </div>
         </div>
@@ -92,7 +93,7 @@
   </div>
   <div class="col-md-6">
     <form action="http://localhost:3000/api/remove/products/{{data._id}}" method="get" id="removeForm">
-      <button type="submit" class="btn btn-primary" style="margin-top: -60px; margin-left: 200px; float: right;" >Move to recycle bin</button>
+      <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="margin-top: -60px; margin-left: 200px; float: right;" >Xóa</button>
     </form>
   </div>
   <script>

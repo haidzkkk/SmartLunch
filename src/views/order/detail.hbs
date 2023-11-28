@@ -84,8 +84,11 @@
 
       <!-- Thêm phần hiển thị sản phẩm -->
       <div id="products-section"></div>
+       
+             <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
+        <p><strong>Đã thanh toán: </strong><span id="total_a">Đang tải...</span></p> 
+        <p><strong>Ngày Tạo: </strong><span id="create_day">Đang tải...</span></p> 
 
-      <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
 
     </div>
@@ -110,6 +113,9 @@
         $('#address').text(data.address.addressLine || 'Không có địa chỉ');
         $('#notes').text(data.notes || 'Không có ghi chú');
         $('#total').text(data.total || 'Không có tổng cộng');
+        $('#total_a').text(data.statusPayment.status_name || 'Không có tổng cộng');
+       $('#create_day').text(formatTime(data.createdAt) || 'Không có tổng cộng');
+
 
            displayProducts(data.products);
         
@@ -147,6 +153,21 @@
         productsSection.append('<p>Không có sản phẩm</p>');
       }
     }
+function formatTime(timestamp) {
+  if (!timestamp) return '';
+
+  // Create a new Date object
+  var date = new Date(timestamp);
+
+  // Format the date in the desired way
+  var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
+
+  return formattedDate;
+}
+
+function padZero(num) {
+  return num < 10 ? '0' + num : num;
+}
 
   // Gọi hàm cập nhật trạng thái khi trang được tải
   $(document).ready(function () {
