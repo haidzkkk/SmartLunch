@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Chi tiết đơn hàng</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
 <style>
     body {
@@ -85,7 +90,8 @@
 
       <!-- Thêm phần hiển thị sản phẩm -->
       <div id="products-section"></div>
-
+ <p><strong>Ngày Tạo: </strong><span id="create_day">Đang tải...</span></p> 
+        <p><strong>Đã thanh toán: </strong><span id="total_a">Đang tải...</span></p> 
       <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
       
@@ -112,7 +118,8 @@
           $('#address').text(data.address.addressLine || 'Không có địa chỉ');
           $('#notes').text(data.notes || 'Không có ghi chú');
           $('#total').text(data.total || 'Không có tổng cộng');
-
+          $('#create_day').text(formatTime(data.createdAt) || 'Không có tổng cộng');
+    $('#total_a').text(data.statusPayment.status_name || 'Không có tổng cộng');
           var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
           $('#status').text(statusText);
 
@@ -166,24 +173,29 @@ function hasValidStatusPayment(status, statusPayment) {
   }
   return false;
 }
-
-    // Thêm sự kiện change cho radio buttons
-    $('input[name="isPayment"]').on('change', function () {
-      var isPaymentValue = $(this).val();
-      // Gửi yêu cầu AJAX để cập nhật trạng thái isPayment
-      $.ajax({
-        url: 'http://localhost:3000/api/updateIsPayment/' + idorder,
-        method: 'PATCH',
-        data: { isPayment: isPaymentValue },
-        success: function (data) {
-          console.log('Trạng thái isPayment đã được cập nhật:', data);
-          confirmOrder(idorder, isPaymentValue);
-        },
-        error: function (error) {
-          console.log('Lỗi khi cập nhật trạng thái isPayment:', error);
-        }
+$('input[name="isPayment"]').on('change', function () {
+  var isPaymentValue = $(this).val();
+  // Gửi yêu cầu AJAX để cập nhật trạng thái isPayment
+  $.ajax({
+    url: 'http://localhost:3000/api/updateIsPayment/' + idorder,
+    method: 'PATCH',
+    data: { isPayment: isPaymentValue },
+    success: function (data) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật thành công!',
+        text: 'Trạng thái isPayment đã được cập nhật thành công.',
+      }).then(function () {
+        // Chuyển màn hình sau khi hiển thị thông báo thành công
+        window.location.href = 'http://localhost:3000/api/getAllorderUi';
       });
-    });
+      confirmOrder(idorder, isPaymentValue);
+    },
+    error: function (error) {
+      console.log('Lỗi khi cập nhật trạng thái isPayment:', error);
+    }
+  });
+});
 
     function confirmOrder(idorder, isPaymentValue) {
       var newStatus = isPaymentValue === 'true' ? '6560466ed13bcf53cec8deea' : '653bc0a72006e5791beab35b';
@@ -202,6 +214,22 @@ function hasValidStatusPayment(status, statusPayment) {
         }
       });
     }
+    function formatTime(timestamp) {
+  if (!timestamp) return '';
+
+  // Create a new Date object
+  var date = new Date(timestamp);
+
+  // Format the date in the desired way
+  var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
+
+  return formattedDate;
+}
+
+function padZero(num) {
+  return num < 10 ? '0' + num : num;
+}
+
 
     $(document).ready(function () {
       updateStatus();
