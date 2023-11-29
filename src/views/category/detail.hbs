@@ -9,148 +9,51 @@
   <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <link rel="stylesheet" href="style.css">
-</head>
-<style>
-  /* Reset some default styles */
-  body,
-  h1,
-  h2,
-  h3,
-  p {
-    margin: 0;
-    padding: 0;
-  }
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
 
-  /* Global styles */
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-  }
+    .container {
+      margin-top: 20px;
+    }
 
-  .container {
-    margin-top: 20px;
-  }
+    .mb-3 {
+      margin-bottom: 15px;
+    }
 
-  .smartphone {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+    .col-md-6 {
+      margin-bottom: 20px;
+    }
 
-  .row {
-    margin-bottom: 20px;
-  }
-
-  /* Product image styles */
-  #img-preview {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-
-  .row .col img {
-    width: 60%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
-
-  .row .col img:hover {
-    transform: scale(1.1);
-  }
-
-  /* Product details styles */
-  #name {
-    font-size: 1.5rem;
-    margin-top: 15px;
-  }
-
-  #price {
-    font-size: 1.5rem;
-    color: #FF593E;
-    margin-top: 15px;
-  }
-
-  /* Product description styles */
-  #descriptiontext {
-    color: #9CA4AB;
-    margin-top: 20px;
-  }
-
-  /* Sizes styles */
-  .h4 {
-    font-size: 1.2rem;
-  }
-
-  /* Three dots icon styles */
-  .bi-three-dots {
-    margin-top: 15px;
-    cursor: pointer;
-  }
-
-  /* Update form styles */
-  #updateForm {
-    margin-top: 20px;
-  }
-
-  /* Remove form styles */
-  #removeForm {
-    margin-top: 20px;
-  }
-
-  /* Modal styles */
-  .modal-content {
-    border-radius: 10px;
-  }
-
-  /* Responsive styles */
-  @media (max-width: 576px) {
-    .smartphone {
-      padding: 10px;
+    .form-label {
+      font-weight: bold;
     }
 
     #img-preview {
-      height: auto;
+      height: 200px;
+      width: 200px;
+      border-radius: 5px;
+      margin-bottom: 15px;
     }
-  }
 
-  .col {
-
-  }
-
-  #removeForm {
-
-  }
+    .form-control {
+      width: 100%;
+    }
 
     .btn {
       background-color: #FF593E;
       color: aliceblue;
+      margin-top: 10px;
     }
-</style>
+  </style>
+</head>
 
 <body>
   <div class="container">
+    <h3>Chi tiết danh mục</h3>
     <div class="row">
-      <div class="col">
-        <div class="smartphone">
-          <img src="{{data.category_image.url}}" alt="Category Image" width="430px" height="270px" id="img-preview">
-
-          <!-- Product details -->
-          <div class="row">
-            <div class="col">
-              <label class="form-label"> Tên danh mục </label>
-              <h2 style="margin-left: 20px; margin-top: 30px; font-size: x-large;" id="name">{{data.category_name}}</h2>
-            </div>
-
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col">
         <div class="mb-3">
           <i style="float: right; font-size: small;">ID: {{data._id}}</i>
           <form action="http://localhost:3000/api/updateCategory/{{data._id}}" method="post" id="updateForm"
@@ -158,67 +61,31 @@
             <label class="form-label"> Tên danh mục </label>
             <input class="form-control" name="category_name" id="category_name" required="required"
               value="{{data.category_name}}">
-            <div class="col">
-              <label class="form-label">Image</label>
-              <img src="{{data.category_image.url}}" alt="" class="form-control" id="img-preview"
-                style="height: 400px; width: 400px">
+            <div class="mb-3">
+              <label class="form-label">Ảnh</label>
+              <img src="{{data.category_image.url}}" alt="" class="form-control" id="img-preview">
               <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*">
             </div>
-            <div class="row">
-              <div class="col">
-                <button type="submit" class="btn" style="margin-top: 10px;">Update</button>
-              </div>
-            </div>
+            <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Update</button>
           </form>
-        </div>
+        
       </div>
     </div>
-  </div>
-  <div class="col">
-    <form action="http://localhost:3000/api/remove/category/{{data._id}}" method="get" id="removeForm">
-      <button type="submit" class="btn">Move to recycle bin</button>
-    </form>
+
+    <div class="row">
+      <div class="col-md-6">
+        <form action="http://localhost:3000/api/remove/category/{{data._id}}" method="get" id="removeForm">
+          <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Move to recycle bin</button>
+        </form>
+      </div>
+    </div>
   </div>
 
-  <div class="row">
-    <div class="col">
-      <div class="smartphone">
-    
-        <!-- Size Modal -->
-        <div class="modal" tabindex="-1" role="dialog" id="sizeModal">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Add Size</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <!-- Form to enter Size information -->
-                <form id="sizeForm">
-                  <div class="mb-3">
-                    <label for="sizeName" class="form-label">Size Name</label>
-                    <input type="text" class="form-control" id="size_name" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="priceSize" class="form-label">Price Size</label>
-                    <input type="number" class="form-control" id="size_price" required>
-                  </div>
-                  <input type="hidden" id="productId" value="{{data._id}}">
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <script>
     document.getElementById('updateForm').addEventListener('submit', function (event) {
       const confirmUpdate = confirm("Do you really want to update this?");
       if (!confirmUpdate) {
         event.preventDefault();
-      } else {
-  
       }
     });
 
@@ -245,12 +112,9 @@
 
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        // Xử lý khi không có tệp hình ảnh nào được chọn
-        console.log("Không có tệp hình ảnh được chọn");
+        console.log("No image file selected");
       }
     });
-
-    
   </script>
 </body>
 

@@ -76,25 +76,21 @@
                   </div>
 
                   <form id="loginForm">
-
                     <p>Xin hãy đăng nhập vào tài khoản của bạn</p>
-
                     <div class="form-outline mb-4">
-                      <label class="form-label" for="form2Example11">Email</label>
+                      <label class="form-label" for="form2Example11">Tên Đăng Nhập</label>
                       <input type="email" class="form-control" placeholder="Vui lòng nhập email" id="email" required />
-
                     </div>
                     <div class="form-outline mb-4">
-
                       <label class="form-label" for="form2Example22">Mật Khẩu</label>
-                      <input type="password" class="form-control" id="password" placeholder="Nhập đúng mật khẩu" require
-
+                      <input type="password" class="form-control" id="password" placeholder="Nhập đúng mật khẩu"
+                        required />
                     </div>
                     <p id="message"></p>
                     <div class="text-center pt-1 mb-5 pb-1">
                       <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button"
-
-                        onclick="login()">Đăng nhập</button>
+                        onclick="login()">Đăng Nhập
+                        </button>
                     </div>
                     <div class="d-flex align-items-center justify-content-center pb-4">
 
@@ -109,8 +105,9 @@
                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
 
                   <h4 class="mb-4">SmartLunch Team💖</h4>
-                  <p class="small mb-0">Dữ liệu được quản lý bởi nhóm SmartLunch. Chỉ những thành viên được ủy quyền mới có thể đăng nhập. Bất kỳ
-                     hành động trái phép đều bị cấm.</p>
+                  <p class="small mb-0">Dữ liệu được quản lý bởi nhóm SmartLunch. Chỉ những thành viên được ủy quyền mới
+                    có thể đăng nhập. Bất kỳ
+                    hành động trái phép đều bị cấm.</p>
                 </div>
               </div>
             </div>
@@ -120,7 +117,6 @@
     </div>
   </section>
 </body>
-
 <script>
   function login() {
     const email = document.getElementById("email").value;
@@ -143,7 +139,7 @@
             // Chuyển hướng đến trang admin
 
 
-            window.location.href = "/dashboard";
+            window.location.href = "/api/getAllorderUi";
 
           } else {
             document.getElementById("message").innerText = "Bạn không có quyền";
@@ -155,5 +151,6 @@
   }
 
 </script>
+
 
 </html>

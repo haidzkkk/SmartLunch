@@ -3,6 +3,7 @@ var Comment = require("../models/comment")
 var Product = require("../models/product")
 var Order = require("../models/order")
 var Auth = require("../models/auth")
+var Size = require("../models/size")
 var CommentSchema = require("../schemas/comment").CommentSchema
 var { uploadImage } = require('../controllers/upload');
 
@@ -17,12 +18,10 @@ exports.getCommentFromProduct = async (req, res) => {
         }
 
         const comments = await Comment.find({ productId: productId })
-        .populate("userId")
-        .populate("productId")
-        .populate("sizeId")
-        .sort({ createdAt: -1 })
-        .limit(limitPosition)
-        .exec();
+            .populate("userId")
+            .sort({ createdAt: -1 })
+            .limit(limitPosition)
+            .exec();
 
         console.log(productId + " 0 " + comments);
 
@@ -31,6 +30,28 @@ exports.getCommentFromProduct = async (req, res) => {
                 message: 'Không tìm thấy theo sản phẩm bình luận',
             });
         }
+
+        return res.status(200).json(comments);
+    } catch (error) {
+        res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+
+exports.getRatingFromProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        const comments = await Comment.find({ productId: productId })
+            .populate("userId")
+
+        var rateProduct = 0
+        var indexRate = 0
+        comments.forEach((comment) => {
+
+        })
 
         return res.status(200).json(comments);
     } catch (error) {
@@ -64,79 +85,73 @@ exports.getOneComment = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-    //     {
-    //     productId,
-    //     orderId,
-    //     sizeId,
-    //     description,
-    //     rating,
-    //     }
         const commentBody = req.body;
-        var files = req.files 
+        var files = req.files
+
+        if (!commentBody.description) {
+            commentBody.description = "Không có đánh giá"
+        }
 
         const { error } = CommentSchema.validate(req.body, { abortEarly: false });
         if (error) {
             const errors = error.details.map((err) => err.message);
-            return res.status(400).json({
+            return res.status(401).json({
                 message: errors
             })
         }
 
         const orderCheck = await Order.findById(commentBody.orderId).populate("status")
-        if(!orderCheck){
+        if (!orderCheck) {
             return res.status(404).json({
                 message: "đơn hàng không tồn tại.",
-             });
+            });
         }
 
-        // if(orderCheck.status._id != "6526a6e6adce6a54f6f67d7d"){
-        //     return res.status(404).json({
-        //         message: "Bạn không có điều kiện để comment.",
-        //      });
-        // }
-
-         // Check if the product exists
+        // Check if the product exists
         const product = await Product.findById(commentBody.productId);
-        console.log(commentBody.productId);
         if (!product) {
-             return res.status(404).json({
+            return res.status(404).json({
                 message: "Sản phẩm không tồn tại.",
-             });
+            });
         }
 
-          // Check if the user already reviewed the product
-        const existingComment = await Comment.findOne({ 
-            userId: req.user._id, 
+        // Check if the product exists
+        const size = await Size.findById(commentBody.sizeId);
+        if (!size) {
+            return res.status(404).json({
+                message: "size không tồn tại.",
+            });
+        }
+        commentBody.sizeName = size.size_name
+        commentBody.sizePrice = size.size_price
+
+        if (orderCheck.status._id != "6526a6e6adce6a54f6f67d7d") {
+            return res.status(404).json({
+                message: "Bạn không có điều kiện để comment.",
+            });
+        }
+
+        // Check if the user already reviewed the product
+        const existingComment = await Comment.findOne({
+            userId: req.user._id,
             productId: commentBody.productId,
             orderId: commentBody.orderId
         });
         if (existingComment) {
-          return res.status(401).json({
-          message: "Bạn đã đánh giá sản phẩm này trước đó.",
-         });
+            return res.status(401).json({
+                message: "Bạn đã đánh giá sản phẩm này trước đó.",
+            });
         }
-
         commentBody.images = await uploadImage(files)
         commentBody.userId = req.user._id
         const comment = await Comment.create(commentBody)
 
-    
-        const comments = await Comment.find({ productId: comment.productId });
-        const totalRating = comments.reduce((totalRating, rating) => totalRating + rating.rating, 0);
-      
-      // Tính toán số lượng sao và lươtj đánh giá
-         const reviewCount = comments.length;
-         const averageScore = totalRating / reviewCount;
-         product.average_score = Math.round(averageScore);
-         product.review_count = reviewCount;
-        await product.save();
-        
-        var commentPopulate = await Comment.findById(comment._id)
-        .populate("userId")
-        .populate("productId")
-        .populate("sizeId")
+        handleRatingProduct(comment)
 
-       return res.status(200).json(commentPopulate);
+        var commentPopulate = await Comment.findById(comment._id)
+            .populate("userId")
+
+        return res.status(200).json(commentPopulate);
     } catch (error) {
         console.log("Lỗi tạo comment: " + error);
         return res.status(400).json({
@@ -324,6 +339,23 @@ exports.removeCommentByAdmin = async (req, res) => {
         });
     }
 };
+
+// Tính toán số lượng sao và lươtj đánh giá
+const handleRatingProduct = async (comment) => {
+    const product = await Product.findById(comment.productId);
+    const comments = await Comment.find({ productId: comment.productId });
+    let  rateCount = 0
+    let  totalRating = 0
+    comments.forEach((comment) => {
+        if (comment.rating > 0 && comment.rating <= 5) {
+            totalRating += comment.rating
+            rateCount++
+        }
+    });
+    product.rate = totalRating / rateCount;
+    product.rate_count = rateCount;
+    await product.save();
+}
 
 
 

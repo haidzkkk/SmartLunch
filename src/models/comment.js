@@ -8,20 +8,19 @@ const CommentSchema = new mongoose.Schema({
     required: true
   },
   productId: {
-    type: mongoose.Types.ObjectId,
-    ref: "Product",
+    type: String,
     required: true
   },
   orderId: {
-    type: mongoose.Types.ObjectId,
-    ref: "Order",
+    type: String,
     required: true
   },
   sizeId: {
-    type: mongoose.Types.ObjectId,
-    ref: "Size",
+    type: String,
     required: true
   },
+  sizeName: String,
+  sizePrice: String,
   description: {
     type: String,
     required: true

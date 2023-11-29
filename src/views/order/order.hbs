@@ -4,6 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Your Page Title</title>
 </head>
@@ -27,7 +34,7 @@
 .table th.confirm-column,
 .table td.confirm-column {
   width: auto;
-  max-width: 150px; /* Đặt chiều rộng tối đa cho các cột không có kích thước cố định */
+  max-width: 100px; /* Đặt chiều rộng tối đa cho các cột không có kích thước cố định */
 }
 
 .container {
@@ -79,15 +86,19 @@
 
     <div class="tab-content mt-2">
       <div class="tab-pane fade show active" id="table-confirmed">
-        <table class="table" id="tab-confirmed">
+        <table class="table" id="tab-confirmed" >
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
-              <th>Địa chỉ</th>
+          
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th>Điện thoại</th>
+              <th style="width: 140px;">Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
+               <th>
+                <input type="checkbox" id="select-all">
+              </th>
+              <th class="detail-column">Chi tiết </th>
               <th class="detail-column">Xác nhận</th>
             </tr>
           </thead>
@@ -100,9 +111,8 @@
         <table class="table" id="table-pending">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -118,9 +128,8 @@
         <table class="table" id="table-confirmed-orders">
           <thead>
             <tr>
-           <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -136,9 +145,8 @@
         <table class="table" id="table-delivered">
           <thead>
             <tr>
-            <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -154,9 +162,8 @@
     <table class="table" id="tab-delivered_cancel">
           <thead>
             <tr>
-              <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -172,9 +179,9 @@
         <table class="table" id="tab-delivered_refund_order">
           <thead>
             <tr>
-             <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+     
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -190,9 +197,9 @@
         <table class="table" id="tab-delivered_refund">
           <thead>
             <tr>
-           <th>STT</th>
-              <th class="name-column">Tên sản phẩm</th>
-              <th>Số đt</th>
+    
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
@@ -253,7 +260,7 @@
                 var total = order.total;
 
                 var row = '<tr>' +
-                  '<td>' + (index + 1) + '</td>' +
+                   
                   '<td>' + productName + '</td>' +
                   '<td>' + phone + '</td>' +
                   '<td>' + address + '</td>' +
@@ -263,7 +270,10 @@
                   row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
                     '</tr>';
                 } else if (tabId === 'confirmed') {
-                  row += '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '">Xác nhận</button></td>' +
+                    row += 
+                      '<td><input type="checkbox" class="product-checkbox" data-order-id="' + order._id + '" data-product-id="' + order.products[0]._id + '"></td>' +
+                     '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+                     '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '" data-product-name="' + productName + '">Xác nhận</button></td>' +
                     '</tr>';
                 } else {
                   row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
@@ -271,7 +281,7 @@
 
                 row += '</tr>';
 
-                $('#' + tableId + ' tbody').append(row);
+                 $('#' + tableId + ' tbody').prepend(row);
               } else {
                 console.log("bbbb");
               }
@@ -283,6 +293,13 @@
           }
         });
       }
+      $('#select-all').on('click', function () {
+        // Lấy trạng thái hiện tại của checkbox "select-all"
+        var isChecked = $(this).prop('checked');
+
+        // Cập nhật trạng thái của tất cả các checkbox khác trong bảng
+        $('.product-checkbox').prop('checked', isChecked);
+      });
 
     function bindButtons(tabId) {
   console.log('Binding buttons click events for tab:', tabId);
@@ -307,34 +324,77 @@
 }
 
 
-      function bindConfirmButton() {
+     function bindConfirmButton() {
         console.log('Binding confirm button click event');
         $('.confirm-button').unbind('click');
         $('.confirm-button').on('click', function () {
-          var idorder = $(this).data('order-id');
-          console.log('Confirm button clicked for order ID:', idorder);
-          confirmOrder(idorder);
+          var selectedProducts = [];
+
+          // Iterate through each checked checkbox and get product ID
+          $('.product-checkbox:checked').each(function () {
+            var orderId = $(this).data('order-id');
+            var productId = $(this).data('product-id');
+            selectedProducts.push({ orderId: orderId, productId: productId });
+          });
+
+          // Check if any product is selected
+          if (selectedProducts.length > 0) {
+            // Show SweetAlert with the list of selected products
+            Swal.fire({
+              title: 'Xác nhận đơn hàng',
+              html: 'Bạn có chắc chắn muốn xác nhận đơn hàng cho những sản phẩm đã chọn không?',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: 'Xác nhận',
+              cancelButtonText: 'Hủy'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If the user clicks "Xác nhận", proceed to confirm the selected orders
+                confirmSelectedOrders(selectedProducts);
+              }
+            });
+          } else {
+            // Show an alert if no product is selected
+            Swal.fire({
+              icon: 'info',
+              title: 'Chưa chọn sản phẩm',
+              text: 'Vui lòng chọn ít nhất một sản phẩm để xác nhận đơn hàng.'
+            });
+          }
         });
       }
 
-    function confirmOrder(idorder) {
-  $.ajax({
-    url: 'http://localhost:3000/api/order/' + idorder,
-    method: 'PATCH',
-    data: { status: '65264c102d9b3bb388078976' },
-    dataType: 'json',
-    success: function (response) {
-      console.log('Phản hồi từ API:', response);
-      // After successfully confirming the order, update the table data
-      var tabId = 'confirmed'; // Replace with the appropriate tabId
-      var tableId = 'tab-' + tabId;
-      updateTable(tabId, tableId);
-    },
-    error: function (error) {
-      console.log('Lỗi:', error);
-    }
-  });
-}
+  function confirmSelectedOrders(selectedProducts) {
+        // Iterate through the selected products and confirm each order
+        selectedProducts.forEach(function (selectedProduct) {
+          var orderId = selectedProduct.orderId;
+          confirmOrder(orderId);
+        });
+
+        // After successfully confirming the orders, update the table data
+        var tabId = 'confirmed'; // Replace with the appropriate tabId
+        var tableId = 'tab-' + tabId;
+        updateTable(tabId, tableId);
+      }
+
+function confirmOrder(idorder) {
+    $.ajax({
+          url: 'http://localhost:3000/api/order/' + idorder,
+          method: 'PATCH',
+          data: { status: '65264c102d9b3bb388078976' },
+          dataType: 'json',
+          success: function (response) {
+            // After successfully confirming the order, update the table data
+            var tabId = 'confirmed'; // Replace with the appropriate tabId
+            var tableId = 'tab-' + tabId;
+            updateTable(tabId, tableId);
+             window.location.href = 'http://localhost:3000/api/getAllorderUi';
+          },
+          error: function (error) {
+            console.log('Lỗi:', error);
+          }
+        });
+      }
 
       // Bootstrap tab event
       $('.nav-tabs a').on('shown.bs.tab', function (e) {
@@ -343,6 +403,7 @@
         var tableId = 'table-' + tabId;
         updateTable(tabId, tableId);
       });
+
 
       // Initial data load for active tab
       var tablesToUpdate = [

@@ -279,6 +279,7 @@ exports.createOrder = async (req, res) => {
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
         const coupon = await Coupon.findById(myCart.couponId);
         if (coupon) {
+            body.couponId = coupon._id
             if (coupon.coupon_quantity > 0) {
                 coupon.coupon_quantity -= 1;
                 await coupon.save();
@@ -335,6 +336,8 @@ exports.createOrder = async (req, res) => {
             })
         }
 
+        handleBoughtProduct(order)
+
         const result = await Order.findById(order._id)
             .populate('userId')
             .populate('status')
@@ -351,6 +354,26 @@ exports.createOrder = async (req, res) => {
     }
 }
 
+exports.searchOrder = async (req, res) => {
+    try {
+        const { productName } = req.body;
+
+        // Check if Orders is an array
+        if (!Array.isArray(Order)) {
+            throw new Error('Orders is not an array');
+        }
+
+        // Thực hiện tìm kiếm trong danh sách đơn hàng
+        const searchResults = Order.filter(order => {
+            return order.products.some(product => product.product_name.toLowerCase().includes(productName.toLowerCase()));
+        });
+
+        res.json({ results: searchResults });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
+    }
+};
 
 // cập nhật
 exports.updateOrder = async (req, res) => {
@@ -362,12 +385,12 @@ exports.updateOrder = async (req, res) => {
             body.shipperId = shipperId;
         }
 
-        if (!order) {
+        if (!Order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             });
         }
-        handleShipperId(shipperId, order, body);
+        handleShipperId(shipperId, Order, body);
         const updatedOrder = await updateOrderById(id, body);
         const notificationMessage = await createNotificationMessage(updatedOrder);
         await sendNotificationToUser(updatedOrder, notificationMessage);
@@ -390,7 +413,6 @@ const handleShipperId = (shipperId, order, body) => {
 
 const updateOrderById = async (id, body) => {
     const updatedOrder = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
@@ -454,5 +476,25 @@ exports.updatePaymentOrder = async (req, res) => {
         return res.status(400).json({
             message: error.message
         })
+    }
+}
+
+const handleBoughtProduct = async (order) => {
+    try {
+        await order.populate('products.productId').execPopulate();
+
+        for (const product of order.products) {
+            const productId = product.productId;
+
+            // Kiểm tra xem productId có tồn tại không trước khi cập nhật
+            if (productId) {
+                const views = productId.bought + product.purchase_quantity;
+                productId.bought = views;
+                await productId.save();
+            }
+        }
+        console.log("Updated product bought values successfully.");
+    } catch (error) {
+        console.error("Error updating product bought values:", error);
     }
 }

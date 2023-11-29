@@ -7,6 +7,7 @@ var cartSchema = require("../schemas/cart").cartSchema
 var Product = require("../models/product")
 var Size = require("../models/size")
 const { el } = require("date-fns/locale")
+const fetch = require('node-fetch');
 
 
 const ressetCart = async (idUser) =>{
@@ -100,6 +101,12 @@ exports.createCart = async (req, res) => {
         if(!productExist){
             return res.status(400).json({
                 message: 'Product không tồn tại',
+            });
+        }
+
+        if(!productExist.isActive){
+            return res.status(400).json({
+                message: 'Product không hoạt động',
             });
         }
 
@@ -282,14 +289,14 @@ exports.applyCounpon = async(req,res)=>{
 
         const coupon =await Coupon.findById(couponId);
         if(cart.total < coupon.min_purchase_amount){
-            cart.couponId = null
+            // cart.couponId = null
             await handleCouponTotal(cart)
             return res.status(400).json({
                 message: 'Không đủ điều kiện để sử dụng phiếu giảm giá'
             })
         }
         if(!coupon){
-            cart.couponId = null
+            // cart.couponId = null
             await handleCouponTotal(cart)
             return res.status(400).json({
                 message: 'Mã phiếu giảm giá không hợp lệ'
@@ -297,10 +304,16 @@ exports.applyCounpon = async(req,res)=>{
         }
         //check người dùng đã sử dụng mã gảim giá chưa
         const currentDate = new Date();
-        if(currentDate> coupon.expiration_date){
+        if(currentDate > coupon.expiration_date){
             cart.couponId = null
             await handleCouponTotal(cart)
             return res.status(400).json({ message: 'Mã phiếu giảm giá đã hết hạn' });
+        }
+
+        if(coupon.coupon_quantity <= 0){
+            cart.couponId = null
+            await handleCouponTotal(cart)
+            return res.status(400).json({ message: 'Mã phiếu giảm giá hết số lư' });
         }
         
         // app dụng phiếu giảm giá vào giỏ hàng mà không tính rấ
@@ -368,7 +381,7 @@ const handleTotalCart = async(cart) =>{
 const handleCouponTotal = async (cart) => {
     var totalCoupon = 0
     var coupond = await Coupon.findById(cart.couponId)
-    if(coupond != null && cart.total > coupond.min_purchase_amount){
+    if(coupond != null && cart.total >= coupond.min_purchase_amount){
         totalCoupon = (cart.total / 100) * coupond.discount_amount
     }else{
         cart.couponId = null

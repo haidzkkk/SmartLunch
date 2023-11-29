@@ -8,7 +8,8 @@ var router = express.Router();
 
 router.get('/admin/recycle',authenticate,  recycleController.getProductDelete);
 router.get("/deletebyadmin/products/:id", productController.removeProduct);
-router.get('/admin/recycle_category',authenticate,  recycleController.getCategoryDelete);
+
+router.get('/admin/recycle_category',authenticate,recycleController.getCategoryDelete);
 router.get("/deletebyadmin/category/:id", categoryController.removeCategory);
 
 
