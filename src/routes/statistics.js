@@ -9,4 +9,5 @@ var router = express.Router();
   router.get("/getorder",  statisticsController.getOrderbyadmin)
   router.get("/getorderpie",  statisticsController.getOrderPie)
   router.get("/linegraph",  statisticsController.getLinegraph)
+  router.get("/linegraph2",  statisticsController.getLinegraph2)
 module.exports = router;
