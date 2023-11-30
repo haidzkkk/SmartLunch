@@ -3,6 +3,8 @@ var express = require('express');
 var createServer = require("http").createServer;
 var Server = require("socket.io").Server;
 var authController = require('../controllers/auth');
+var notificationController = require('../controllers/notification')
+var messageController = require('../controllers/message')
 const { el } = require('date-fns/locale');
 
 var app = express();
@@ -38,9 +40,8 @@ exports.initializeSocketServer = ()=>{
     httpServer.listen(process.env.PORT_SOCKET);
 } 
 
-exports.sendRoomToClient = (room) =>{
-    io.emit(`client-listen-room-${room.shopUserId._id}`, room)
-    io.emit(`client-listen-room-${room.userUserId._id}`, room)
+exports.sendRoomToClient = (userId, room) =>{
+    io.emit(`client-listen-room-${userId}`, room)
 } 
 
 exports.sendMessageToClient = (roomId, message) =>{
@@ -53,10 +54,10 @@ handleAsSignalingServer = (json) => {
     
     switch(reqCall.type){
         case START_CALL: {
-            if(reqCall.targetUser._id != null){
-                var userToCall = authController.getOneById(reqCall.targetUser._id)
+            if(reqCall.targetUserId != null){
+                var userToCall = authController.getOneById(reqCall.targetUserId)
                 if(userToCall != null){
-                    io.emit(`client-listen-call-${reqCall.myUser._id}`,
+                    io.emit(`client-listen-call-${reqCall.myUserId}`,
                     JSON.stringify(
                         {
                             type: CALL_RESPONSE,
@@ -64,85 +65,85 @@ handleAsSignalingServer = (json) => {
                             data: OK
                         }
                     ))
-                    console.log(`CALL_RESPONSE ok: về ${reqCall.myUser.first_name}`)
                 }else{
-                    io.emit(`client-listen-call-${reqCall.myUser._id}`,
+                    io.emit(`client-listen-call-${reqCall.myUserId}`,
                     JSON.stringify({
                         type: CALL_RESPONSE,
                         data: NO
                     }))
-                    console.log(`CALL_RESPONSE no: client-listen-call-${reqCall.myUser._id}`)
                 }
           }
           break
         }
         case CREATE_OFFER: {
-            if(reqCall.targetUser._id != null){
-                var userToReceiveOffer = authController.getOneById(reqCall.targetUser._id)
+            console.log(`OFFER_RECEIVED: đến ${reqCall}`)
+            if(reqCall.targetUserId != null){
+                var userToReceiveOffer = authController.getOneById(reqCall.targetUserId)
                 if(userToReceiveOffer != null){
-                    io.emit(`client-listen-call-${reqCall.targetUser._id}`,
-                    JSON.stringify({
-                        type: OFFER_RECEIVED,
-                        myUser: reqCall.myUser,
-                        data: reqCall.data.sdp
-                    }))
-                    console.log(`OFFER_RECEIVED: đến ${reqCall.targetUser.first_name}`)
+                    var idMessage = reqCall.myUserId
+                    messageController.addSdpMessageCall(idMessage, String(reqCall.data.sdp))
                 }
             }
             break
         }
         case CREATE_ANSWER: {
-            if(reqCall.targetUser._id != null){
-                var userToReceiveAnswer = authController.getOneById(reqCall.targetUser._id)
-                console.log(`ANSWER_RECEIVED: Đến ${reqCall.targetUser.first_name}`)
+            if(reqCall.targetUserId != null){
+                var userToReceiveAnswer = authController.getOneById(reqCall.targetUserId)
                 if(userToReceiveAnswer != null){
-                    io.emit(`client-listen-call-${reqCall.targetUser._id}`,
+                    if( reqCall.data == NO){
+                        messageController.stopCall(reqCall.myUserId)
+                        io.emit(`client-listen-call-${reqCall.targetUserId}`,
+                        JSON.stringify({
+                            type: ANSWER_RECEIVED,
+                            data: NO
+                        }))
+                    }else{
+                        messageController.addSdpMessageCall(reqCall.myUserId, String(reqCall.data.sdp))
+                        io.emit(`client-listen-call-${reqCall.targetUserId}`,
+                        JSON.stringify({
+                            type: ANSWER_RECEIVED,
+                            data: reqCall.data.sdp
+                        }))
+                    }
+                }
+            }
+            break
+        }
+        case ICE_CANDIDATE: {
+            console.log(`ICE_CANDIDATE: Đến ${reqCall}`)
+            if(reqCall.targetUserId != null){
+                var userToReceiveIceCandidate = authController.getOneById(reqCall.targetUserId)
+                if (userToReceiveIceCandidate != null) {
+
+                    var data = JSON.stringify({
+                        sdpMLineIndex: reqCall.data.sdpMLineIndex,
+                        sdpMid: reqCall.data.sdpMid,
+                        sdpCandidate: reqCall.data.sdpCandidate,
+                    })
+
+                    var idMessage = reqCall.myUserId
+                    messageController.addIceCandidateMessageCall(idMessage, data)
+
+                    io.emit(`client-listen-call-${reqCall.targetUserId}`,
                     JSON.stringify({
-                        type: ANSWER_RECEIVED,
-                        myUser: reqCall.myUser,
-                        data: reqCall.data == NO ? NO : reqCall.data.sdp
+                        type: ICE_CANDIDATE,
+                        // myUser: reqCall.myUserId,
+                        data: data
                     }))
                 }
             }
             break
         }
         case CREATE_STOP: {
-            if(reqCall.targetUser._id != null){
-                var userToReceiveAnswer = authController.getOneById(reqCall.targetUser._id)
+            if(reqCall.targetUserId != null){
+                var userToReceiveAnswer = authController.getOneById(reqCall.targetUserId)
                 if(userToReceiveAnswer != null){
-                    console.log(`CREATE_STOP: Đến ${reqCall.targetUser.first_name}`)
-                    io.emit(`client-listen-call-${reqCall.targetUser._id}`,
+                    var idMessage = reqCall.myUserId
+                    messageController.stopCall(idMessage)
+                    io.emit(`client-listen-call-${reqCall.targetUserId}`,
                     JSON.stringify({
                         type: STOP_RECEIVED,
-                        myUser: reqCall.myUser,
-                    }))
-                    console.log(`CREATE_STOP: Đến ${reqCall.myUser.first_name}`)
-                    io.emit(`client-listen-call-${reqCall.myUser._id}`,
-                    JSON.stringify({
-                        type: STOP_RECEIVED,
-                        myUser: reqCall.myUser,
-                    }))
-                }
-            }
-            break
-        }
-        case ICE_CANDIDATE: {
-            if(reqCall.targetUser._id != null){
-                var userToReceiveIceCandidate = authController.getOneById(reqCall.targetUser._id)
-                if (userToReceiveIceCandidate != null) {
-                    console.log(`ICE_CANDIDATE: Đến ${reqCall.targetUser.first_name}`)
-
-                    var data = {
-                        sdpMLineIndex: reqCall.data.sdpMLineIndex,
-                        sdpMid: reqCall.data.sdpMid,
-                        sdpCandidate: reqCall.data.sdpCandidate,
-                    }
-
-                    io.emit(`client-listen-call-${reqCall.targetUser._id}`,
-                    JSON.stringify({
-                        type: ICE_CANDIDATE,
-                        myUser: reqCall.myUser,
-                        data: JSON.stringify(data)
+                        myUser: reqCall.myUserId,
                     }))
                 }
             }
