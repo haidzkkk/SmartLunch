@@ -168,11 +168,10 @@ exports.getAllOrder = async (req, res) => {
             query.status = statusId;
 
             if (statusPaymentId) {
-
                 query.statusPayment = statusPaymentId;
             }
         }
-        const orders = await Order.find(query)
+        const orders = await Order.find(query).sort({createAt : -1})
             .populate('userId')
             .populate('status')
             .populate('address')
