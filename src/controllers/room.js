@@ -4,7 +4,7 @@ const { el, da } = require('date-fns/locale');
 const roomModel = require('../models/room');
 
 
-exports.getRoomByUserId = async (req, res, next) => {
+exports.getRoomsByUserId = async (req, res, next) => {
     try {
         var curentUser = req.user
 
@@ -31,7 +31,7 @@ exports.getRoomByUserId = async (req, res, next) => {
     }
 }
 
-exports.getRoomByWithUserId = async (req, res, next) => {
+exports.getRoomByUserId = async (req, res, next) => {
     try {
         var curentUserId = req.user.id
         var withUserId = req.params.id
@@ -47,16 +47,11 @@ exports.getRoomByWithUserId = async (req, res, next) => {
             .populate('userIdSend')
 
             // trả về cho người lấy danh sách auto là userUserId còn ng chat cùng là shopUerID
-            if(data[0] != null){
-                data.forEach((room) =>{
-                    if(curentUserId != room.userUserId._id){
-                        const temp = room.shopUserId;
-                        room.shopUserId = room.userUserId;
-                        room.userUserId = temp;
-                    }
-                })
-                res.status(200).json(data[0])
-            }else{
+            if(data[0] == null){
+                var withUser = await Auth.findById(withUserId)
+                if(!withUser){
+                    return res.status(404).json("Không tìm thấy người dùng")
+                }
                 var roomAdd = await Room.create({
                     shopUserId: withUserId,
                     userUserId: curentUserId,
@@ -67,8 +62,17 @@ exports.getRoomByWithUserId = async (req, res, next) => {
                 .populate('userUserId')
                 .populate('userIdSend')
 
-                res.status(200).json(roomAddPopu)
+                return res.status(200).json(roomAddPopu)
             }
+
+            data.forEach((room) =>{
+                if(curentUserId != room.userUserId._id){
+                    const temp = room.shopUserId;
+                    room.shopUserId = room.userUserId;
+                    room.userUserId = temp;
+                }
+            })
+            res.status(200).json(data[0])
     } catch (err) {
         console.log(err);
         res.status(400).json("Lỗi")
@@ -133,8 +137,11 @@ exports.updateRoomSocket = async (id, type, room) => {
         }else if(type == 1){
             room.messSent = "Đã gửi ảnh"
         }
-        else{
-            room.messSent = "Type khác"
+        else if(type == 11){
+            room.messSent = "Đang có cuộc gọi"
+        }
+        else if(type == 12){
+            room.messSent = "Cuộc gọi đã kết thúc"
         }
         
         var roomUpdate = await Room.findByIdAndUpdate(id, room, { new: true }).populate('shopUserId')

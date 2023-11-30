@@ -364,7 +364,12 @@ exports.updateOrder = async (req, res) => {
         if (shipperId) {
             body.shipperId = shipperId;
         }
-
+        const order = await Order.findByIdAndUpdate(id, body, { new: true })
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"

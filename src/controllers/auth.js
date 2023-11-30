@@ -11,6 +11,7 @@ var { uploadImage, updateImage } = require('../controllers/upload');
 const { log } = require('handlebars')
 let refreshTokens = [];
 const fetch = require('node-fetch');
+const { default: addWeeks } = require('date-fns/addWeeks/index')
 
 
 exports.getShipperCreateUI = async (req, res) => {
@@ -900,7 +901,14 @@ exports.searchAuth = async (req, res) => {
 exports.updateToken = async (req, res) => {
     try {
         const tokenDevice = req.body.tokenFcm;
-        console.log(tokenDevice);
+
+        // xóa token
+        await Auth.findOneAndUpdate(
+            { tokenFcm: tokenDevice },
+            { $unset: { tokenFcm: 1 } },
+            { new: true }
+          );
+
         const user = await Auth.findByIdAndUpdate(req.user._id, {tokenFcm: tokenDevice});
         res.status(200).json(user);
     } catch (error) {

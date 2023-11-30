@@ -8,8 +8,9 @@ admin.initializeApp({
 });
 
 var TYPE_LOGIN = "TYPE_LOGIN"
-var TYPE_CHAT = "TYPE_CHAT"
 var TYPE_COUPONS = "TYPE_COUPONS"
+var TYPE_CHAT = "TYPE_CHAT"
+var TYPE_CALL_ANSWER = "TYPE_CALL_ANSWER"
 
 var sendFCMNotification = (fcmToken, title, body, type, idUrl, imageUrl) => {
     const message = {
@@ -24,12 +25,15 @@ var sendFCMNotification = (fcmToken, title, body, type, idUrl, imageUrl) => {
         data: {                     // data send về
             type:  String(type),
             idUrl: String(idUrl)
-        }
+        },
     };
 
     const options = {
         android:{
-            priority:"high"
+            priority:"high",
+            notification: {
+                clickAction: 'FLUTTER_NOTIFICATION_CLICK',
+            },
           },
     }
       
@@ -88,6 +92,17 @@ exports.sendNotifiChat= async (toUserId, title, message, userId)  => {
         var user = await Auth.findById(toUserId)
         if(user.tokenFcm != null){
             sendFCMNotification(user.tokenFcm, title, message, TYPE_CHAT, userId, "myAvatarUrl")  
+        }
+    }catch(e){
+        console.log(e);
+    }
+}
+
+exports.sendNotifiCall= async (targetUserId, title, message, userId)  => {
+    try{
+        var user = await Auth.findById(targetUserId)
+        if(user.tokenFcm != null){
+            sendFCMNotification(user.tokenFcm, title, message, TYPE_CALL_ANSWER, userId, "myAvatarUrl")  
         }
     }catch(e){
         console.log(e);
