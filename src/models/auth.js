@@ -30,7 +30,7 @@ const authSchema = new mongoose.Schema ({
     },
     phone:{
         type: String,
-        required: true
+        default:null
     },
     avatar:{
         type: Object
