@@ -130,6 +130,43 @@ data.forEach((order) => {
 console.log(monthlyTotals);
   res.render('dashboard/linegraph',{monthlyTotals});
 };
+exports.getLinegraph2 = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/getorder');
+  const data = await response.json();
+  const dailyTotals = [];
+
+  // Function to format date as yyyy-mm-dd
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Loop through each order
+  data.forEach((order) => {
+    // Get the creation date of the order
+    const createdAt = new Date(order.createdAt);
+
+    // Extract the date as yyyy-mm-dd
+    const orderDate = formatDate(createdAt);
+
+    // Check if an entry for this date already exists in dailyTotals
+    const existingEntry = dailyTotals.find((entry) => entry.date === orderDate);
+
+    // If an entry exists, update the money field
+    if (existingEntry) {
+      existingEntry.money += order.total;
+    } else {
+      // If no entry exists, add a new entry
+      dailyTotals.push({ date: orderDate, money: order.total });
+    }
+  });
+
+  console.log(dailyTotals);
+  res.render('dashboard/linegraph2', { dailyTotals });
+};
+
 
 
 
