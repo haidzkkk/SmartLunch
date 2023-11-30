@@ -22,6 +22,7 @@
     "express-session": "^1.17.3",
     "fetch": "^1.1.0",
     "firebase-admin": "^11.11.0",
+    "handlebars": "^4.7.8",
     "hbs": "^4.2.0",
     "http": "^0.0.1-security",
     "http-errors": "~1.6.3",
