@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,73 +8,81 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <style>
     /* Định dạng màu nền của tab active */
-    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    .nav-tabs .nav-item.show .nav-link,
+    .nav-tabs .nav-link.active {
       background-color: #ff9900;
-      color: #fff; /* Màu chữ khi tab active */
-      border-color: #ff9900;
+      color: #fff;
+      /* Màu chữ khi tab active */
     }
-    .abc{
-           background-color: #FF593E;
-           color: #FF593E;
-           font-weight: bold;
+
+    .abc {
+      background-color: #FF593E;
+      color: #FF593E;
+      font-weight: bold;
     }
-        .container {
+
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
-
   </style>
 </head>
+
 <body>
 
-<div class="container mt-5">
-  <!-- Tab links -->
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link abc" id="tab1" data-src="http://localhost:3000/api/chartuser" href="#">Thành Viên</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link abc" id="tab2" data-src="http://localhost:3000/api/chartorder" href="#">Đơn hàng</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link abc" id="tab3" data-src="http://localhost:3000/api/linegraph" href="#">Doanh số</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link abc" id="tab4" data-src="http://localhost:3000/api/getorderpie" href="#">Tỉ lệ</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link abc" id="tab5" data-src="http://localhost:3000/api/sortedbyview" href="#">Top sản phẩm</a>
-    </li>
-        <li class="nav-item">
-      <a class="nav-link abc" id="tab6" data-src="http://localhost:3000/api/linegraph2" href="#">Top sản phẩm</a>
-    </li>
-  </ul>
+  <div class="container mt-5">
+    <!-- Tab links -->
+    <iframe src="http://localhost:3000/api/getorderSum" frameborder="0" style="width:100%;height: 650px"></iframe>
+    <ul class="nav nav-tabs" style="width: 100%;  justify-content: center;
+  align-items: center;      margin: 30px;">
+      <li class="nav-item">
+        <a class="nav-link abc" id="tab1" data-src="http://localhost:3000/api/chartuser" href="#">Thành Viên</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link abc" id="tab2" data-src="http://localhost:3000/api/chartorder" href="#">Đơn hàng</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link abc" id="tab3" data-src="http://localhost:3000/api/linegraph" href="#">Doanh số</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link abc" id="tab4" data-src="http://localhost:3000/api/getorderpie" href="#">Tỉ lệ</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link abc" id="tab5" data-src="http://localhost:3000/api/getproductsorted" href="#">Top sản
+          phẩm</a>
 
-  <!-- Tab content area -->
-  <div class="tab-content mt-3">
-    <div class="tab-pane fade show active" id="contentArea">
-      <!-- The iframe will be loaded here -->
+      </li>
+      {{!-- <li class="nav-item">
+        <a class="nav-link abc" id="tab6" data-src="http://localhost:3000/api/linegraph2" href="#">Top sản phẩm</a>
+      </li> --}}
+    </ul>
+
+    <!-- Tab content area -->
+    <div class="tab-content mt-3">
+      <div class="tab-pane fade show active" id="contentArea">
+        <!-- The iframe will be loaded here -->
+      </div>
     </div>
   </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script>
-  $(document).ready(function () {
-    // Hiển thị nội dung của tab đầu tiên khi trang được tải
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Hiển thị nội dung của tab đầu tiên khi trang được tải
 
-    // Attach click event to each tab link
-    $('.abc').on('click', function (e) {
-      e.preventDefault();
-      const src = $(this).data('src');
-      $('#contentArea').html(`<iframe src="${src}" frameborder="0" height="500" width="700"></iframe>`);
+      // Attach click event to each tab link
+      $('.abc').on('click', function (e) {
+        e.preventDefault();
+        const src = $(this).data('src');
+        $('#contentArea').html(`<iframe src="${src}" frameborder="0" height="1000" width="700"></iframe>`);
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
+
 </html>

@@ -25,10 +25,25 @@ exports.getUser = async (req, res) => {
         userCountByMonth[month] = 1;
       }
     }
+    const response2 = await fetch('http://localhost:3000/api/shipper');
+    const data2 = await response2.json();
+    const shipperCountByMonth = {};
+
+    for (let i = 0; i < data2.length; i++) {
+      const month = parseInt(data2[i].createdAt.split("-")[1]);
     
+      // Kiểm tra xem tháng đã tồn tại trong đối tượng chưa
+      if (shipperCountByMonth.hasOwnProperty(month)) {
+        // Nếu tồn tại, tăng giá trị lên 1
+        shipperCountByMonth[month]++;
+      } else {
+        // Nếu không tồn tại, tạo mới và gán giá trị là 1
+        shipperCountByMonth[month] = 1;
+      }
+    }
 
     
-    res.render('statistics/chartuser', { userCountByMonth });
+    res.render('statistics/chartuser', { userCountByMonth ,shipperCountByMonth});
 }
 exports.getOrderbyMonth = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
@@ -48,11 +63,25 @@ exports.getOrderbyMonth = async (req, res) => {
       userCountByMonth[month] = 1;
     }
   }
-  
 
-  
-  res.render('statistics/chartorder', { userCountByMonth });
-}
+  const response2 = await fetch('http://localhost:3000/api/getorderCancel');
+  const data2 = await response2.json();
+  const orderCancelbyMonth = {};
+      for (let i = 0; i < data2.length; i++) {
+        const month = parseInt(data2[i].createdAt.split("-")[1]);
+      
+        // Kiểm tra xem tháng đã tồn tại trong đối tượng chưa
+        if (orderCancelbyMonth.hasOwnProperty(month)) {
+          // Nếu tồn tại, tăng giá trị lên 1
+          orderCancelbyMonth[month]++;
+        } else {
+          // Nếu không tồn tại, tạo mới và gán giá trị là 1
+          orderCancelbyMonth[month] = 1;
+        }
+      }
+  console.log(orderCancelbyMonth)
+  res.render('statistics/chartorder', { userCountByMonth,orderCancelbyMonth });
+};
 exports.getSortedbyview = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
@@ -75,6 +104,19 @@ exports.getOrderbyadmin= async (req, res) => {
     const order = await Order.find();
     return res.status(200).json(
       order
+    );
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+exports.getOrderCancelbyadmin= async (req, res) => {
+  try {
+    const order = await Order.find();
+    const orderCancel = order.filter(a => a.status =='653bc0a72006e5791beab35b');
+    return res.status(200).json(
+      orderCancel
     );
   } catch (error) {
     return res.status(400).json({
@@ -105,6 +147,61 @@ exports.getOrderPie = async (req, res) => {
     console.log(statusCount)
     // Truyền dữ liệu vào template để hiển thị
     res.render('dashboard/chartpie', { statusCount });
+};
+exports.getOrderSum = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/getorder');
+  const data = await response.json();
+
+  // Khởi tạo đối tượng đếm số lượng sản phẩm cho mỗi trạng thái
+  let statusCount = { total: 0, specificStatusCount: 0,orderCount: 0,cancelCount:0 ,money: 0 , shipping:0};
+
+  // Đếm số lượng sản phẩm cho mỗi trạng thái và kiểm tra trạng thái cụ thể
+  data.forEach(order => {
+    const status = order.status;
+    statusCount.total++;
+
+    if (status === '6526a6e6adce6a54f6f67d7d') {
+      statusCount.orderCount++;
+      statusCount.money += order.total;
+    }
+    if (status === '653bc0a72006e5791beab35b') {
+      statusCount.cancelCount++;
+    }
+    if(status === '65264c672d9b3bb388078978'){
+      statusCount.shipping++;
+    }
+  });
+  console.log(statusCount.shipping ,statusCount.cancelCount, statusCount.orderCount)
+  // Truyền dữ liệu vào template để hiển thị
+  const responseProduct = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const dataProduct = await responseProduct.json();
+  const sumProduct = dataProduct.length
+
+
+  const responseUser = await fetch('http://localhost:3000/api/users');
+  const dataUserCount = await responseUser.json();
+  let membercount= { total: 0, shipper:0 , user: 0};
+  dataUserCount.forEach(member => {
+    const status = member.role;
+    membercount.total++;
+    if(status === 'shipper'){
+      membercount.shipper++;
+    }
+    if (status === 'member') {
+      membercount.user++;
+    }
+
+  });
+  const responseShipper = await fetch('http://localhost:3000/api/shipper');
+  const dataShipper = await responseShipper.json();
+  const countShipper = dataShipper.length
+  res.render('statistics/sum', { statusCount ,sumProduct,membercount,countShipper});
+};
+exports.getProduct = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const productsData = await response.json();
+  var topFiveItems = productsData.sort((a, b) => b.views - a.views).slice(0, 5);
+  res.render('statistics/sortedbyview',{topFiveItems});
 };
 exports.getLinegraph = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
