@@ -25,5 +25,5 @@ routerOrder.get("/getByIdOder2/:id",authenticate,routerController.getbyIdOrderUI
 routerOrder.get("/admin/oder_shipper/:id",routerController.getOderbyshipperUI)
 
 
-routerOrder.get("/order/search/:text", routerController.searchOrder);
+routerOrder.get("/search", routerController.searchOrder);
 module.exports = routerOrder;

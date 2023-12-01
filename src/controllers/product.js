@@ -255,13 +255,13 @@ exports.updateProduct = async (req, res) => {
       });
     }
    
-    var images = await uploadImage(files);
-    if (images[0] == null) {
-      return res.status(400).json({
-        message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-      });
-    }
-    body.images = images;
+// var images = await uploadImage(files);
+//     if (images[0] == null) {
+//       return res.status(400).json({
+//         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+//       });
+//     }
+//     body.images = images;
     
 
     const product = await Product.findByIdAndUpdate(id,body);

@@ -47,7 +47,7 @@
           <td>{{this.product_name}}</td>
           <td>{{this.product_price}}</td>
           <td>{{this.description}}</td>
-          <td>{{this.categoryId}}</td>
+         <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
           <td><a href="/api/deletebyadmin/products/{{this._id}} "
               data-confirm="Bạn có chắc chắn muốn xóa sản phẩm này không?" id="deleteForm"
               style="text-decoration: none"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -79,9 +79,24 @@
       $(document).ready(function () {
         $('#datatable').DataTable({
         });
+            $.get('http://localhost:3000/api/categories', function (categories) {
+      const categoryMap = {};
+
+      categories.forEach(function (category) {
+        categoryMap[category._id] = category.category_name;
+      });
+
+      $('.category-cell').each(function () {
+        const categoryId = $(this).data('category-id');
+        const categoryName = categoryMap[categoryId];
+        console.log(categoryName)
+        $(this).text(categoryName);
+      });
+    });
       });
     </script>
     <script>
+      
       document.addEventListener("DOMContentLoaded", function () {
         const productForm = document.getElementById("productForm");
         console.log(productForm);
