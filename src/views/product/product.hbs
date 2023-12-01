@@ -20,6 +20,14 @@
 
   <style>
 
+      <style>
+    .section-container {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ddd; /* Border color */
+      border-radius: 10px; /* Border radius to round corners */
+    }
+
     /* Custom styling for the Bootstrap switch */
     .form-switch {
       display: flex;
@@ -51,13 +59,14 @@
       color: aliceblue;
     }
   </style>
+  </style>
 </head>
 
 <body>
-  <div class="container">
+ <div class="container section-container">
     <a href="/api/admin/products/create" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tạo sản phẩm mới</a>
     <h3>Bảng sản phẩm </h3>
-    <table id="datatable" class="table table-striped" style="width:100%">
+    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
       <thead>
         <tr>
   

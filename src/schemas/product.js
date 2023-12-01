@@ -1,7 +1,7 @@
 var Joi = require('joi')
 exports.ProductSchema = Joi.object({
     _id: Joi.string(),
-    product_name: Joi.string().required().messages({
+    product_name: Joi.string().messages({
         "string.empty": "Tên sản phẩm bắt buộc nhập",
         "any.required": "Trường tên sản phẩm bắt buộc nhập"
     }),
@@ -18,5 +18,6 @@ exports.ProductSchema = Joi.object({
         "any.required": "Trường danh mục sản phẩm bắt buộc nhập",
     "string.base": "Danh mục sản phẩm phải là chuỗi"
     }),
+    images :Joi.array().allow(null)
   
 })

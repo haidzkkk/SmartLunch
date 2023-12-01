@@ -9,7 +9,7 @@ var Status = require('../models/status')
 var Notification = require('../models/notification.js')
 var notificationController = require('../controllers/notification')
 var TYPE_ORDER = "TYPE_ORDER"
-
+const notifier = require('node-notifier');
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
     const data = await response.json();
@@ -35,6 +35,7 @@ exports.getOderbyshipperUI = async (req, res) => {
     res.render('user/oder_Shipper', { failedOrders, successfulOrders,layout :"Layouts/home"});
 };
 
+
 exports.getbyIdOrderUI = async (req, res) => {
     const response = await fetch(
         "http://localhost:3000/api/order/" + req.params.id
@@ -49,6 +50,11 @@ exports.getbyIdOrderUI = async (req, res) => {
     );
     // const data = await response.json();
     res.render("order/detail2", {  layout: "Layouts/home" });
+  };
+
+  exports.searchOrder = async (req, res) => {
+  
+    res.render("order/search", {  layout: "Layouts/home" });
   };
 exports.getOrderByUserId = async (req, res) => {
     try {
@@ -343,8 +349,25 @@ exports.createOrder = async (req, res) => {
             .populate('status')
             .populate('address')
             .populate('statusPayment')
+
+
         result.address = await result.address.populate('userId')
 
+            notifier.notify(
+            {
+                title: 'Đơn hàng mới kìa ông chủ ',
+                message: 'Có đơn hàng mới !',
+          
+            },
+            function (err, response, metadata) {
+                // Handle callback if needed
+            }
+        );
+
+        await notificationController.sendNotificationToAdmin()
+
+      
+            
         return res.status(200).json(result)
     } catch (error) {
         console.log(error.message);
@@ -354,26 +377,8 @@ exports.createOrder = async (req, res) => {
     }
 }
 
-exports.searchOrder = async (req, res) => {
-    try {
-        const { productName } = req.body;
+// exports.searchOrder = async (req, res) => {
 
-        // Check if Orders is an array
-        if (!Array.isArray(Order)) {
-            throw new Error('Orders is not an array');
-        }
-
-        // Thực hiện tìm kiếm trong danh sách đơn hàng
-        const searchResults = Order.filter(order => {
-            return order.products.some(product => product.product_name.toLowerCase().includes(productName.toLowerCase()));
-        });
-
-        res.json({ results: searchResults });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
-    }
-};
 
 // cập nhật
 exports.updateOrder = async (req, res) => {

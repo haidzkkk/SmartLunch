@@ -54,14 +54,16 @@
       color: aliceblue;
     }
 
-
+        
 </style>
 <body>
+ <a href="/api/search" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tìm kiếm đơn hàng</a>
+     
  <h3>Bảng đơn hàng </h3>
   <div class="container mt-4">
-   
+
     <ul class="nav nav-tabs">
-      
+
       <li class="nav-item">
         <a class="nav-link active" id="tab-confirmed" data-toggle="tab" href="#table-confirmed">Đang chờ xác nhận</a>
       </li>
@@ -218,6 +220,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+
   <script>
     $(document).ready(function () {
       var sttCounter = 0;
@@ -230,7 +233,6 @@
         'tab-delivered_refund': '6555a1f5b7eb118e522069a5',
         'hoanhang': '6560466ed13bcf53cec8deea'
       };
-
       function updateTables(tables) {
         tables.forEach(function (pair) {
           var tabId = pair.tabId;
@@ -387,6 +389,7 @@ function confirmOrder(idorder) {
             // After successfully confirming the order, update the table data
             var tabId = 'confirmed'; // Replace with the appropriate tabId
             var tableId = 'tab-' + tabId;
+            
             updateTable(tabId, tableId);
              window.location.href = 'http://localhost:3000/api/getAllorderUi';
           },
@@ -416,6 +419,7 @@ function confirmOrder(idorder) {
       ];
 
       updateTables(tablesToUpdate);
+       
     });
   </script>
 
