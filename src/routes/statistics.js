@@ -13,4 +13,5 @@ var router = express.Router();
   router.get("/linegraph",  statisticsController.getLinegraph)
   router.get("/linegraph2",  statisticsController.getLinegraph2)
   router.get("/getproductsorted",  statisticsController.getProduct)
+  router.get("/sortedbybough",  statisticsController.getSortedbybought)
 module.exports = router;

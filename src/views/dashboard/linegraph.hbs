@@ -13,7 +13,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
- <canvas id="myLineChart"></canvas>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn  btn-year" style="background-color: #FF593E ; color: aliceblue; margin: 10px;" data-year="2022">2022</button>
+        <button type="button" class="btn  btn-year" style="background-color: #FF593E ; color: aliceblue; margin: 10px;" data-year="2023">2023</button>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <canvas id="myChart2022" style="width:100%;max-width:600px;"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="myChart2023" style="width:100%;max-width:600px"></canvas>
+    </div>
+  </div>
+</div>
+
 
             <script>
                 // Dữ liệu cho 12 tháng
@@ -22,7 +40,52 @@
                     labels: months,
                     datasets: [{
                         label: 'Doanh số',
-                        data: [  {{monthlyTotals.[1]}}, {{monthlyTotals.[2]}},{{monthlyTotals.[3]}}, {{monthlyTotals.[4]}}, {{monthlyTotals.[5]}}, {{monthlyTotals.[6]}}, {{monthlyTotals.[7]}}, {{monthlyTotals.[8]}},{{monthlyTotals.[9]}},{{monthlyTotals.[10]}}, {{monthlyTotals.[11]}}, {{monthlyTotals.[12]}}],
+                        data: [  {{yearlyTotals.[2022].[1]}}, {{yearlyTotals.[2022].[2]}},{{yearlyTotals.[2022].[3]}}, {{yearlyTotals.[2022].[4]}}, {{yearlyTotals.[2022].[5]}}, {{yearlyTotals.[2022].[6]}}, {{yearlyTotals.[2022].[7]}}, {{yearlyTotals.[2022].[8]}},{{yearlyTotals.[2022].[9]}},{{yearlyTotals.[2022].[10]}}, {{yearlyTotals.[2022].[11]}}, {{yearlyTotals.[2022].[12]}}],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        fill: true
+                    }]
+                };
+
+                // Cấu hình biểu đồ
+                var options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Doanh số 2022',
+                        fontSize: 18
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                };
+
+                // Lấy đối tượng canvas và vẽ biểu đồ đường
+                var ctx = document.getElementById("myChart2022").getContext("2d");
+                ctx.canvas.width = 600;
+                ctx.canvas.height = 400;
+                var myLineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: options
+                });
+            </script>
+            <script>
+                // Dữ liệu cho 12 tháng
+                var months = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+                var data = {
+                    labels: months,
+                    datasets: [{
+                        label: 'Doanh số',
+                        data: [  {{yearlyTotals.[2023].[1]}}, {{yearlyTotals.[2023].[2]}},{{yearlyTotals.[2023].[3]}}, {{yearlyTotals.[2023].[4]}}, {{yearlyTotals.[2023].[5]}}, {{yearlyTotals.[2023].[6]}}, {{yearlyTotals.[2023].[7]}}, {{yearlyTotals.[2023].[8]}},{{yearlyTotals.[2023].[9]}},{{yearlyTotals.[2023].[10]}}, {{yearlyTotals.[2023].[11]}}, {{yearlyTotals.[2023].[12]}}],
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderWidth: 2,
@@ -51,7 +114,7 @@
                 };
 
                 // Lấy đối tượng canvas và vẽ biểu đồ đường
-                var ctx = document.getElementById("myLineChart").getContext("2d");
+                var ctx = document.getElementById("myChart2023").getContext("2d");
                 ctx.canvas.width = 600;
                 ctx.canvas.height = 400;
                 var myLineChart = new Chart(ctx, {
@@ -60,4 +123,28 @@
                     options: options
                 });
             </script>
-            
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const yearButtons = document.querySelectorAll('.btn-year');
+    const canvases = document.querySelectorAll('canvas');
+
+    // Hide all canvases initially
+    canvases.forEach(canvas => canvas.style.display = 'none');
+
+    // Show the canvas for the initially selected year
+    const initialYear = yearButtons[0].dataset.year; // You can change this to the default year you want
+    document.getElementById(`myChart${initialYear}`).style.display = 'block';
+
+    yearButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        const selectedYear = this.dataset.year;
+
+        // Hide all canvases
+        canvases.forEach(canvas => canvas.style.display = 'none');
+
+        // Show the selected canvas
+        document.getElementById(`myChart${selectedYear}`).style.display = 'block';
+      });
+    });
+  });
+</script>
