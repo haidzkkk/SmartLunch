@@ -2,8 +2,17 @@
 <html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <body>
-
-<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    Dropdown button
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="#">2022</a></li>
+    <li><a class="dropdown-item" href="#">2023</a></li>
+  </ul>
+</div>
+<canvas id="myChart2022" style="width:100%;max-width:600px"></canvas>
+<canvas id="myChart2023" style="width:100%;max-width:600px"></canvas>
 
 <script>
 var xValues =  [0,"Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];

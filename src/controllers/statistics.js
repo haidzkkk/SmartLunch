@@ -94,10 +94,23 @@ exports.getSortedbyview = async (req, res) => {
     product_name: item.product_name,
     views: item.views
   }));
-  
+
   // Now, top5views contains an array of objects with product_name and views of the top 5 products
   console.log(top5views);
   res.render('statistics/sortedbyview', {top5views });
+}
+exports.getSortedbybought = async (req, res) => {
+  const response = await fetch('http://localhost:3000/api/productbyadmin/products');
+  const data = await response.json();
+  
+  // Sort the data by views in descending order
+  const top5bought = data.sort((a, b) => b.bought - a.bought).slice(0, 5);
+  // Take the top 5 items
+
+  
+  // Now, top5views contains an array of objects with product_name and views of the top 5 products
+  console.log(top5bought);
+  res.render('statistics/sortedbybought', {top5bought });
 }
 exports.getOrderbyadmin= async (req, res) => {
   try {
@@ -206,26 +219,35 @@ exports.getProduct = async (req, res) => {
 exports.getLinegraph = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
   const data = await response.json();
-  const monthlyTotals = {};
+  const yearlyTotals = {};
 
 // Lặp qua từng đơn hàng
 data.forEach((order) => {
   // Lấy ngày tạo đơn hàng
   const createdAt = new Date(order.createdAt);
 
-  // Trích xuất tháng và năm từ ngày tạo đơn hàng
-  const monthYear = `${createdAt.getMonth() + 1}`;
+  // Trích xuất năm từ ngày tạo đơn hàng
+  const year = createdAt.getFullYear();
+  
+  // Tạo key nếu năm chưa tồn tại trong yearlyTotals
+  if (!yearlyTotals[year]) {
+    yearlyTotals[year] = {};
+  }
+
+  // Trích xuất tháng từ ngày tạo đơn hàng
+  const month = createdAt.getMonth() + 1;
 
   // Kiểm tra xem đã tồn tại tổng cho tháng đó chưa
-  if (!monthlyTotals[monthYear]) {
-    monthlyTotals[monthYear] = 0;
+  if (!yearlyTotals[year][month]) {
+    yearlyTotals[year][month] = 0;
   }
 
   // Cộng tổng của đơn hàng hiện tại vào tổng của tháng đó
-  monthlyTotals[monthYear] += order.total;
+  yearlyTotals[year][month] += order.total;
 });
-console.log(monthlyTotals);
-  res.render('dashboard/linegraph',{monthlyTotals});
+
+console.log(yearlyTotals);
+res.render('dashboard/linegraph', { yearlyTotals });
 };
 exports.getLinegraph2 = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
