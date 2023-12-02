@@ -487,7 +487,7 @@ exports.updatePaymentOrder = async (req, res) => {
 
 const handleBoughtProduct = async (order) => {
     try {
-        await order.populate('products.productId').execPopulate();
+        await order.populate('products.productId');
 
         for (const product of order.products) {
             const productId = product.productId;
