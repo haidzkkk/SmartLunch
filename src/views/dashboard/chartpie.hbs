@@ -9,7 +9,15 @@
 </head>
 <body>
   <!-- Địa điểm hiển thị biểu đồ -->
+    <div class="row mt-4">
+    <div class="col-md-6">
   <canvas id="myPieChart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-md-6">
+    <canvas id="myPieChart2" width="400" height="400"></canvas>
+    </div>
+  </div>
+
 
   <script>
     // Dữ liệu phần trăm và màu sắc
@@ -34,7 +42,36 @@
     // Lấy đối tượng canvas và vẽ biểu đồ pie
     var ctx = document.getElementById("myPieChart").getContext("2d");
     var myPieChart = new Chart(ctx, {
-      type: 'pie',
+      type: 'doughnut',
+      data: data,
+      options: options
+    });
+  </script>
+
+      <script>
+    // Dữ liệu phần trăm và màu sắc
+    var data = {
+      labels: ["Thanh toán tiền mặt", "Thanh toán Paypal"],
+      datasets: [{
+        data: [{{statusCount.cash}}, {{statusCount.paypal}}],
+        backgroundColor: ["#2a943d", "#2a3394"]
+      }]
+    };
+
+    // Cấu hình biểu đồ
+    var options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      title: {
+        display: true,
+        text: 'Biểu đồ Pie'
+      }
+    };
+
+    // Lấy đối tượng canvas và vẽ biểu đồ pie
+    var ctx = document.getElementById("myPieChart2").getContext("2d");
+    var myPieChart2 = new Chart(ctx, {
+      type: 'doughnut',
       data: data,
       options: options
     });
