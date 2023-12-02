@@ -117,11 +117,12 @@ exports.getAll = async (req, res) => {
     limit: _limit,
     sort: {
       [_sort]: _order === "desc" ? -1 : 1,
-    },
+    }
   };
   
-  const searchQuery = q ? { product_name: { $regex: q, $options: "i" } } : {};
-  
+  const searchQuery = q ? { product_name: {$regex: new RegExp(q), $options: 'i'} } : {};
+  // const searchQuery = q ? { product_name: {$regex: new RegExp('.*' + q.toLowerCase() + '.*'), $options: 'i'} } : {};
+
   try {
     const products = await Product.paginate(searchQuery, options);
     return res.status(200).json(products);
