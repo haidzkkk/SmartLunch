@@ -12,33 +12,66 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
-    table.table-striped {
-  
+    table.table-bordered {
+      border: 1px solid #dee2e6;
+    }
+
+    table.table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.05);
     }
 
     .btn {
- background-color: #FF593E;
+      background-color: #FF593E;
       color: aliceblue;
     }
 
     h3 {
       text-align: center;
     }
+    
+ #datatable th:nth-child(1),
+#datatable td:nth-child(1) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+    #datatable th:nth-child(4),
+#datatable td:nth-child(4) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+    #datatable th:nth-child(5),
+#datatable td:nth-child(5) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Bổ sung thêm kiểu để tránh làm mất dữ liệu hiển thị trong cột */
+#datatable td:nth-child(6) {
+  text-align: center; /* Căn giữa nếu cần thiết */
+}
 
   </style>
 </head>
 
 <body>
 
-    <div class="container">
- <h3>Bảng khuyến mãi</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+  <div class="container">
+    <h3>Bảng khuyến mãi</h3>
+    <table id="datatable" class="table table-bordered table-striped" style="width:100%">
       <thead>
         <tr>
-         <th style="color: #000000;">Ảnh khuyến mãi</th>
-          <th style="color: #000000;">Tên khuyến mãi</th>
+          <th style="color: #000000;">Ảnh </th>
+          <th style="color: #000000;">Tên khuyến mãi </th>
           <th style="color: #000000;">Nội dung</th>
-          <th style="color: #000000;">Số luọng</th>
+          <th style="color: #000000;">Số lượng</th>
           <th style="color: #000000;">Thời gian</th>
           <th style="color: #000000;">Chi tiết</th>
         </tr>
@@ -60,20 +93,21 @@
     </table>
     <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tạo khuyến mãi mới</a>
     <dir class="m-5 pb-5"></dir>
-  </div>
+</div>
 
 </body>
 
-    </div>
-   
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
       // Make an AJAX request to your API
       $.ajax({
         url: 'http://localhost:3000/api/admin/coupons',
         method: 'GET',
         dataType: 'json',
         success: function (data) {
+          console.log(data);
           // Populate the table with data
           populateTable(data);
         },
@@ -129,10 +163,10 @@
     });
 
     $(document).ready(function () {
-      $('#datatable').DataTable({
-
-      });
+      $('#datatable').DataTable();
     });
   </script>
+
+</body>
 
 </html>

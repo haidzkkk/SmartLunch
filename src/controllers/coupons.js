@@ -5,6 +5,7 @@ var { uploadImage, updateImage } = require('../controllers/upload');
 exports.getCouponUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons');
     const data = await response.json();
+    console.log(data);
     res.render('coupon/coupon', { data ,layout :"Layouts/home"});
 };
 
@@ -108,9 +109,10 @@ exports.getAllCoupons = async (req, res) => {
                 message: "Lấy tất cả phiếu giảm giá thất bại"
             })
         }
+
         return res.status(200).json(
-          
-            coupon
+       coupon
+           
         )
     } catch (error) {
         return res.status(400).json({

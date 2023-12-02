@@ -20,45 +20,96 @@
 
   <style>
 
-      <style>
-    .section-container {
-      margin-bottom: 20px;
-      padding: 20px;
-      border: 1px solid #ddd; /* Border color */
-      border-radius: 10px; /* Border radius to round corners */
-    }
+     /* Style the switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
 
-    /* Custom styling for the Bootstrap switch */
-    .form-switch {
-      display: flex;
-      align-items: center;
-    }
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
-    .form-switch .form-check-input {
-      margin-left: 5px; /* Adjust margin for spacing */
-    }
+/* The slider (round) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
 
-    .form-switch .form-check-label {
-      margin-left: 10px; /* Adjust margin for spacing */
-    }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
 
-    .form-check-input:checked {
-      background-color: #2196F3; /* Color when checked */
-    }
+/* When the checkbox is checked, change the background color of the slider */
+.switch input:checked + .slider {
+  background-color: #2196F3;
+}
 
-    .form-check-input:focus {
-      box-shadow: 0 0 1px #2196F3; /* Focus style */
-    }
+/* When the checkbox is checked, translate the position of the round slider */
+.switch input:checked + .slider:before {
+  transform: translateX(26px);
+}
 
-    .form-check-label {
-      color: #000; /* Label color */
-    }
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
 
-    .btn {
-      background-color: #FF593E;
-      color: aliceblue;
-    }
-  </style>
+.slider.round:before {
+  border-radius: 50%;
+}
+#datatable th:nth-child(3),
+#datatable td:nth-child(3) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#datatable th:nth-child(6),
+#datatable td:nth-child(6) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#datatable th:nth-child(1),
+#datatable td:nth-child(1) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Bổ sung thêm kiểu để tránh làm mất dữ liệu hiển thị trong cột */
+#datatable td:nth-child(6) {
+  text-align: center; /* Căn giữa nếu cần thiết */
+}
+#datatable td:nth-child(5) {
+  text-align: center; /* Căn giữa nếu cần thiết */
+}
   </style>
 </head>
 
@@ -70,12 +121,12 @@
       <thead>
         <tr>
   
-          <th style="color: #000000">Ảnh sản phẩm</th>
+          <th style="color: #000000">Ảnh</th>
           <th style="color: #000000">Tên sản phẩm</th>
-          <th style="color: #000000">Giá sản phẩm</th>
+          <th style="color: #000000">Giá </th>
           <th style="color: #000000">Danh mục</th>
           <th style="color: #000000">Chi tiết</th>
-          <th style="color: #000000">Trạng thái bán</th>
+          <th style="color: #000000">Bán</th>
         </tr>
       </thead>
       <tbody>
@@ -84,81 +135,93 @@
           
           <td><img src="{{this.images.0.url}}" alt="Product Image" width="100px" height="60px" id="img-preview"></td>
           <td>{{this.product_name}}</td>
-          <td>{{this.product_price}}</td>
+          <td>{{this.product_price}} VND</td>
+
           <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
-          <td><a href="/api/admin/products/{{this._id}}" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Chi tiết</a></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" class="btn-toggle-active" data-product-id="{{this._id}}" {{#if this.isActive}}checked{{/if}}>
-              <span class="slider"></span>
-            </label>
-          </td>
+          <td style="width: 80px;"><a href="/api/admin/products/{{this._id}}" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Chi tiết</a></td>
+        <td>
+  <label class="switch">
+    <input type="checkbox" class="btn-toggle-active" data-product-id="{{this._id}}" {{#if this.isActive}}checked{{/if}}>
+    <span class="slider round"></span>
+  </label>
+</td>
         </tr>
         {{/each}}
       </tbody>
     </table>
   </div>
-  <script>
-    // Xử lý sự kiện change cho checkbox toggle-active
-    $(document).on('change', '.btn-toggle-active', function () {
-      // Lưu giữ tham chiếu đến phần tử hiện tại
-      const checkbox = $(this);
+<script>
+  // Xử lý sự kiện change cho checkbox toggle-active
+  $(document).on('change', '.btn-toggle-active', function () {
+    // Lưu giữ tham chiếu đến phần tử hiện tại
+    const checkbox = $(this);
 
-      const productId = checkbox.data('product-id');
-      const isActive = checkbox.is(':checked'); // Sử dụng is(':checked') để kiểm tra checkbox
-      const productName = checkbox.closest('tr').find('td:eq(1)').text(); // Lấy tên sản phẩm từ cột thứ 2 (index 1)
-      console.log('Product ID:', productId);
- Swal.fire({
-        title: 'Thông báo',
-        text: `Sản phẩm ${productName} đã được ${isActive ? 'bật' : 'tắt'}.`,
-        icon: 'info',
-        confirmButtonText: 'OK'
-      });
-      // Gửi yêu cầu PATCH tới API để cập nhật trạng thái isActive của sản phẩm
-      $.ajax({
-        type: 'PATCH',
-        url: `http://localhost:3000/api/toggleActive/${productId}`,
-        success: function (data) {
-          // Cập nhật trạng thái của checkbox
-          checkbox.prop('checked', isActive); // Sử dụng giá trị thực tế của isActive
-        },
-        error: function (error) {
-          console.error('Lỗi khi chuyển đổi trạng thái kích hoạt:', error);
-        }
-      });
+    const productId = checkbox.data('product-id');
+    const isActive = checkbox.is(':checked'); // Sử dụng is(':checked') để kiểm tra checkbox
+    const productName = checkbox.closest('tr').find('td:eq(1)').text(); // Lấy tên sản phẩm từ cột thứ 2 (index 1)
 
-      // Rest of your code...
+    // Hiển thị hộp thoại xác nhận
+    const confirmMessage = `Bạn có chắc chắn muốn ${isActive ? 'bật' : 'tắt'} sản phẩm ${productName} không?`;
+    Swal.fire({
+      title: 'Thông báo',
+      text: confirmMessage,
+      icon: 'info',
+      showCancelButton: true, // Hiển thị nút Hủy
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Nếu người dùng đồng ý, thực hiện các bước sau
+        console.log('Product ID:', productId);
+
+        // Gửi yêu cầu PATCH tới API để cập nhật trạng thái isActive của sản phẩm
+        $.ajax({
+          type: 'PATCH',
+          url: `http://localhost:3000/api/toggleActive/${productId}`,
+          success: function (data) {
+            // Cập nhật trạng thái của checkbox
+            checkbox.prop('checked', isActive); // Sử dụng giá trị thực tế của isActive
+          },
+          error: function (error) {
+            console.error('Lỗi khi chuyển đổi trạng thái kích hoạt:', error);
+          }
+        });
+
+        Swal.fire({
+          title: 'Thành công',
+          text: `Sản phẩm ${productName} đã được ${isActive ? 'bật' : 'tắt'}.`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      } else {
+        // Nếu người dùng không đồng ý, đảm bảo checkbox không thay đổi
+        checkbox.prop('checked', !isActive);
+      }
+    });
+  });
+
+  $.get('http://localhost:3000/api/categories', function (categories) {
+    const categoryMap = {};
+
+    categories.forEach(function (category) {
+      categoryMap[category._id] = category.category_name;
     });
 
-    $.get('http://localhost:3000/api/categories', function (categories) {
-      const categoryMap = {};
-
-      categories.forEach(function (category) {
-        categoryMap[category._id] = category.category_name;
-      });
-
-      $('.category-cell').each(function () {
-        const categoryId = $(this).data('category-id');
-        const categoryName = categoryMap[categoryId];
-        console.log(categoryName)
-        $(this).text(categoryName);
-      });
+    $('.category-cell').each(function () {
+      const categoryId = $(this).data('category-id');
+      const categoryName = categoryMap[categoryId];
+      console.log(categoryName)
+      $(this).text(categoryName);
     });
+  });
 
-    $(document).ready(function () {
-      $('#datatable').DataTable({});
-    });
+  $(document).ready(function () {
+    $('#datatable').DataTable({});
+  });
 
-    function rowStyle(row, index) {
-      return {
-        classes: 'text-nowrap another-class',
-        css: {
-          "color": "blue",
-          "font-size": "50px"
-        }
-      };
-    }
-  </script>
+ 
+</script>
+
 </body>
 
 </html>
