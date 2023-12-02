@@ -220,9 +220,10 @@ exports.getLinegraph = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
   const data = await response.json();
   const yearlyTotals = {};
-
 // Lặp qua từng đơn hàng
 data.forEach((order) => {
+  const status = order.status;
+  if (status === '6526a6e6adce6a54f6f67d7d') {
   // Lấy ngày tạo đơn hàng
   const createdAt = new Date(order.createdAt);
 
@@ -244,6 +245,8 @@ data.forEach((order) => {
 
   // Cộng tổng của đơn hàng hiện tại vào tổng của tháng đó
   yearlyTotals[year][month] += order.total;
+  }
+
 });
 
 console.log(yearlyTotals);
@@ -253,7 +256,6 @@ exports.getLinegraph2 = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/getorder');
   const data = await response.json();
   const dailyTotals = [];
-
   // Function to format date as yyyy-mm-dd
   const formatDate = (date) => {
     const year = date.getFullYear();
