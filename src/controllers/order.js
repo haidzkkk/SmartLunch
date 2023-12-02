@@ -319,8 +319,9 @@ exports.createOrder = async (req, res) => {
         })
 
         body.products = products
-        body.total = myCart.total
-        body.discount = myCart.total - myCart.totalCoupon
+        body.deliveryFee= address.deliveryFee
+        body.total = myCart.total + address.deliveryFee
+        body.discount = myCart.total - myCart.totalCoupon + address.deliveryFee
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
         for (const item of body.products) {
@@ -363,10 +364,6 @@ exports.createOrder = async (req, res) => {
             }
         );
 
-        await notificationController.sendNotificationToAdmin()
-
-      
-            
         return res.status(200).json(result)
     } catch (error) {
         console.log(error.message);
