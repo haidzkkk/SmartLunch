@@ -21,7 +21,16 @@
   overflow: hidden;
  
 }
+.table th,
+.table td {
+  border: 1px solid #dee2e6;
+}
 
+/* Remove border from the last column */
+.table th:last-child,
+.table td:last-child {
+  border-right: 1px solid #dee2e6;
+}
 /* Chỉnh kích thước cột */
 .table th:first-child,
 .table td:first-child {
@@ -58,7 +67,9 @@
 </style>
 <body>
  <a href="/api/search" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tìm kiếm đơn hàng</a>
-     
+ <a style="color: white;" class="btn btn-primary fa-lg gradient-custom-2 mb-3" id="confirmButton">Xác nhận</a>
+
+
  <h3>Bảng đơn hàng </h3>
   <div class="container mt-4">
 
@@ -91,17 +102,17 @@
         <table class="table" id="tab-confirmed" >
           <thead>
             <tr>
-          
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
-              <th>Điện thoại</th>
-              <th style="width: 140px;">Địa chỉ</th>
-              <th>Giá </th>
-              <th>Trạng thái </th>
-               <th>
+           <th style="text-align: center;">
                 <input type="checkbox" id="select-all">
               </th>
+              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th style="width: 120px;">Điện thoại</th>
+              <th>Địa chỉ</th>
+              <th>Giá </th>
+              <th>Trạng thái </th>
+              
               <th class="detail-column">Chi tiết </th>
-              <th class="detail-column">Xác nhận</th>
+            
             </tr>
           </thead>
           <tbody>
@@ -114,9 +125,9 @@
           <thead>
             <tr>
               <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
-               <th>Điện thoại</th>
+               <th >Điện thoại</th>
               <th>Địa chỉ</th>
-              <th>Giá </th>
+              <th >Giá </th>
               <th>Trạng thái </th>
               <th class="detail-column">Chi tiết </th>
             </tr>
@@ -240,61 +251,61 @@
           updateTable(tabId, tableId);
         });
       }
+function updateTable(tabId, tableId) {
+  console.log("Cập nhật bảng cho tab:", tabId);
+  $.ajax({
+    url: "http://localhost:3000/api/getAllOrder",
+    type: "GET",
+    success: function (data) {
+      console.log("Dữ liệu nhận được:", data);
+      var orders = Array.isArray(data) ? data : [];
+      $('#' + tableId + ' tbody').empty();
+      $.each(orders, function (index, order) {
+        console.log("ID status của order:", order.status ? order.status._id : null);
+        console.log("tabId:", tabId);
+        console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
+        if (order.status && order.status._id === statusTableMap[tabId]) {
+          var productName = order.products[0].product_name;
+          var phone = order.address.phoneNumber;
+          var status = order.status.status_name;
+          var address = order.address.addressLine;
+          var total = order.total;
 
-      function updateTable(tabId, tableId) {
-        console.log("Cập nhật bảng cho tab:", tabId);
-        $.ajax({
-          url: "http://localhost:3000/api/getAllOrder",
-          type: "GET",
-          success: function (data) {
-            console.log("Dữ liệu nhận được:", data);
-            var orders = Array.isArray(data) ? data : [];
-            $('#' + tableId + ' tbody').empty();
-            $.each(orders, function (index, order) {
-              console.log("ID status của order:", order.status ? order.status._id : null);
-              console.log("tabId:", tabId);
-              console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
-              if (order.status && order.status._id === statusTableMap[tabId]) {
-                var productName = order.products[0].product_name;
-                var phone = order.address.phoneNumber;
-                var status = order.status.status_name;
-                var address = order.address.addressLine;
-                var total = order.total;
-
-                var row = '<tr>' +
-                   
-                  '<td>' + productName + '</td>' +
-                  '<td>' + phone + '</td>' +
-                  '<td>' + address + '</td>' +
-                  '<td>' + total + '</td>' +
-                  '<td>' + status + '</td>';
-                if (tabId === 'tab-delivered_cancel') {
-                  row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
-                    '</tr>';
-                } else if (tabId === 'confirmed') {
-                    row += 
-                      '<td><input type="checkbox" class="product-checkbox" data-order-id="' + order._id + '" data-product-id="' + order.products[0]._id + '"></td>' +
-                     '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
-                     '<td><button class="btn btn-primary confirm-button" data-order-id="' + order._id + '" data-product-name="' + productName + '">Xác nhận</button></td>' +
-                    '</tr>';
-                } else {
-                  row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>';
-                }
-
-                row += '</tr>';
-
-                 $('#' + tableId + ' tbody').prepend(row);
-              } else {
-                console.log("bbbb");
-              }
-            });
-            bindButtons(tabId);
-          },
-          error: function (error) {
-            console.log("Lỗi khi truy xuất dữ liệu:", error);
+          var row = '<tr>';
+          if (tabId === 'confirmed') {
+            row += '<td style="text-align: center;"><input type="checkbox" class="product-checkbox" data-order-id="' + order._id + '" data-product-id="' + order.products[0]._id + '"></td>';
           }
-        });
-      }
+          row +=
+            '<td>' + productName + '</td>' +
+            '<td>' + phone + '</td>' +
+            '<td>' + address + '</td>' +
+            '<td>' + total + '</td>' +
+            '<td>' + status + '</td>';
+
+          if (tabId === 'tab-delivered_cancel') {
+            row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+              '</tr>';
+          } else if (tabId === 'confirmed') {
+            row +=
+              '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+              '</tr>';
+          } else {
+            row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
+              '</tr>';
+          }
+
+          $('#' + tableId + ' tbody').prepend(row);
+        } else {
+          console.log("bbbb");
+        }
+      });
+      bindButtons(tabId);
+    },
+    error: function (error) {
+      console.log("Lỗi khi truy xuất dữ liệu:", error);
+    }
+  });
+}
       $('#select-all').on('click', function () {
         // Lấy trạng thái hiện tại của checkbox "select-all"
         var isChecked = $(this).prop('checked');
@@ -326,46 +337,41 @@
 }
 
 
-     function bindConfirmButton() {
-        console.log('Binding confirm button click event');
-        $('.confirm-button').unbind('click');
-        $('.confirm-button').on('click', function () {
-          var selectedProducts = [];
+        $('#confirmButton').on('click', function () {
+        var selectedProducts = [];
 
-          // Iterate through each checked checkbox and get product ID
-          $('.product-checkbox:checked').each(function () {
-            var orderId = $(this).data('order-id');
-            var productId = $(this).data('product-id');
-            selectedProducts.push({ orderId: orderId, productId: productId });
-          });
-
-          // Check if any product is selected
-          if (selectedProducts.length > 0) {
-            // Show SweetAlert with the list of selected products
-            Swal.fire({
-              title: 'Xác nhận đơn hàng',
-              html: 'Bạn có chắc chắn muốn xác nhận đơn hàng cho những sản phẩm đã chọn không?',
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonText: 'Xác nhận',
-              cancelButtonText: 'Hủy'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // If the user clicks "Xác nhận", proceed to confirm the selected orders
-                confirmSelectedOrders(selectedProducts);
-              }
-            });
-          } else {
-            // Show an alert if no product is selected
-            Swal.fire({
-              icon: 'info',
-              title: 'Chưa chọn sản phẩm',
-              text: 'Vui lòng chọn ít nhất một sản phẩm để xác nhận đơn hàng.'
-            });
-          }
+        // Iterate through each checked checkbox and get product ID
+        $('.product-checkbox:checked').each(function () {
+          var orderId = $(this).data('order-id');
+          var productId = $(this).data('product-id');
+          selectedProducts.push({ orderId: orderId, productId: productId });
         });
-      }
 
+        // Check if any product is selected
+        if (selectedProducts.length > 0) {
+          // Show SweetAlert with the list of selected products
+          Swal.fire({
+            title: 'Xác nhận đơn hàng',
+            html: 'Bạn có chắc chắn muốn xác nhận đơn hàng cho những sản phẩm đã chọn không?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Xác nhận',
+            cancelButtonText: 'Hủy'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // If the user clicks "Xác nhận", proceed to confirm the selected orders
+              confirmSelectedOrders(selectedProducts);
+            }
+          });
+        } else {
+          // Show an alert if no product is selected
+          Swal.fire({
+            icon: 'info',
+            title: 'Chưa chọn sản phẩm',
+            text: 'Vui lòng chọn ít nhất một sản phẩm để xác nhận đơn hàng.'
+          });
+        }
+      });
   function confirmSelectedOrders(selectedProducts) {
         // Iterate through the selected products and confirm each order
         selectedProducts.forEach(function (selectedProduct) {
@@ -398,6 +404,7 @@ function confirmOrder(idorder) {
           }
         });
       }
+
 
       // Bootstrap tab event
       $('.nav-tabs a').on('shown.bs.tab', function (e) {

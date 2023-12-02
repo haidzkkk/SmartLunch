@@ -76,7 +76,8 @@
 <body>
   <div class="container">
     <h3>Chi tiết đơn hàng</h3>
-    <<div id="order-details">
+    <div id="order-details">
+  
       <p><strong>Tên: </strong><span id="name">Đang tải...</span></p>
       <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
       <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
@@ -141,6 +142,7 @@
           var product = products[i];
           var productHtml = `
             <div class="product-container">
+           <img src="${product.image}" alt="Ảnh sản phẩm ${i + 1}" width="200px" height="200px">
           <p><strong>Tên sản phẩm ${i + 1}: </strong>${product.product_name || 'Không có tên sản phẩm'}</p>
           <p><strong>Giá sản phẩm: </strong>${product.product_price || 'Không có giá sản phẩm'}</p>
           <p><strong>Số lượng sản phẩm: </strong>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</p>
