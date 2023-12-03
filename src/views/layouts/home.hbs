@@ -117,6 +117,15 @@
         line-height: 24px;
         /* 150% */
     }
+
+    #logoutDialog {
+        display: none;
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 </style>
 
 <header>
@@ -238,7 +247,8 @@ background: #F7F7F7;">
                         </li>
                         <li class="nav-item">
 
-                            <a class="nav-link" style="color: black; font-weight: bold" href="/api/admin/shipper">
+                            <a class="nav-link" style="color: black; " href="/api/admin/shipper">
+
                                 <svg id="truck-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <!-- Your SVG code here -->
@@ -263,7 +273,7 @@ background: #F7F7F7;">
                                     </g>
                                 </svg>
 
-                                <span style="margin-left: 14px;">Giao hàng</span>
+                                <span style="margin-left: 18px;">Giao hàng</span>
                             </a>
                         </li>
 
@@ -282,6 +292,60 @@ background: #F7F7F7;">
 
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="logout" style="color: black; " onclick="confirmLogout()">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="24" height="24" fill="url(#pattern0)" />
+                                    <defs>
+                                        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1"
+                                            height="1">
+                                            <use xlink:href="#image0_87_114751" transform="scale(0.00195312)" />
+                                        </pattern>
+                                        <image id="image0_87_114751" width="512" height="512"
+                                            xlink:href="data:image/png;base64,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" />
+                                    </defs>
+                                </svg>
+                                   <span style="margin-left: 18px;">Đăng Xuất</span>
+                            </a>
+                        </li>
+
+                        <script>
+                            function confirmLogout() {
+                                var confirmed = window.confirm('Bạn có chắc chắn muốn đăng xuất?');
+                                if (confirmed) {
+                                    logout();
+                                }
+                            }
+
+                            function logout() {
+                                const token = localStorage.getItem("accessToken");
+                                fetch('http://localhost:3000/api/logout', {
+                                    method: 'POST',
+                                    headers: {
+                                        "Authorization": "Bearer " + token,
+                                    }
+
+                                })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+
+                                        }
+                                        localStorage.removeItem("accessToken");
+                                         document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                                        alert('Bạn đã đăng xuất thành công!');
+                                        window.location.href = 'http://localhost:3000';
+
+                                    })
+                                    .catch(error => {
+                                        alert('Bạn chưa đăng nhập');
+                                        console.error('There was a problem with the fetch operation:', error);
+                                    });
+                            }
+
+
+                        </script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 var navItems = document.querySelectorAll('.nav-item');
@@ -307,11 +371,7 @@ background: #F7F7F7;">
                         </script>
                     </ul>
                 </div>
-            </nav>
-            <!-- Main content goes here, replace this with your content -->
-            {{!-- <p style="position: absolute; bottom: 0; right: 0;">
-                You have the highest Admin privileges.
-            </p> --}}
+            </nav>     
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style=" padding: 50px;">
                 <marquee direction="left" style="color: #FF593E; font-weight: bold;">
                     ️️🎄🎄🎄Giáng sinh zui zẻ.️🎄🎄🎄
@@ -324,9 +384,6 @@ background: #F7F7F7;">
 
 </body>
 <footer>
-    {{!-- <p style="position: absolute; bottom: 0; right: 0; padding: 10px; font-style: italic;">
-        Version 2.100.3876|Update 10/29/2023|Copyright by SmartLunch...
-    </p> --}}
 </footer>
 
 

@@ -21,8 +21,14 @@ routerOrder.get("/orders/delivering",authenticate, routerController.getOrderBySh
 routerOrder.get("/orders/delivering/:id", routerController.getOrderByShipperId)
 
 routerOrder.get("/getAllorderUi",routerController.getAllOrderUI)
+
 routerOrder.get("/getByIdOder2/:id",authenticate,routerController.getbyIdOrderUI2)
 routerOrder.get("/admin/oder_shipper/:id",routerController.getOderbyshipperUI)
+
+routerOrder.get("/getTop5shipper",routerController.getTop5shipperSucsses)
+routerOrder.get("/getTop5shipperFail",routerController.getTop5shipperFail)
+
+
 
 
 routerOrder.get("/search", routerController.searchOrder);

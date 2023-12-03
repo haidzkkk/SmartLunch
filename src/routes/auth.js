@@ -25,6 +25,8 @@ router.post('/signinWithGG', authController.signinWithGG)
 router.post('/signinWithFb', authController.signinWithFb)
 router.post('/signinDeliveryApp', authController.signinShipper);
 router.post("/logout", authenticate, authController.logout)
+
+
 router.post("/refresh", authController.refreshToken)
 router.post("/verifyOTP", authController.verifyOTP)
 router.post("/resendOTPVerificationCode", authController.sendNewOtp)
@@ -40,6 +42,7 @@ router.get('/deletebyadmin/:id', authController.removeByAdmin);
 router.post('/login',authController.loginAdmin)
 router.get("/admin/shipper/create", authController.getShipperCreateUI);
 router.get("/admin/shipper", authController.getShipperDataUI);
+router.get("/admin/shipper/top", authController.getShipperTop);
 
 
 

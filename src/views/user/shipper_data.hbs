@@ -28,21 +28,25 @@
 
 <body>
   <a href="/api/admin/shipper/create" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tạo mới người giao hàng</a>
+  <a href="/api/admin/shipper/top" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Top Shipper</a>
 
   <h3>Danh sách người giao hàng</h3>
   <table id="datatable" class="table table-striped " style="width:100%">
     <thead>
-      <tr>
-        <th style="color: #FF593E;text-align: center">Email</th>
-        <th style="color: #FF593E;text-align: center">Vai Trò</th>
-        <th style="color: #FF593E;text-align: center">Ngày tham gia</th>
-        <th style="color: #FF593E;text-align: center">Chi tiết</th>
-      </tr>
+      <thead>
+        <tr>
+          <th style="color: black;text-align: center">Email</th>
+          <th style="color: black;text-align: center">Vai Trò</th>
+          <th style="color: black;text-align: center">Ngày tham gia</th>
+          <th style="color: black;text-align: center">Chi tiết</th>
+        </tr>
+      </thead>
     </thead>
     <tbody id="tableBody">
     </tbody>
   </table>
-   <script>
+
+  <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Make an AJAX request to your API
       $.ajax({

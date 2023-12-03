@@ -6,6 +6,8 @@ var Address = require('../models/address');
 var Cart = require('../models/cart.js');
 const fetch = require('node-fetch');
 var Status = require('../models/status')
+var Auth = require('../models/auth.js')
+
 var Notification = require('../models/notification.js')
 var notificationController = require('../controllers/notification')
 var TYPE_ORDER = "TYPE_ORDER"
@@ -16,23 +18,24 @@ exports.getAllOrderUI = async (req, res) => {
     res.render('order/order', { data, layout: "Layouts/home" });
 };
 
+
 exports.getOderbyshipperUI = async (req, res) => {
-    const response = await fetch('http://localhost:3000/api/orders/delivering/'+ req.params.id);
-    const data = await response.json(); 
+    const response = await fetch('http://localhost:3000/api/orders/delivering/' + req.params.id);
+    const data = await response.json();
     const successfulOrders = [];
     const failedOrders = [];
     if (Array.isArray(data)) {
-      data.forEach(order => {
-        const orderStatus = order.status.status_name;
+        data.forEach(order => {
+            const orderStatus = order.status.status_name;
 
-        if (orderStatus === "Giao hàng thành công" ) {
-          successfulOrders.push(order);
-        } else if (orderStatus === "Hủy đơn hàng thành công") {
-          failedOrders.push(order);
-        }
-      });
+            if (orderStatus === "Giao hàng thành công") {
+                successfulOrders.push(order);
+            } else if (orderStatus === "Hủy đơn hàng thành công") {
+                failedOrders.push(order);
+            }
+        });
     }
-    res.render('user/oder_Shipper', { failedOrders, successfulOrders,layout :"Layouts/home"});
+    res.render('user/oder_Shipper', { failedOrders, successfulOrders, layout: "Layouts/home" });
 };
 
 
@@ -41,14 +44,15 @@ exports.getbyIdOrderUI = async (req, res) => {
         "http://localhost:3000/api/order/" + req.params.id
     );
     // const data = await response.json();
-    res.render("order/detail", {  layout: "Layouts/home" });
-  };
+    res.render("order/detail", { layout: "Layouts/home" });
+};
 
-  exports.getbyIdOrderUI2 = async (req, res) => {
+exports.getbyIdOrderUI2 = async (req, res) => {
     const response = await fetch(
         "http://localhost:3000/api/order/" + req.params.id
     );
     // const data = await response.json();
+
     res.render("order/detail2", {  layout: "Layouts/home" });
   };
 
@@ -96,10 +100,10 @@ exports.getOrderByShipper = async (req, res) => {
             query.status = statusId;
         }
         const orders = await Order.find(query)
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
         for (const order of orders) {
             await order.address.populate('userId');
         }
@@ -145,10 +149,10 @@ exports.getOrderById = async (req, res) => {
     try {
         const id = req.params.id
         const order = await Order.findById(id)
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
 
         order.address = await order.address.populate('userId')
 
@@ -203,24 +207,24 @@ exports.getAllOrder = async (req, res) => {
 exports.updateIsPayment = async (req, res) => {
     const orderId = req.params.orderId;
     const { isPayment } = req.body;
-  
+
     try {
-      const updatedOrder = await Order.findByIdAndUpdate(
-        orderId,
-        { $set: { isPayment: isPayment } },
-        { new: true }
-      );
-  
-      if (!updatedOrder) {
-        return res.status(404).json({ message: 'Order not found' });
-      }
-  
-      return res.status(200).json(updatedOrder);
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { $set: { isPayment: isPayment } },
+            { new: true }
+        );
+
+        if (!updatedOrder) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        return res.status(200).json(updatedOrder);
     } catch (error) {
-      console.error('Error updating isPayment:', error);
-      return res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error updating isPayment:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
-  };
+};
 
 // xóa order
 exports.removeOrder = async (req, res) => {
@@ -278,7 +282,7 @@ exports.createOrder = async (req, res) => {
 
         // kiểm tra cart và 
         if (!myCart) {
-            return res.status(404).json({message: 'Không tìm thấy giỏ hàng'});
+            return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
         }
 
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
@@ -292,15 +296,16 @@ exports.createOrder = async (req, res) => {
                 return res.status(404).json({ message: 'Phiếu giảm giá đã hết lượt sử dụng' });
             }
         }
-        
+
         // tạo list products
         var totalCart = 0
         var discountCart = 0
         myCart.products.forEach((productCart) => {
-            if(productCart.productId && productCart.productId.isActive){
+            if (productCart.productId && productCart.productId.isActive) {
                 var discount = 0
                 var total = 0
                 if (coupon) {
+
                     discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
                     discountCart += discount
                 }
@@ -432,7 +437,7 @@ const updateOrderById = async (id, body) => {
         .populate('status')
         .populate('address')
         .populate('statusPayment');
-    
+
     if (!updatedOrder) {
         throw new Error("Đơn hàng không tồn tại");
     }
@@ -453,7 +458,7 @@ const createNotificationMessage = async (order) => {
 const sendNotificationToUser = async (order, message) => {
     try {
         const orderStatus = await Status.findById(order.status);
-        notificationController.sendNotificationToUser(order.userId, orderStatus.status_name, message,TYPE_ORDER);
+        notificationController.sendNotificationToUser(order.userId, orderStatus.status_name, message, TYPE_ORDER);
         await Notification.create({
             userId: order.userId,
             title: orderStatus.status_name,
@@ -473,10 +478,10 @@ exports.updatePaymentOrder = async (req, res) => {
         const id = req.params.id;
         const isPayment = req.query.isPayment
         const order = await Order.findByIdAndUpdate(id, { isPayment: isPayment }, { new: true })
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
 
         order.address = await order.address.populate('userId')
 
@@ -493,6 +498,113 @@ exports.updatePaymentOrder = async (req, res) => {
         })
     }
 }
+
+
+exports.getTop5shipperSucsses = async (req, res) => {
+    try {
+        const statusId = req.query.statusId;
+        const statusPaymentId = req.query.statusPaymentId;
+        const query = {};
+        if (statusId) {
+            query.status = statusId;
+
+            if (statusPaymentId) {
+
+                query.statusPayment = statusPaymentId;
+            }
+        }
+        const orders = await Order.find(query)
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        for (const order of orders) {
+
+            // Check if order.address is not null before populating userId
+            if (order.address) {
+                await order.address.populate('userId');
+            }
+
+        }
+        const successfulOrders = orders.filter(order => order.status.status_name === 'Giao hàng thành công');
+
+        // Count the number of orders for each shipper
+        const shipperOrderCount = {};
+        successfulOrders.forEach(order => {
+            if (order.shipperId) {
+                shipperOrderCount[order.shipperId] = (shipperOrderCount[order.shipperId] || 0) + 1;
+            }
+        });
+        // Sort shippers by order count in descending order
+        const sortedShippers = Object.keys(shipperOrderCount).sort((a, b) => shipperOrderCount[b] - shipperOrderCount[a]);
+
+        // Get the top 5 shippers
+        const top5Shippers = sortedShippers.slice(0, 5);
+        const shippers = await Auth.find({
+            _id: { $in: top5Shippers }
+        });
+
+        return res.json(shippers);
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+exports.getTop5shipperFail = async (req, res) => {
+    try {
+        const statusId = req.query.statusId;
+        const statusPaymentId = req.query.statusPaymentId;
+        const query = {};
+        if (statusId) {
+            query.status = statusId;
+
+            if (statusPaymentId) {
+
+                query.statusPayment = statusPaymentId;
+            }
+        }
+        const orders = await Order.find(query)
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment');
+
+        for (const order of orders) {
+
+            // Check if order.address is not null before populating userId
+            if (order.address) {
+                await order.address.populate('userId');
+            }
+
+        }
+        const successfulOrders = orders.filter(order => order.status.status_name === 'Hủy đơn hàng thành công');
+
+        // Count the number of orders for each shipper
+        const shipperOrderCount = {};
+        successfulOrders.forEach(order => {
+            if (order.shipperId) {
+                shipperOrderCount[order.shipperId] = (shipperOrderCount[order.shipperId] || 0) + 1;
+            }
+        });
+        // Sort shippers by order count in descending order
+        const sortedShippers = Object.keys(shipperOrderCount).sort((a, b) => shipperOrderCount[b] - shipperOrderCount[a]);
+
+        // Get the top 5 shippers
+        const top5Shippers = sortedShippers.slice(0, 5);
+        const shippers = await Auth.find({
+            _id: { $in: top5Shippers }
+        });
+
+        return res.json(shippers);
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message,
+        });
+    }
+};
 
 const handleBoughtProduct = async (order) => {
     try {
@@ -513,3 +625,4 @@ const handleBoughtProduct = async (order) => {
         console.error("Error updating product bought values:", error);
     }
 }
+
