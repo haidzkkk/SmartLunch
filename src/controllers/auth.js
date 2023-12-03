@@ -11,6 +11,7 @@ var { uploadImage, updateImage } = require('../controllers/upload');
 const { log } = require('handlebars')
 let refreshTokens = [];
 const fetch = require('node-fetch');
+const { default: addWeeks } = require('date-fns/addWeeks/index')
 
 
 exports.getShipperCreateUI = async (req, res) => {
@@ -607,6 +608,104 @@ exports.signin = async (req, res) => {
     }
 }
 
+// Đăng nhập với Google
+exports.signinWithGG = async (req, res) => {
+    try {
+        const body = req.body;
+
+        const existingUser = await Auth.findOne({ email: body.email });
+
+        if (existingUser) {
+            const accessToken = jwt.sign({ id: existingUser._id }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
+            const refreshToken = generateRefreshToken(existingUser);
+
+            if (!existingUser.googleId) {
+                existingUser.googleId = body.googleId;
+                existingUser.authType = "google";
+                await existingUser.save();
+            }
+
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            });
+        }
+
+        const newUser = new Auth({
+            authType: 'google',
+            googleId: body.googleId,
+            first_name: body.first_name,
+            last_name: body.last_name,
+            email: body.email,
+            password: "",
+            address: ""
+        });
+
+        await newUser.save();
+
+        const accessToken = jwt.sign({ id: newUser._id }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
+        const refreshToken = generateRefreshToken(newUser);
+
+        return res.status(200).json({
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+// Đăng nhập với Fb
+exports.signinWithFb = async (req, res) => {
+    try {
+        const body = req.body;
+
+        const existingUser = await Auth.findOne({ email: body.email });
+
+        if (existingUser) {
+            const accessToken = jwt.sign({ id: existingUser._id }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
+            const refreshToken = generateRefreshToken(existingUser);
+
+            if (!existingUser.facebookId) {
+                existingUser.facebookId = body.googleId;
+                existingUser.authType = "facebook";
+                await existingUser.save();
+            }
+
+            return res.status(200).json({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            });
+        }
+
+        const newUser = new Auth({
+            authType: 'facebook',
+            facebookId: body.googleId,
+            first_name: body.first_name,
+            last_name: body.last_name,
+            email: body.email,
+            password: "",
+            address: ""
+        });
+
+        await newUser.save();
+
+        const accessToken = jwt.sign({ id: newUser._id }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
+        const refreshToken = generateRefreshToken(newUser);
+
+        return res.status(200).json({
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 //dang nhap app delivery
 exports.signinShipper = async (req, res) => {
     try {
@@ -905,7 +1004,14 @@ exports.searchAuth = async (req, res) => {
 exports.updateToken = async (req, res) => {
     try {
         const tokenDevice = req.body.tokenFcm;
-        console.log(tokenDevice);
+
+        // xóa token
+        await Auth.findOneAndUpdate(
+            { tokenFcm: tokenDevice },
+            { $unset: { tokenFcm: 1 } },
+            { new: true }
+          );
+
         const user = await Auth.findByIdAndUpdate(req.user._id, {tokenFcm: tokenDevice});
         res.status(200).json(user);
     } catch (error) {

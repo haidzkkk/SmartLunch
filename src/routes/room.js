@@ -6,8 +6,8 @@ var authorization = require('../middlewares/authorization').authorization
 var router = express.Router();
 
 // router.post('/login', authController.login); 
-router.get('/room/auth', authenticate, roomController.getRoomByUserId);
-router.get('/room/auth/:id', authenticate, roomController.getRoomByWithUserId);
+router.get('/room/auth', authenticate, roomController.getRoomsByUserId);
+router.get('/room/auth/:id', authenticate, roomController.getRoomByUserId);
 router.get('/room/:id', authenticate, roomController.getRoomById);
 router.post('/room', authenticate, roomController.postRoom);
 router.put('/room/:id', authenticate, roomController.updateRoom);

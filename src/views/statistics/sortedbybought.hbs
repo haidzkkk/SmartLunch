@@ -23,11 +23,11 @@
             const productsData = await response.json();
 
             // Sorting the data by views and getting the top 5 items
-            var topFiveItems = productsData.sort((a, b) => b.views - a.views).slice(0, 5);
+            var topFiveItems = productsData.sort((a, b) => b.bought - a.bought).slice(0, 5);
 
             // Extracting product names and views
             var xValues = topFiveItems.map(item => item.product_name);
-            var yValues = topFiveItems.map(item => item.views);
+            var yValues = topFiveItems.map(item => item.bought);
 
             // Creating a bar chart
             new Chart("myChart", {
@@ -44,7 +44,7 @@
                     legend: { display: false },
                     title: {
                         display: true,
-                        text: "Top 5 đồ ăn có view cao nhất"
+                        text: "Top 5 đồ ăn được đặt nhiều nhất"
                     }
                 }
             });
@@ -64,7 +64,7 @@
             </tr>
         </thead>
         <tbody>
-            {{#each topFiveItems}}
+            {{#each top5bought}}
             <tr>
 
                 <td><img src="{{this.images.0.url}}" alt="Product Image" width="100px" height="60px" id="img-preview">

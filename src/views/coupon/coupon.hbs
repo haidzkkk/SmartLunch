@@ -12,8 +12,12 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
-    table.table-striped {
-      text-align: center;
+    table.table-bordered {
+      border: 1px solid #dee2e6;
+    }
+
+    table.table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.05);
     }
 
     .btn {
@@ -24,52 +28,145 @@
     h3 {
       text-align: center;
     }
+    
+ #datatable th:nth-child(1),
+#datatable td:nth-child(1) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+    #datatable th:nth-child(4),
+#datatable td:nth-child(4) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+    #datatable th:nth-child(5),
+#datatable td:nth-child(5) {
+  width: 80px; /* Điều chỉnh kích thước cột giá tùy theo nhu cầu của bạn */
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Bổ sung thêm kiểu để tránh làm mất dữ liệu hiển thị trong cột */
+#datatable td:nth-child(6) {
+  text-align: center; /* Căn giữa nếu cần thiết */
+}
 
   </style>
 </head>
 
 <body>
 
-    <div class="container">
- <h3>Bảng khuyến mãi</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+  <div class="container">
+    <h3>Bảng khuyến mãi</h3>
+    <table id="datatable" class="table table-bordered table-striped" style="width:100%">
       <thead>
         <tr>
-          <th style="color: #FF593E;text-align: center">Tên khuyến mãi</th>
-          <th style="color: #FF593E;text-align: center">Nội dung</th>
-          <th style="color: #FF593E;text-align: center">Số luọng</th>
-          <th style="color: #FF593E;text-align: center">Thời gian</th>
-
-          <th style="color: #FF593E;text-align: center">Chi tiết</th>
+          <th style="color: #000000;">Ảnh </th>
+          <th style="color: #000000;">Tên khuyến mãi </th>
+          <th style="color: #000000;">Nội dung</th>
+          <th style="color: #000000;">Số lượng</th>
+          <th style="color: #000000;">Thời gian</th>
+          <th style="color: #000000;">Chi tiết</th>
         </tr>
       </thead>
       <tbody>
         {{#each data}}
         <tr>
+          <td><img src="{{this.coupon_images.0.url}}" alt="Product Image" width="100px" height="60px" id="img-preview"></td>
           <td>{{this.coupon_name}}</td>
           <td maxlength="10">{{this.coupon_content}}</td>
           <td>{{this.coupon_quantity}}</td>
           <td>{{this.expiration_date}}</td>
-          <td><a href="/api/admin/coupons/{{this._id}} " style="text-decoration: none" class="btn btn-primary">chi tiết
-               </a></td>
+          <td><a href="/api/admin/coupons/{{this._id}} " style="text-decoration: none"  class="btn btn-primary fa-lg gradient-custom-2 mb-3">Chi tiết
+          </a>
+          </td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-    <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Create new product</a>
+    <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tạo khuyến mãi mới</a>
     <dir class="m-5 pb-5"></dir>
-  </div>
+</div>
 
 </body>
 
-    </div>
-   
-<script>
-  $(document).ready(function () {
-    $('#datatable').DataTable({
-      
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Make an AJAX request to your API
+      $.ajax({
+        url: 'http://localhost:3000/api/admin/coupons',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data);
+          // Populate the table with data
+          populateTable(data);
+        },
+        error: function (error) {
+          console.error('Error fetching data from the API:', error);
+        }
+      });
+
+      // Function to populate the table with data
+      function populateTable(data) {
+        const tableBody = document.getElementById('tableBody');
+
+        data.forEach(coupon => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><img src="${coupon.coupon_images[0].url}" alt="Coupon Image" width="100px" height="60px"></td>
+            <td>${coupon.coupon_name}</td>
+            <td>${coupon.coupon_content}</td>
+            <td>${coupon.coupon_quantity}</td>
+            <td class="date-cell">${formatDate(coupon.expiration_date)}</td>
+            <td><a href="/api/admin/coupons/${coupon._id}" style="text-decoration: none" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Chi tiết</a></td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // Format dates after populating the table
+        formatDates();
+      }
+
+      // Function to format dates
+      function formatDates() {
+        const dateCells = document.querySelectorAll('.date-cell');
+        dateCells.forEach(cell => {
+          const isoDate = cell.textContent;
+          const formattedDate = formatDate(isoDate);
+          cell.textContent = formattedDate;
+        });
+      }
+
+      // Function to format a single date
+      function formatDate(isoDate) {
+        const date = new Date(isoDate);
+        return date.toLocaleString('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZone: 'Asia/Ho_Chi_Minh',
+        });
+      }
     });
-  });
-</script>
+
+    $(document).ready(function () {
+      $('#datatable').DataTable();
+    });
+  </script>
+
+</body>
 
 </html>

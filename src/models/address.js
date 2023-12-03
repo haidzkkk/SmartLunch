@@ -26,6 +26,18 @@ const addressSchema = new mongoose.Schema({
         ref: 'Auth',
         required: true,
     },
+    distance:{
+        type: Number,
+        default: null,
+    },
+    deliveryFee:{
+        type: Number,
+        default: null,
+    },
+    deliveryTime:{
+        type: Number,
+        default: null,
+    },
     isSelected: {
         type: Boolean,
         default: false

@@ -1,9 +1,11 @@
 const Address = require('../models/address'); 
+const Auth = require('../models/auth');
 
 exports.createAddress = async (req, res) => {
     try {
         const userId = req.user.id;
         const { recipientName, phoneNumber, addressLine, latitude, longitude } = req.body;
+        const { distance, deliveryFee, duration } = await calculateDeliveryInfo(latitude, longitude);
         const address = new Address({
             recipientName,
             phoneNumber,
@@ -11,15 +13,18 @@ exports.createAddress = async (req, res) => {
             latitude,
             longitude,
             userId,
+            deliveryTime:duration,
+            deliveryFee: deliveryFee,
+            distance: distance,
             isSelected: true
-        });
-    
+        }); 
+
         const newAddress = await address.save();
     
         if (newAddress === null) {
             return res.status(400).json({ error: 'Không thể tạo địa chỉ.' });
         }
-    
+
         await Address.updateMany(
             { userId, _id: { $ne: newAddress._id } },
             { $set: { isSelected: false } }
@@ -32,8 +37,52 @@ exports.createAddress = async (req, res) => {
         console.error('Lỗi khi tạo địa chỉ:', error);
         res.status(500).json({ error: 'Không thể tạo địa chỉ.' });
     }
-    
 };
+
+const calculateDeliveryInfo = async (latitude, longitude) => {
+    try {
+        const adminAddress = await Address.findOne({ userId: { $in: await Auth.findOne({ role: 'admin' }) } });
+        if(adminAddress){
+            const x2 = latitude;
+            const y2 = longitude
+            const x1 = adminAddress.latitude;
+            const y1 = adminAddress.longitude;
+    
+            const response = await fetch(`http://router.project-osrm.org/route/v1/driving/${y1},${x1};${y2},${x2}?overview=false`);
+            const data = await response.json();
+    
+            // Lấy thông tin từ response
+            const distance = data.routes[0].distance / 1000;
+            const deliveryFee = calculateDeliveryFee(distance);
+            const duration = data.routes[0].duration/60;
+    
+            return { distance, deliveryFee, duration }; 
+        }
+        return new Error('Chưa có địa chỉ cửa hàng.');
+    } catch (error) {
+        console.error('Lỗi khi tính phí giao hàng:', error);
+        throw new Error('Không thể tính phí giao hàng.');
+    }
+};
+
+// Hàm tính phí giao hàng dựa trên khoảng cách
+const calculateDeliveryFee = (distance) => {
+    let deliveryFee = 0;
+
+    if (distance <= 1) {
+        deliveryFee = 0;
+    } else if (distance > 1 && distance <= 3) {
+        deliveryFee = 15000;
+    } else if (distance > 3 && distance <= 5) {
+        deliveryFee = 20000;
+    } else if (distance > 5 && distance <= 7) {
+        deliveryFee = 30000;
+    } else {
+        deliveryFee = 50000;
+    }
+
+    return deliveryFee;
+}
 
 exports.getAddressesByUserId = async (req, res) => {
     try {

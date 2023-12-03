@@ -21,6 +21,8 @@ router.post("/signup",authController.signup)
 router.post("/singupShipper",ab.none(),authController.signupShipper)
 
 router.post('/signin', authController.signin)
+router.post('/signinWithGG', authController.signinWithGG)
+router.post('/signinWithFb', authController.signinWithFb)
 router.post('/signinDeliveryApp', authController.signinShipper);
 router.post("/logout", authenticate, authController.logout)
 

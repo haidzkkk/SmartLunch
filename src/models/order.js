@@ -13,7 +13,11 @@ const orderSchema = mongoose.Schema({
   },
   products: [
     {
-      productId: String,
+      productId: {
+        type: mongoose.Types.ObjectId,
+        ref: "Product",
+        required: true
+      },
       product_name: String,
       image: String,
       purchase_quantity: Number,
@@ -24,6 +28,11 @@ const orderSchema = mongoose.Schema({
       total: Number,
     }
   ],
+  deliveryFee:{
+    type: Number,
+    required: false,
+    default: 0
+  },
   discount: {
     type: Number,
     required: false

@@ -53,7 +53,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Tống số sản phẩm</div>
-            <div id="productCount" class="h4 mt-3">Loading...</div>
+            <div id="productCount" class="h4 mt-3">{{ sumProduct }}</div>
           </div>
 
         </div>
@@ -85,7 +85,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Số lượng thành viên</div>
-            <div id="userCount" class="h4 mt-3">Loading...</div>
+            <div id="userCount" class="h4 mt-3">{{ membercount.user }}</div>
           </div>
 
         </div>
@@ -119,7 +119,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Đơn hàng hoàn thành</div>
-            <div id="orderDone" class="h4 mt-3">Loading...</div>
+            <div id="orderDone" class="h4 mt-3">{{ statusCount.orderCount }}</div>
           </div>
 
         </div>
@@ -147,7 +147,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Đơn hàng đã hủy</div>
-            <div id="orderCancel" class="h4 mt-3">Loading...</div>
+            <div id="orderCancel" class="h4 mt-3">{{ statusCount.cancelCount }}</div>
           </div>
 
         </div>
@@ -187,7 +187,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Số lượng Shipper</div>
-            <div id="userCount" class="h4 mt-3">Loading...</div>
+            <div id="shipper" class="h4 mt-3">{{ countShipper}}</div>
           </div>
 
         </div>
@@ -218,7 +218,7 @@
               </svg>
             </div>
             <div class="h4 mt-3">Đơn hàng đang giao</div>
-            <div id="shipping" class="h4 mt-3">Loading...</div>
+            <div id="shipping" class="h4 mt-3">{{ statusCount.shipping }}</div>
           </div>
 
         </div>
@@ -233,17 +233,3 @@
 </body>
 
 </html>
-<script>
-  var totalUsers = {{ sumUser }};
-  var totalProducts = {{ sumProduct }};
-  var totalOrdersDone = {{ statusCount.orderCount }};
-  var totalOrdersCancel = {{ statusCount.cancelCount }};
-  var totalOrdersShipping = {{ statusCount.shipping }};
-
-  // Cập nhật thông tin người dùng trên dashboard
-  document.getElementById('userCount').textContent = totalUsers.toLocaleString();
-  document.getElementById('productCount').textContent = totalProducts.toLocaleString();
-  document.getElementById('orderDone').textContent = totalOrdersDone.toLocaleString();
-  document.getElementById('orderCancel').textContent = totalOrdersCancel.toLocaleString();
-  document.getElementById('shipping').textContent = totalOrdersShipping.toLocaleString();
-</script>

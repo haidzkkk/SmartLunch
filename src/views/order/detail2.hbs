@@ -3,28 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>Chi tiết đơn hàng</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-  <style>
-    .container {
-      margin-top: 20px;
+<style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
     }
-    
+
+    .container {
+      margin-top: 50px;
+    }
+
     h3 {
       text-align: center;
       color: #FF593E;
     }
-    
+
     #order-details {
-      background-color: #f5f5f5;
-      border: 1px solid #ccc;
+      background-color: #ffffff;
+      border: 1px solid #dcdcdc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      border-radius: 5px;
     }
-    
+
     #order-details p {
-      margin: 0;
+      margin: 10px 0;
     }
-    
+
     #order-details strong {
       font-weight: bold;
     }
@@ -35,8 +46,36 @@
     }
 
     .radio-group {
-      margin-top: 10px;
+      margin-top: 15px;
     }
+
+    label {
+      margin-right: 10px;
+    }
+
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+    .product-container {
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-container p {
+  margin: 10px 0;
+}
+
+.product-container strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.product-container:hover {
+  border-color: #007bff;
+}
 
   </style>
 </head>
@@ -48,10 +87,11 @@
       <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
       <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
       <p><strong>Ghi chú: </strong><span id="notes">Đang tải...</span></p>
-      <p><strong>Tên sản phẩm: </strong><span id="productName">Đang tải...</span></p>
-      <p><strong>Giá sản phẩm: </strong><span id="productPrice">Đang tải...</span></p>
-      <p><strong>Số lượng sản phẩm: </strong><span id="productQuanlity">Đang tải...</span></p>
-      <p><strong>Kích cỡ : </strong><span id="productSize">Đang tải...</span></p>
+
+      <!-- Thêm phần hiển thị sản phẩm -->
+      <div id="products-section"></div>
+ <p><strong>Ngày Tạo: </strong><span id="create_day">Đang tải...</span></p> 
+        <p><strong>Đã thanh toán: </strong><span id="total_a">Đang tải...</span></p> 
       <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
       
@@ -76,37 +116,26 @@
           $('#name').text(data.address.recipientName || 'Không có tên');
           $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
           $('#address').text(data.address.addressLine || 'Không có địa chỉ');
-
-           if (data.products && data.products.length > 0) {
-          // Lấy thông tin của sản phẩm đầu tiên trong mảng
-          var product = data.products[0];
-          $('#productName').text(product.product_name || 'Không có tên sản phẩm');
-          $('#productPrice').text(product.product_price || 'Không có giá sản phẩm');
-          $('#productQuanlity').text(product.purchase_quantity || 'Không có số lượng sản phẩm');
-          $('#productSize').text(product.sizeName || 'Không có số lượng sản phẩm');
-        } else {
-          $('#productName').text('Không có tên sản phẩm');
-          $('#productPrice').text('Không có giá sản phẩm');
-          $('#productQuanlity').text('Không có số lượng sản phẩm');
-          $('#productSize').text('Không có số lượng sản phẩm');
-        }
           $('#notes').text(data.notes || 'Không có ghi chú');
           $('#total').text(data.total || 'Không có tổng cộng');
-
+          $('#create_day').text(formatTime(data.createdAt) || 'Không có tổng cộng');
+    $('#total_a').text(data.statusPayment.status_name || 'Không có tổng cộng');
           var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
           $('#status').text(statusText);
 
-          // Ẩn/mostrar radio button tùy thuộc vào trạng thái của đơn hàng
-          if (statusText === 'Đã Hủy') {
-            $('#paymentRadioGroup').hide();
-          } else {
+          // Hiển thị sản phẩm
+          displayProducts(data.products);
+
+          // Kiểm tra xem status có id là '653bc0a72006e5791beab35b' và statusPayment có id là '654892638cd8c0661be05f7c'
+          if (hasValidStatusPayment(data.status, data.statusPayment)) {
             $('#paymentRadioGroup').show();
-            // Cập nhật trạng thái radio isPayment
             if (data.isPayment) {
               $('input[name="isPayment"][value="true"]').prop('checked', true);
             } else {
               $('input[name="isPayment"][value="false"]').prop('checked', true);
             }
+          } else {
+            $('#paymentRadioGroup').hide();
           }
         },
         error: function (error) {
@@ -115,24 +144,58 @@
         }
       });
     }
+function displayProducts(products) {
+      var productsSection = $('#products-section');
+      productsSection.empty(); // Xóa nội dung cũ
 
-    // Thêm sự kiện change cho radio buttons
-    $('input[name="isPayment"]').on('change', function () {
-      var isPaymentValue = $(this).val();
-      // Gửi yêu cầu AJAX để cập nhật trạng thái isPayment
-      $.ajax({
-        url: 'http://localhost:3000/api/updateIsPayment/' + idorder,
-        method: 'PATCH',
-        data: { isPayment: isPaymentValue },
-        success: function (data) {
-          console.log('Trạng thái isPayment đã được cập nhật:', data);
-          confirmOrder(idorder, isPaymentValue);
-        },
-        error: function (error) {
-          console.log('Lỗi khi cập nhật trạng thái isPayment:', error);
+      if (products && products.length > 0) {
+        for (var i = 0; i < products.length; i++) {
+          var product = products[i];
+          var productHtml = `
+            <div class="product-container">
+          <p><strong>Tên sản phẩm ${i + 1}: </strong>${product.product_name || 'Không có tên sản phẩm'}</p>
+          <p><strong>Giá sản phẩm: </strong>${product.product_price || 'Không có giá sản phẩm'}</p>
+          <p><strong>Số lượng sản phẩm: </strong>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</p>
+          <p><strong>Kích cỡ : </strong>${product.sizeName || 'Không có số lượng sản phẩm'}</p>
+        </div>
+          `;
+          productsSection.append(productHtml);
         }
+      } else {
+        productsSection.append('<p>Không có sản phẩm</p>');
+      }
+    }
+// Hàm kiểm tra xem status và statusPayment có hợp lệ không
+function hasValidStatusPayment(status, statusPayment) {
+  if (status && status._id === '653bc0a72006e5791beab35b' &&
+    statusPayment && statusPayment._id === '654892638cd8c0661be05f7c') {
+    return true;
+  }
+  return false;
+}
+$('input[name="isPayment"]').on('change', function () {
+  var isPaymentValue = $(this).val();
+  // Gửi yêu cầu AJAX để cập nhật trạng thái isPayment
+  $.ajax({
+    url: 'http://localhost:3000/api/updateIsPayment/' + idorder,
+    method: 'PATCH',
+    data: { isPayment: isPaymentValue },
+    success: function (data) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật thành công!',
+        text: 'Trạng thái isPayment đã được cập nhật thành công.',
+      }).then(function () {
+        // Chuyển màn hình sau khi hiển thị thông báo thành công
+        window.location.href = 'http://localhost:3000/api/getAllorderUi';
       });
-    });
+      confirmOrder(idorder, isPaymentValue);
+    },
+    error: function (error) {
+      console.log('Lỗi khi cập nhật trạng thái isPayment:', error);
+    }
+  });
+});
 
     function confirmOrder(idorder, isPaymentValue) {
       var newStatus = isPaymentValue === 'true' ? '6560466ed13bcf53cec8deea' : '653bc0a72006e5791beab35b';
@@ -151,6 +214,22 @@
         }
       });
     }
+    function formatTime(timestamp) {
+  if (!timestamp) return '';
+
+  // Create a new Date object
+  var date = new Date(timestamp);
+
+  // Format the date in the desired way
+  var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
+
+  return formattedDate;
+}
+
+function padZero(num) {
+  return num < 10 ? '0' + num : num;
+}
+
 
     $(document).ready(function () {
       updateStatus();

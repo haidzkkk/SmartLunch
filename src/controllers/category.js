@@ -32,6 +32,7 @@ exports.getCategoryDelete = async (req, res) => {
   res.render('recyclebin/recycle_category', { dataDelete,layout :"Layouts/home" });
 };
 
+
 exports.removeCategory = async (req, res) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
@@ -147,37 +148,6 @@ exports.getCategoryById = async (req, res) => {
     });
   }
 };
-// exports.updateCategory = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const body = req.body;
-//     const files = req.files;
-//     console.log(files);
-   
-//     var images = await uploadImage(files);
-//     if (images[0] == null) {
-//       return res.status(400).json({
-//         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-//       });
-//     }
-//     body.images = images;
-//     console.log(body);
-//     const product = await Category.findByIdAndUpdate(id,body);
-//     if (product.length === 0) {
-      
-//       return res.status(400).json({
-//         message: "Thêm sản phẩm thất bại",
-        
-//       });
-//     }
-    
-
-//   } catch (error) {
-//     return res.status(400).json({
-//       message: error.message,
-//     });
-//   }
-// };
 
 
 exports.removeForce = async (req, res) => {
@@ -310,7 +280,7 @@ exports.remove = async (req, res) => {
   try {
     const id = req.params.id;
     const category = await Category.findById(id);
-    // console.log(product);
+
     if (category) {
       await category.delete();
     }

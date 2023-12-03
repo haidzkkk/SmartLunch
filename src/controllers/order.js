@@ -11,7 +11,7 @@ var Auth = require('../models/auth.js')
 var Notification = require('../models/notification.js')
 var notificationController = require('../controllers/notification')
 var TYPE_ORDER = "TYPE_ORDER"
-
+const notifier = require('node-notifier');
 exports.getAllOrderUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/getAllorder');
     const data = await response.json();
@@ -38,6 +38,7 @@ exports.getOderbyshipperUI = async (req, res) => {
     res.render('user/oder_Shipper', { failedOrders, successfulOrders, layout: "Layouts/home" });
 };
 
+
 exports.getbyIdOrderUI = async (req, res) => {
     const response = await fetch(
         "http://localhost:3000/api/order/" + req.params.id
@@ -51,8 +52,14 @@ exports.getbyIdOrderUI2 = async (req, res) => {
         "http://localhost:3000/api/order/" + req.params.id
     );
     // const data = await response.json();
-    res.render("order/detail2", { layout: "Layouts/home" });
-};
+
+    res.render("order/detail2", {  layout: "Layouts/home" });
+  };
+
+  exports.searchOrder = async (req, res) => {
+  
+    res.render("order/search", {  layout: "Layouts/home" });
+  };
 exports.getOrderByUserId = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -171,11 +178,10 @@ exports.getAllOrder = async (req, res) => {
             query.status = statusId;
 
             if (statusPaymentId) {
-
                 query.statusPayment = statusPaymentId;
             }
         }
-        const orders = await Order.find(query)
+        const orders = await Order.find(query).sort({createAt : -1})
             .populate('userId')
             .populate('status')
             .populate('address')
@@ -282,6 +288,7 @@ exports.createOrder = async (req, res) => {
         // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
         const coupon = await Coupon.findById(myCart.couponId);
         if (coupon) {
+            body.couponId = coupon._id
             if (coupon.coupon_quantity > 0) {
                 coupon.coupon_quantity -= 1;
                 await coupon.save();
@@ -291,14 +298,19 @@ exports.createOrder = async (req, res) => {
         }
 
         // tạo list products
+        var totalCart = 0
+        var discountCart = 0
         myCart.products.forEach((productCart) => {
             if (productCart.productId && productCart.productId.isActive) {
                 var discount = 0
                 var total = 0
                 if (coupon) {
-                    discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount
+
+                    discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
+                    discountCart += discount
                 }
-                total = (productCart.sizeId.size_price * productCart.purchase_quantity) - (discount * productCart.purchase_quantity)
+                total = (productCart.sizeId.size_price * productCart.purchase_quantity) - (discount * productCart.purchase_quantity )
+                totalCart += total
 
                 const newProductOrder = {
                     productId: productCart.productId._id,
@@ -314,10 +326,16 @@ exports.createOrder = async (req, res) => {
                 products.push(newProductOrder);
             }
         })
+        
+        if(products.length <= 0){
+            return res.status(404).json({message: 'Không tìm thấy sản phẩm trong đơn hàng'});
+        }
 
         body.products = products
-        body.total = myCart.total
-        body.discount = myCart.total - myCart.totalCoupon
+        body.deliveryFee = address.deliveryFee
+        body.total = totalCart + address.deliveryFee
+        body.discount = totalCart - discountCart + address.deliveryFee
+
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
         for (const item of body.products) {
@@ -338,12 +356,27 @@ exports.createOrder = async (req, res) => {
             })
         }
 
+        handleBoughtProduct(order)
+
         const result = await Order.findById(order._id)
             .populate('userId')
             .populate('status')
             .populate('address')
             .populate('statusPayment')
+
+
         result.address = await result.address.populate('userId')
+
+            notifier.notify(
+            {
+                title: 'Đơn hàng mới kìa ông chủ ',
+                message: 'Có đơn hàng mới !',
+          
+            },
+            function (err, response, metadata) {
+                // Handle callback if needed
+            }
+        );
 
         return res.status(200).json(result)
     } catch (error) {
@@ -353,6 +386,8 @@ exports.createOrder = async (req, res) => {
         });
     }
 }
+
+// exports.searchOrder = async (req, res) => {
 
 
 // cập nhật
@@ -364,13 +399,18 @@ exports.updateOrder = async (req, res) => {
         if (shipperId) {
             body.shipperId = shipperId;
         }
-
+        const order = await Order.findByIdAndUpdate(id, body, { new: true })
+        .populate('userId')
+        .populate('status')
+        .populate('address')
+        .populate('statusPayment')
+        order.address = await order.address.populate('userId')
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             });
         }
-        handleShipperId(shipperId, order, body);
+        handleShipperId(shipperId, Order, body);
         const updatedOrder = await updateOrderById(id, body);
         const notificationMessage = await createNotificationMessage(updatedOrder);
         await sendNotificationToUser(updatedOrder, notificationMessage);
@@ -393,7 +433,6 @@ const handleShipperId = (shipperId, order, body) => {
 
 const updateOrderById = async (id, body) => {
     const updatedOrder = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('products.productId')
         .populate('userId')
         .populate('status')
         .populate('address')
@@ -459,6 +498,7 @@ exports.updatePaymentOrder = async (req, res) => {
         })
     }
 }
+
 
 exports.getTop5shipperSucsses = async (req, res) => {
     try {
@@ -565,3 +605,24 @@ exports.getTop5shipperFail = async (req, res) => {
         });
     }
 };
+
+const handleBoughtProduct = async (order) => {
+    try {
+        await order.populate('products.productId');
+
+        for (const product of order.products) {
+            const productId = product.productId;
+
+            // Kiểm tra xem productId có tồn tại không trước khi cập nhật
+            if (productId) {
+                const views = productId.bought + product.purchase_quantity;
+                productId.bought = views;
+                await productId.save();
+            }
+        }
+        console.log("Updated product bought values successfully.");
+    } catch (error) {
+        console.error("Error updating product bought values:", error);
+    }
+}
+
