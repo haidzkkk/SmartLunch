@@ -120,7 +120,12 @@ exports.getAll = async (req, res) => {
     }
   };
   
-  const searchQuery = q ? { product_name: {$regex: new RegExp(q), $options: 'i'} } : {};
+  const searchQuery = q 
+  ? { 
+      product_name: {$regex: new RegExp(q), $options: 'i'},
+      isActive: true
+    } 
+  : {isActive: true};
   // const searchQuery = q ? { product_name: {$regex: new RegExp('.*' + q.toLowerCase() + '.*'), $options: 'i'} } : {};
 
   try {

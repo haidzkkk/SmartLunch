@@ -294,15 +294,19 @@ exports.createOrder = async (req, res) => {
         }
         
         // tạo list products
+        var totalCart = 0
+        var discountCart = 0
         myCart.products.forEach((productCart) => {
             if(productCart.productId && productCart.productId.isActive){
                 var discount = 0
                 var total = 0
                 if (coupon) {
                     discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
+                    discountCart += discount
                 }
                 total = (productCart.sizeId.size_price * productCart.purchase_quantity) - (discount * productCart.purchase_quantity )
-    
+                totalCart += total
+
                 const newProductOrder = {
                     productId: productCart.productId._id,
                     image: productCart.productId.images[0].url,
@@ -317,11 +321,16 @@ exports.createOrder = async (req, res) => {
                 products.push(newProductOrder);
             }
         })
+        
+        if(products.length <= 0){
+            return res.status(404).json({message: 'Không tìm thấy sản phẩm trong đơn hàng'});
+        }
 
         body.products = products
-        body.deliveryFee= address.deliveryFee
-        body.total = myCart.total + address.deliveryFee
-        body.discount = myCart.total - myCart.totalCoupon + address.deliveryFee
+        body.deliveryFee = address.deliveryFee
+        body.total = totalCart + address.deliveryFee
+        body.discount = totalCart - discountCart + address.deliveryFee
+
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
         for (const item of body.products) {
