@@ -119,7 +119,7 @@ exports.createCart = async (req, res) => {
 
         await addProductToCart(cartExist, productCartAdd);
 
-        var cartDetail = await Cart.findOne({ userId: userId })                            
+        var cartDetail = await Cart.findOne({ userId: userId._id })                            
                                 .populate("couponId")
                                 .populate("userId")
                                 .populate('products.productId')
