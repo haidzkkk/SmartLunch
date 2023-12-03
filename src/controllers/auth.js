@@ -24,6 +24,10 @@ exports.getShipperDataUI = async (req, res) => {
     const data = await response.json();
     res.render("user/shipper_data", { data, layout: "Layouts/home" });
 };
+exports.getShipperTop = async (req, res) => {
+
+    res.render("user/topshipper", {  layout: "Layouts/home" });
+};
 
 exports.getUserUI = async (req, res) => {
 
@@ -717,6 +721,7 @@ exports.logout = async (req, res) => {
         return res.status(500).json({ message: error })
     }
 }
+
 //Refresh Token
 exports.refreshToken = async (req, res) => {
     try {
@@ -962,5 +967,7 @@ exports.signupShipper = async (req, res) => {
         });
     }
 };
+
+
 
 

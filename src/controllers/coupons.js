@@ -1,6 +1,7 @@
 var Coupon = require("../models/coupons.js")
 var CouponSchema = require("../schemas/coupons.js")
 var { uploadImage, updateImage } = require('../controllers/upload');
+const fetch = require('node-fetch');
 
 exports.getCouponUI = async (req, res) => {
     const response = await fetch('http://localhost:3000/api/coupons');
