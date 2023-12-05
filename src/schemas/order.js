@@ -12,6 +12,7 @@ exports.orderSchema = Joi.object({
     discount: Joi.number().allow(null),
     products: Joi.array().allow(null),
     total: Joi.number().allow(null),
+    totalAll: Joi.number().allow(null),
     status: Joi.string().allow(null),
     statusPayment: Joi.string().allow(null),
     address: Joi.string(),

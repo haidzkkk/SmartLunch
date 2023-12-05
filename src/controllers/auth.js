@@ -633,7 +633,7 @@ exports.signinWithGG = async (req, res) => {
             first_name: body.first_name,
             last_name: body.last_name,
             email: body.email,
-            password: "",
+            password: body.password,
             address: ""
         });
 
@@ -647,6 +647,7 @@ exports.signinWithGG = async (req, res) => {
             refreshToken: refreshToken
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             message: error.message
         });

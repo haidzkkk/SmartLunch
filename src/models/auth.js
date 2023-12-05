@@ -5,19 +5,18 @@ const { boolean } = require('joi')
 const authSchema = new mongoose.Schema ({
     first_name: {
         type: String,
-        required : true
+        default: ""
     },
     last_name:{
         type: String,
-        required :true
+        default: ""
     },
     gender:{
         type: Boolean,
         default: true
     },
     birthday:{
-        type: String,
-        default: null,
+        type: String
     },
     password:{
         type: String,
