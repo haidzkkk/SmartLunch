@@ -16,7 +16,7 @@ exports.getRoomsByUserId = async (req, res, next) => {
 
             // trả về cho người lấy danh sách auto là userUserId còn ng chat cùng là shopUerID
             data.forEach((room) =>{
-                if(curentUser.id != room.userUserId._id){
+                if(curentUser && room.userUserId  && curentUser.id != room.userUserId._id){
                     const temp = room.shopUserId;
                     room.shopUserId = room.userUserId;
                     room.userUserId = temp;
@@ -27,6 +27,7 @@ exports.getRoomsByUserId = async (req, res, next) => {
         res.status(200).json(data)
 
     } catch (err) {
+        console.log(err);
         res.status(400).json("Lỗi")
     }
 }
@@ -89,7 +90,7 @@ exports.getRoomById = async (req, res, next) => {
         .populate('userIdSend')
 
         if(data != null){
-            if(curentUser.id != data.userUserId._id){
+            if(curentUser && data.userUserId  && curentUser.id != data.userUserId._id){
                 const temp = data.shopUserId;
                 data.shopUserId = data.userUserId;
                 data.userUserId = temp;
@@ -101,6 +102,7 @@ exports.getRoomById = async (req, res, next) => {
 
 
     } catch (err) {
+        console.log(err);
         res.status(400).json("Lỗi")
     }
 }

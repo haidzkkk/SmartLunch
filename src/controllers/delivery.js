@@ -20,6 +20,19 @@ exports.createDeliveryOrder = async (req, res) => {
             });
         }
 
+        const order = await Order.findById(formData.orderCode).populate('status');
+        if (!order) {
+            return res.status(404).json({
+                message: "Đơn hàng không tồn tại"
+            });
+        }
+
+        if(req.user.role != "shipper" || String(order.status._id) != "65264c672d9b3bb388078978"){
+            return res.status(404).json({
+                message: "Bạn không được thay đổi đơn hàng"
+            });
+        }
+
         formData.orderCode = new ObjectId(formData.orderCode);
         formData.status = new ObjectId(formData.status);
 

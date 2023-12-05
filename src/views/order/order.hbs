@@ -266,10 +266,10 @@ function updateTable(tabId, tableId) {
         console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
         if (order.status && order.status._id === statusTableMap[tabId]) {
           var productName = order.products[0].product_name;
-          var phone = order.address.phoneNumber;
+          var phone = order.address.phoneNumber ;
           var status = order.status.status_name;
           var address = order.address.addressLine;
-          var total = order.total;
+          var total = order.totalAll;
 
           var row = '<tr>';
           if (tabId === 'confirmed') {

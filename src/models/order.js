@@ -41,6 +41,10 @@ const orderSchema = mongoose.Schema({
     type: Number,
     required: true
   },
+  totalAll: {
+    type: Number,
+    required: true
+  },
   status: {
     type: mongoose.Types.ObjectId,
     ref: "Status",

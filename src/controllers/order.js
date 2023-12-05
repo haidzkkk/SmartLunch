@@ -304,12 +304,14 @@ exports.createOrder = async (req, res) => {
             if (productCart.productId && productCart.productId.isActive) {
                 var discount = 0
                 var total = 0
+
+                // tính toán nếu có giảm giá
                 if (coupon) {
 
                     discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
-                    discountCart += discount
+                    discountCart += discount * productCart.purchase_quantity
                 }
-                total = (productCart.sizeId.size_price * productCart.purchase_quantity) - (discount * productCart.purchase_quantity )
+                total = productCart.sizeId.size_price * productCart.purchase_quantity
                 totalCart += total
 
                 const newProductOrder = {
@@ -333,8 +335,9 @@ exports.createOrder = async (req, res) => {
 
         body.products = products
         body.deliveryFee = address.deliveryFee
-        body.total = totalCart + address.deliveryFee
-        body.discount = totalCart - discountCart + address.deliveryFee
+        body.total = totalCart
+        body.discount = discountCart
+        body.totalAll = totalCart - discountCart + address.deliveryFee
 
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
@@ -399,19 +402,40 @@ exports.updateOrder = async (req, res) => {
         if (shipperId) {
             body.shipperId = shipperId;
         }
-        const order = await Order.findByIdAndUpdate(id, body, { new: true })
-        .populate('userId')
-        .populate('status')
-        .populate('address')
-        .populate('statusPayment')
-        order.address = await order.address.populate('userId')
+        
+        const status = await Status.findById(body.status)
+        if(!status){
+            return res.status(404).json({
+                message: "trạng thái không tồn tại"
+            });
+        }
+        
+        const order = await Order.findById(id)
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             });
         }
-        handleShipperId(shipperId, Order, body);
-        const updatedOrder = await updateOrderById(id, body);
+        
+        if(String(status._id) == "653bc0a72006e5791beab35b"){
+            if(req.user.role == "member" && String(order.status) != "65264bc32d9b3bb388078974"){
+                return res.status(404).json({
+                    message: "Bạn không được hủy đơn hàng"
+                });
+            }
+
+        }
+        order.status = status._id
+        
+        if (shipperId && !order.shipperId) {
+            order.shipperId = shipperId;
+        } else if (shipperId && order.shipperId) {
+            return res.status(404).json({
+                message: "Đơn hàng đã được nhận trước đó"
+            });
+        }
+
+        var updatedOrder = await updateOrderById(order._id, order)
         const notificationMessage = await createNotificationMessage(updatedOrder);
         await sendNotificationToUser(updatedOrder, notificationMessage);
         return res.status(200).json(updatedOrder);
@@ -420,14 +444,6 @@ exports.updateOrder = async (req, res) => {
         return res.status(400).json({
             message: error.message
         });
-    }
-};
-
-const handleShipperId = (shipperId, order, body) => {
-    if (shipperId && !order.shipperId) {
-        body.shipperId = shipperId;
-    } else if (shipperId && order.shipperId) {
-        throw new Error("Đơn hàng đã được nhận trước đó");
     }
 };
 
