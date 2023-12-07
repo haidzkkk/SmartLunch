@@ -13,9 +13,8 @@ var notificationController = require('../controllers/notification')
 var TYPE_ORDER = "TYPE_ORDER"
 const notifier = require('node-notifier');
 exports.getAllOrderUI = async (req, res) => {
-    const response = await fetch('http://localhost:3000/api/getAllorder');
-    const data = await response.json();
-    res.render('order/order', { data, layout: "Layouts/home" });
+
+    res.render('order/order', {  layout: "Layouts/home" });
 };
 
 
@@ -40,10 +39,6 @@ exports.getOderbyshipperUI = async (req, res) => {
 
 
 exports.getbyIdOrderUI = async (req, res) => {
-    const response = await fetch(
-        "http://localhost:3000/api/order/" + req.params.id
-    );
-    // const data = await response.json();
     res.render("order/detail", { layout: "Layouts/home" });
 };
 
