@@ -33,6 +33,7 @@ var bannerRouter = require('./src/routes/banner.js');
 var statisticsRouter = require('./src/routes/statistics.js');
 var deliveryRouter = require('./src/routes/delivery.js')
 var notificationRouter = require('./src/routes/notification.js')
+var toppingRouter = require('./src/routes/topping.js')
 const socketController = require('./src/controllers/socket');
 
 dotenv.config();
@@ -90,6 +91,7 @@ app.use('/api', recycleRouter);
 app.use('/api', bannerRouter);
 app.use('/api', deliveryRouter);
 app.use('/api', notificationRouter);
+app.use('/api', toppingRouter);
 
 socketController.initializeSocketServer()
 app.listen(process.env.PORT, async () =>{

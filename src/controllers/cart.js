@@ -6,6 +6,7 @@ var Coupon = require("../models/coupons")
 var cartSchema = require("../schemas/cart").cartSchema
 var Product = require("../models/product")
 var Size = require("../models/size")
+var Topping = require("../models/topping")
 const { el } = require("date-fns/locale")
 const fetch = require('node-fetch');
 
@@ -35,19 +36,21 @@ const addProductToCart = async (cartExist, productCart) => {
 
         if (productExistIndex !== -1) {
             const existingProduct = cartExist.products[productExistIndex];
-            console.log(existingProduct);
-            console.log(`${existingProduct.productId.isActive} && ${existingProduct.purchase_quantity + productCart.purchase_quantity >= 0}`);
             if(existingProduct.productId.isActive && existingProduct.purchase_quantity + productCart.purchase_quantity >= 0){
                 existingProduct.purchase_quantity += productCart.purchase_quantity;
+                await addToppingToProducCart(existingProduct, productCart.toppings)
             }
+
         } else {
             if(productCart.purchase_quantity >= 0){
-                const newProduct = {
+                const newProductCart = {
                     productId: productCart.productId,
                     purchase_quantity: productCart.purchase_quantity,
                     sizeId: productCart.sizeId,
+                    toppings: []
                 };
-                cartExist.products.push(newProduct);
+                await addToppingToProducCart(newProductCart, productCart.toppings)
+                cartExist.products.push(newProductCart);
             }
         }
      
@@ -63,6 +66,36 @@ const addProductToCart = async (cartExist, productCart) => {
     }
 };
 
+const addToppingToProducCart = async (productCart, toppings) => {
+    const toppingsToPopulate = await Promise.all(toppings.map(async (item) => {
+        const toppingPopulate = await Topping.findById(item._id);
+        return {
+          _id: toppingPopulate,
+          _quantity: item._quantity
+        };
+      }));
+
+    toppingsToPopulate.forEach((toppingCartReq) =>{
+        if(toppingCartReq._id && toppingCartReq._id.isActive && toppingCartReq._quantity > 0){
+
+            const existingToppingIndex = productCart.toppings.findIndex((existingTopping) => 
+                String(existingTopping._id._id) == String(toppingCartReq._id._id)
+            );
+
+            if (existingToppingIndex !== -1) {
+                console.log("add topping " + toppingCartReq._id._id + toppingCartReq._quantity);
+                productCart.toppings[existingToppingIndex]._quantity += toppingCartReq._quantity;
+            }else{
+                console.log("push topping " + toppingCartReq._id._id + toppingCartReq._quantity);
+                productCart.toppings.push({
+                    _id: toppingCartReq._id._id,
+                    _quantity: toppingCartReq._quantity,
+                }) 
+            }
+        }
+    })
+}
+
 exports.createCart = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -75,19 +108,20 @@ exports.createCart = async (req, res) => {
             });
         }
 
-        const { error } = cartSchema.validate(req.body, { abortEarly: false });
-        if (error) {
-            const errors = error.details.map((err) => err.message);
-            return res.status(400).json({
-                message: errors,
-            });
-        }
+        // const { error } = cartSchema.validate(req.body, { abortEarly: false });
+        // if (error) {
+        //     const errors = error.details.map((err) => err.message);
+        //     return res.status(400).json({
+        //         message: errors,
+        //     });
+        // }
 
         let cartExist = await Cart.findOne({ userId: userId })
                                 .populate("couponId")
                                 .populate("userId")
                                 .populate('products.productId')
-                                .populate('products.sizeId');
+                                .populate('products.sizeId')
+                                .populate('products.toppings._id');
         if (!cartExist) {
             const newCart = await Cart.create({
                 userId,
@@ -123,7 +157,8 @@ exports.createCart = async (req, res) => {
                                 .populate("couponId")
                                 .populate("userId")
                                 .populate('products.productId')
-                                .populate('products.sizeId');
+                                .populate('products.sizeId')
+                                .populate('products.toppings._id');
         if(!cartDetail){
             return res.status(200).json(cartDetail);
         }else{
@@ -145,7 +180,8 @@ exports.getOne = async (req, res) => {
                         .populate("couponId")
                         .populate("userId")
                         .populate('products.productId')
-                        .populate('products.sizeId');
+                        .populate('products.sizeId')
+                        .populate('products.toppings._id');
         if(!cart){
             return res.status(400).json({
                 message: 'Không tìm thấy giỏ hàng'
@@ -174,18 +210,19 @@ exports.changeQuantity = async (req, res) => {
     try {
         const idUser = req.user.id;
         const { idProduct = '' } = req.query;
-        const { purchase_quantity, sizeId } = req.body;
+        const { purchase_quantity, sizeId, toppingId } = req.body;
 
         // Tìm giỏ hàng của người dùng
         const cart = await Cart.findOne({ userId: idUser })
             .populate("couponId")
             .populate("userId")
             .populate('products.productId')
-            .populate('products.sizeId');
+            .populate('products.sizeId')
+            .populate('products.toppings._id');
 
         if(!cart){
             return res.status(400).json({
-                message: 'Sản phẩm không tồn tại!', // Sản phẩm không tồn tại
+                message: 'Giỏ hàng không tồn tại!', // Sản phẩm không tồn tại
                 data: {}
             });
         }    
@@ -193,8 +230,19 @@ exports.changeQuantity = async (req, res) => {
         // Duyệt qua các sản phẩm trong giỏ hàng
         cart.products.forEach((product, index) => {
             if (product.productId._id.toString() === idProduct.toString() && product.sizeId._id.toString() === sizeId) {
-                productExists = product;
-                cart.products[index].purchase_quantity = purchase_quantity;
+                
+                if(!toppingId){
+                    cart.products[index].purchase_quantity = purchase_quantity;
+                }else{
+                    product.toppings.forEach((toppingCart, index) =>{
+                        if(String(toppingCart._id._id) == String(toppingId)){
+                            if(purchase_quantity == 0){
+                                product.toppings.splice(index, 1);  //xóa tại index, 1 là số ptu cần xóa
+                            }
+                            toppingCart._quantity = purchase_quantity
+                        }
+                    })
+                }
             }
         });
 
@@ -231,7 +279,8 @@ exports.removeProduct = async (req, res) => {
                 .populate("couponId")
                 .populate("userId")
                 .populate('products.productId')
-                .populate('products.sizeId');
+                .populate('products.sizeId')
+                .populate('products.toppings._id');
 
         await handleTotalCart(cartUpdated)
         await handleCouponTotal(cartUpdated)
@@ -329,7 +378,8 @@ exports.applyCounpon = async(req,res)=>{
                             .populate("couponId")
                             .populate("userId")
                             .populate('products.productId')
-                            .populate('products.sizeId');
+                            .populate('products.sizeId')
+                            .populate('products.toppings._id');
         return res.status(200).json(cartDetail);
     } catch (error) {
         console.log(error);
@@ -355,7 +405,8 @@ exports.removeCoupon = async (req, res) => {
                                 .populate("couponId")
                                 .populate("userId")
                                 .populate('products.productId')
-                                .populate('products.sizeId');
+                                .populate('products.sizeId')
+                                .populate('products.toppings._id');
 
         return res.status(200).json(cartPopulate);
     } catch (error) {
@@ -366,10 +417,18 @@ exports.removeCoupon = async (req, res) => {
 const handleTotalCart = async(cart) =>{
     var totalCart = 0
     if (cart && cart.products) {
+
+        // tính size product
         cart.products.forEach((productCart) => {
-          // Kiểm tra xem productCart và sizeId có tồn tại không
           if (productCart && productCart.sizeId && productCart.productId.isActive) {
             totalCart += productCart.purchase_quantity * productCart.sizeId.size_price;
+
+            // tính topping
+            productCart.toppings.forEach((toppingCart) =>{
+                if (toppingCart && toppingCart._id && toppingCart._id.isActive) {
+                    totalCart += toppingCart._quantity * toppingCart._id.price;
+                }
+            })
           }
         });
       }
@@ -382,7 +441,17 @@ const handleCouponTotal = async (cart) => {
     var totalCoupon = 0
     var coupond = await Coupon.findById(cart.couponId)
     if(coupond != null && cart.total >= coupond.min_purchase_amount){
-        totalCoupon = (cart.total / 100) * coupond.discount_amount
+
+        // nếu nhỏ hơn 100 thì tính %
+        if( 0 < coupond.discount_amount && coupond.discount_amount <= 100){
+            totalCoupon = (cart.total / 100) * coupond.discount_amount
+
+        // còn lớn hơn 1k thì trừ thẳng
+        }else if ( 0 < coupond.discount_amount && coupond.discount_amount > 1000) {
+            totalCoupon = coupond.discount_amount
+        }else{
+            cart.couponId = null
+        }
     }else{
         cart.couponId = null
     }

@@ -28,6 +28,16 @@ const cartSchema = new mongoose.Schema (
                 ref: "Size",
                 required: true
               },
+            toppings: [
+              {
+                _id: {
+                  type: mongoose.Types.ObjectId,
+                  ref: "Topping",
+                  required: true
+              },
+                _quantity: Number,
+              }
+            ]
         },
      ],
      total: {
