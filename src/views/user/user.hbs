@@ -29,7 +29,7 @@
   <div class="container">
 
     <h3>Danh sách thành viên</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+    <table id="datatable" class="table table-striped table-bordered " style="width:100%">
       <thead>
         <tr>
           <th style="color: #FF593E;text-align: center">Email</th>
@@ -45,13 +45,12 @@
 </body>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Make an AJAX request to your API
     $.ajax({
       url: 'http://localhost:3000/api/users',
       method: 'GET',
       dataType: 'json',
       success: function (data) {
-        // Populate the table with data
+
         populateTable(data);
       },
       error: function (error) {
@@ -59,14 +58,13 @@
       }
     });
 
-    // Function to populate the table with data
     function populateTable(data) {
       const tableBody = document.getElementById('tableBody');
 
       data.forEach(user => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${user.email}</td>
+            <td style="text-align: left">${user.email}</td>
             <td>${user.role}</td>
             <td class="date-cell">${formatDate(user.createdAt)}</td>
             <td> <a href="/api/admin/users/${user._id}" style="text-decoration: none">
@@ -76,8 +74,6 @@
           `;
         tableBody.appendChild(row);
       });
-
-      // Format dates after populating the table
       formatDates();
     }
 

@@ -28,7 +28,7 @@
 
 <body>
     <h3>Danh sách 5 shipper giao nhiều đơn hàng thành công nhất</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+    <table id="datatable" class="table table-striped table-bordered " style="width:100%">
         <thead>
             <tr>
                 <th style="color: black;text-align: center">Email</th>
@@ -41,7 +41,7 @@
         </tbody>
     </table>
     <h3>Danh sách 5 shipper hủy nhiều đơn hàng nhất</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <thead>
             <tr>
@@ -78,7 +78,7 @@
                 data.forEach(user => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-            <td>${user.email}</td>
+            <td style="text-align: left">${user.email}</td>
             <td>${user.role}</td>
             <td class="date-cell">${formatDate(user.createdAt)}</td>
             <td>
@@ -152,7 +152,7 @@
                 data.forEach(user => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-            <td>${user.email}</td>
+            <td style="text-align: left">${user.email}</td>
             <td>${user.role}</td>
             <td class="date-cell">${formatDate(user.createdAt)}</td>
             <td>
@@ -226,7 +226,7 @@
                 data.forEach(user => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-            <td>${user.email}</td>
+            <td style="text-align: left">${user.email}</td>
             <td>${user.role}</td>
             <td class="date-cell">${formatDate(user.createdAt)}</td>
             <td>
