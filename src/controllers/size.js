@@ -32,6 +32,9 @@ exports.getSizeById = async (req, res) => {
     const id = req.params.id;
     const size = await Size.findById(id);
 
+    if(!size){
+      return res.status(404).json({message: "Không tìm thấy size"});
+    }
     return res.status(200).json(size);
   } catch (error) {
     return res.status(400).json({
@@ -43,9 +46,11 @@ exports.getSizeById = async (req, res) => {
 exports.getSizeByProductId = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("Lỗi id: " + id);
     const sizes = await Size.find({productId: id});
 
+    if(!sizes){
+      return res.status(404).json({message: "Không tìm thấy size"});
+    }
     return res.status(200).json(
       sizes
     );

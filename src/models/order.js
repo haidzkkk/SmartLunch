@@ -26,6 +26,20 @@ const orderSchema = mongoose.Schema({
       product_price: Number,
       product_discount: Number,
       total: Number,
+      toppings: [
+        {
+          _id: {
+            type: mongoose.Types.ObjectId,
+            ref: "Topping",
+            required: true
+        },
+          name: String,
+          price: Number,
+          productId: String,
+          _quantity: Number,
+          total: Number,
+        }
+      ]
     }
   ],
   deliveryFee:{

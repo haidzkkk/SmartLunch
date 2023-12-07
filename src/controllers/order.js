@@ -53,13 +53,13 @@ exports.getbyIdOrderUI2 = async (req, res) => {
     );
     // const data = await response.json();
 
-    res.render("order/detail2", {  layout: "Layouts/home" });
-  };
+    res.render("order/detail2", { layout: "Layouts/home" });
+};
 
-  exports.searchOrder = async (req, res) => {
-  
-    res.render("order/search", {  layout: "Layouts/home" });
-  };
+exports.searchOrder = async (req, res) => {
+
+    res.render("order/search", { layout: "Layouts/home" });
+};
 exports.getOrderByUserId = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -181,7 +181,7 @@ exports.getAllOrder = async (req, res) => {
                 query.statusPayment = statusPaymentId;
             }
         }
-        const orders = await Order.find(query).sort({createAt : -1})
+        const orders = await Order.find(query).sort({ createAt: -1 })
             .populate('userId')
             .populate('status')
             .populate('address')
@@ -278,7 +278,8 @@ exports.createOrder = async (req, res) => {
         var products = []
         var myCart = await Cart.findOne({ userId: req.user.id })
             .populate('products.productId')
-            .populate('products.sizeId');
+            .populate('products.sizeId')
+            .populate('products.toppings._id');
 
         // kiểm tra cart và 
         if (!myCart) {
@@ -304,16 +305,25 @@ exports.createOrder = async (req, res) => {
             if (productCart.productId && productCart.productId.isActive) {
                 var discount = 0
                 var total = 0
+                var totalToppings = 0
 
-                // tính toán nếu có giảm giá
-                if (coupon) {
+                // add toppings
+                var toppings = []
+                productCart.toppings.forEach((toppingCart) => {
+                    totalToppings += toppingCart._id.price * toppingCart._quantity
+                    var toppingOrder = {
+                        _id: toppingCart._id._id,
+                        name: toppingCart._id.name,
+                        price: toppingCart._id.price,
+                        productId: toppingCart._id.productId,
+                        _quantity: toppingCart._quantity,
+                        total: totalToppings
+                    }
+                    toppings.push(toppingOrder)
+                })
 
-                    discount = (productCart.sizeId.size_price / 100) * coupon.discount_amount 
-                    discountCart += discount * productCart.purchase_quantity
-                }
+                // add products
                 total = productCart.sizeId.size_price * productCart.purchase_quantity
-                totalCart += total
-
                 const newProductOrder = {
                     productId: productCart.productId._id,
                     image: productCart.productId.images[0].url,
@@ -322,15 +332,27 @@ exports.createOrder = async (req, res) => {
                     sizeId: productCart.sizeId._id,
                     sizeName: productCart.sizeId.size_name,
                     product_price: productCart.sizeId.size_price,
-                    product_discount: productCart.sizeId.size_price - discount,
-                    total: total
+                    product_discount: discount,
+                    total: total + totalToppings,
+                    toppings: toppings
                 };
                 products.push(newProductOrder);
+                totalCart += newProductOrder.total
             }
         })
-        
-        if(products.length <= 0){
-            return res.status(404).json({message: 'Không tìm thấy sản phẩm trong đơn hàng'});
+
+        if (products.length <= 0) {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm trong đơn hàng' });
+        }
+
+
+        // tính toán nếu có giảm giá
+        if (coupon) {
+            if (0 < coupon.discount_amount && coupon.discount_amount <= 100) {
+                discountCart = (totalCart / 100) * coupon.discount_amount
+            } else if (0 < coupon.discount_amount && coupon.discount_amount > 1000) {
+                discountCart = coupon.discount_amount
+            }
         }
 
         body.products = products
@@ -338,7 +360,6 @@ exports.createOrder = async (req, res) => {
         body.total = totalCart
         body.discount = discountCart
         body.totalAll = totalCart - discountCart + address.deliveryFee
-
 
         // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
         for (const item of body.products) {
@@ -370,11 +391,11 @@ exports.createOrder = async (req, res) => {
 
         result.address = await result.address.populate('userId')
 
-            notifier.notify(
+        notifier.notify(
             {
                 title: 'Đơn hàng mới kìa ông chủ ',
                 message: 'Có đơn hàng mới !',
-          
+
             },
             function (err, response, metadata) {
                 // Handle callback if needed
@@ -402,23 +423,23 @@ exports.updateOrder = async (req, res) => {
         if (shipperId) {
             body.shipperId = shipperId;
         }
-        
+
         const status = await Status.findById(body.status)
-        if(!status){
+        if (!status) {
             return res.status(404).json({
                 message: "trạng thái không tồn tại"
             });
         }
-        
+
         const order = await Order.findById(id)
         if (!order) {
             return res.status(404).json({
                 message: "Đơn hàng không tồn tại"
             });
         }
-        
-        if(String(status._id) == "653bc0a72006e5791beab35b"){
-            if(req.user.role == "member" && String(order.status) != "65264bc32d9b3bb388078974"){
+
+        if (String(status._id) == "653bc0a72006e5791beab35b") {
+            if (req.user.role == "member" && String(order.status) != "65264bc32d9b3bb388078974") {
                 return res.status(404).json({
                     message: "Bạn không được hủy đơn hàng"
                 });
@@ -426,7 +447,7 @@ exports.updateOrder = async (req, res) => {
 
         }
         order.status = status._id
-        
+
         if (shipperId && !order.shipperId) {
             order.shipperId = shipperId;
         } else if (shipperId && order.shipperId) {

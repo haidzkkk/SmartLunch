@@ -31,6 +31,10 @@ const productsSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    rate: {
+        type: Number,
+        default: 0
+    },
     description: {
         type: String,
         required: true
