@@ -135,7 +135,8 @@ exports.create = async (req, res) => {
         const existingComment = await Comment.findOne({
             userId: req.user._id,
             productId: commentBody.productId,
-            orderId: commentBody.orderId
+            orderId: commentBody.orderId,
+            sizeId: commentBody.sizeId
         });
         if (existingComment) {
             return res.status(401).json({

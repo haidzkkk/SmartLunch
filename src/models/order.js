@@ -89,6 +89,7 @@ const orderSchema = mongoose.Schema({
   },
 },
 
-  { timestamps: true, versionKey: false });
+  { 
+    timestamps: { currentTime: () => Date.now() + 7 * 60 * 60 * 1000 }, versionKey: false });
   let orderModel= mongoose.model("Order", orderSchema)
   module.exports =orderModel

@@ -8,11 +8,14 @@ routerOrder.post("/order", authenticate,routerController.createOrder);
 routerOrder.get("/order/:id",authenticate, routerController.getOrderById)
 routerOrder.get("/getAllorder",authenticate, routerController.getAllOrder)
 routerOrder.patch("/order/:id",authenticate, routerController.updateOrder);
+
 routerOrder.get("/getAllorderUi",authenticate,routerController.getAllOrderUI)
 routerOrder.get("/getByIdOder/:id",authenticate,routerController.getbyIdOrderUI)
 
 routerOrder.patch('/updateIsPayment/:orderId', routerController.updateIsPayment);
 routerOrder.post("/order", authenticate, routerController.createOrder);
+routerOrder.post("/order/local", authenticate, routerController.createOrderCartLocal);
+// routerOrder.post("/order/cart", authenticate, routerController.createOrderByCart);
 routerOrder.get("/order/:id", authenticate, routerController.getOrderById)
 routerOrder.delete("/order/:id", authenticate, authorization, routerController.removeOrder);
 routerOrder.get("/userId/order", authenticate, routerController.getOrderByUserId);

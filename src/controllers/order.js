@@ -61,11 +61,11 @@ exports.getOrderByUserId = async (req, res) => {
         const statusId = req.query.statusId;
         const query = {
             userId: userId,
-        };
+        }
         if (statusId) {
             query.status = statusId;
         }
-        const orders = await Order.find(query)
+        const orders = await Order.find(query).sort({ createdAt: -1 })
             .populate('userId')
             .populate('status')
             .populate('address')
@@ -305,16 +305,18 @@ exports.createOrder = async (req, res) => {
                 // add toppings
                 var toppings = []
                 productCart.toppings.forEach((toppingCart) => {
-                    totalToppings += toppingCart._id.price * toppingCart._quantity
-                    var toppingOrder = {
-                        _id: toppingCart._id._id,
-                        name: toppingCart._id.name,
-                        price: toppingCart._id.price,
-                        productId: toppingCart._id.productId,
-                        _quantity: toppingCart._quantity,
-                        total: totalToppings
+                    if(toppingCart && toppingCart._id && toppingCart._id.isActive && toppingCart._quantity > 0 ){
+                        totalToppings += toppingCart._id.price * toppingCart._quantity
+                        var toppingOrder = {
+                            _id: toppingCart._id._id,
+                            name: toppingCart._id.name,
+                            price: toppingCart._id.price,
+                            productId: toppingCart._id.productId,
+                            _quantity: toppingCart._quantity,
+                            total: totalToppings
+                        }
+                        toppings.push(toppingOrder)
                     }
-                    toppings.push(toppingOrder)
                 })
 
                 // add products
@@ -655,6 +657,159 @@ const handleBoughtProduct = async (order) => {
         console.log("Updated product bought values successfully.");
     } catch (error) {
         console.error("Error updating product bought values:", error);
+    }
+}
+
+//tạo order
+exports.createOrderCartLocal = async (req, res) => {
+    try {
+        const myCart = req.body.cart;
+        const body = req.body.data;
+        body.userId = req.user.id
+
+        const { error } = orderSchema.validate(body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map((err) => err.message);
+            return res.status(400).json({
+                message: errors
+            })
+        }
+
+        // check address có tồn tại
+        const address = await Address.findOne({ _id: body.address, isRemove: false });
+        if (address == null) return res.status(400).json({ message: 'Không tìm thấy address' });
+
+        var products = []
+
+        // kiểm tra cart và 
+        if (!myCart) {
+            return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
+        }
+
+        // Kiểm tra xem có phiếu giảm giá được sử dụng trong đơn hàng không
+        const coupon = await Coupon.findById(myCart.couponId);
+        if (coupon) {
+            body.couponId = coupon._id
+            if (coupon.coupon_quantity > 0) {
+                coupon.coupon_quantity -= 1;
+                await coupon.save();
+            } else {
+                return res.status(404).json({ message: 'Phiếu giảm giá đã hết lượt sử dụng' });
+            }
+        }
+
+        // tạo list products
+        var totalCart = 0
+        var discountCart = 0
+        myCart.products.forEach((productCart) => {
+            if (productCart.productId && productCart.productId.isActive) {
+                var discount = 0
+                var total = 0
+                var totalToppings = 0
+
+                // add toppings
+                var toppings = []
+                productCart.toppings.forEach((toppingCart) => {
+                    if(toppingCart && toppingCart._id && toppingCart._id.isActive && toppingCart._quantity > 0 ){
+                        totalToppings += toppingCart._id.price * toppingCart._quantity
+                        var toppingOrder = {
+                            _id: toppingCart._id._id,
+                            name: toppingCart._id.name,
+                            price: toppingCart._id.price,
+                            productId: toppingCart._id.productId,
+                            _quantity: toppingCart._quantity,
+                            total: totalToppings
+                        }
+                        toppings.push(toppingOrder)
+                    }
+                })
+
+                // add products
+                total = productCart.sizeId.size_price * productCart.purchase_quantity
+                const newProductOrder = {
+                    productId: productCart.productId._id,
+                    image: productCart.productId.images[0].url,
+                    product_name: productCart.productId.product_name,
+                    purchase_quantity: productCart.purchase_quantity,
+                    sizeId: productCart.sizeId._id,
+                    sizeName: productCart.sizeId.size_name,
+                    product_price: productCart.sizeId.size_price,
+                    product_discount: discount,
+                    total: total + totalToppings,
+                    toppings: toppings
+                };
+                products.push(newProductOrder);
+                totalCart += newProductOrder.total
+            }
+        })
+
+        if (products.length <= 0) {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm trong đơn hàng' });
+        }
+
+
+        // tính toán nếu có giảm giá
+        if (coupon) {
+            if (0 < coupon.discount_amount && coupon.discount_amount <= 100) {
+                discountCart = (totalCart / 100) * coupon.discount_amount
+            } else if (0 < coupon.discount_amount && coupon.discount_amount > 1000) {
+                discountCart = coupon.discount_amount
+            }
+        }
+
+        body.products = products
+        body.deliveryFee = address.deliveryFee
+        body.total = totalCart
+        body.discount = discountCart
+        body.totalAll = totalCart - discountCart + address.deliveryFee
+
+        // Lặp qua từng sản phẩm trong đơn hàng và cập nhật số lượng và view
+        for (const item of body.products) {
+            const product = await Product.findById(item.productId);
+            if (product) {
+                // Giảm số lượng sản phẩm tương ứng với số lượng mua
+                product.purchase_quantity -= item.purchase_quantity; // Giảm số lượng theo số lượng trong giỏ hàng
+                // Tăng số lượng đã bán (view) tương ứng với số lượng mua
+                product.purchase_quantity += item.purchase_quantity; // Tăng view theo số lượng trong giỏ hàng
+                await product.save();
+            }
+        }
+
+        const order = await Order.create(body)
+        if (!order) {
+            return res.status(404).json({
+                error: "Đặt hàng thất bại "
+            })
+        }
+
+        handleBoughtProduct(order)
+
+        const result = await Order.findById(order._id)
+            .populate('userId')
+            .populate('status')
+            .populate('address')
+            .populate('statusPayment')
+
+
+        result.address = await result.address.populate('userId')
+
+        notifier.notify(
+            {
+                title: 'Đơn hàng mới kìa ông chủ ',
+                message: 'Có đơn hàng mới !',
+
+            },
+            function (err, response, metadata) {
+                // Handle callback if needed
+            }
+        );
+
+        return res.status(200).json(result)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).json({
+            message: error.message
+        });
     }
 }
 
