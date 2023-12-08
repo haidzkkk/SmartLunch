@@ -11,4 +11,8 @@ cartRouter.delete("/carts/clears", authenticate, cartController.clearUserCart);
 cartRouter.put("/carts/change", authenticate, cartController.changeQuantity);
 cartRouter.patch("/carts/apply", authenticate, cartController.applyCounpon);
 cartRouter.patch("/carts/remove-coupon", authenticate, cartController.removeCoupon);
+
+cartRouter.patch("/carts/local/apply", authenticate, cartController.applyCounponCartLocal);
+cartRouter.put("/carts/local/change", authenticate, cartController.changeQuantityCartLocal);
+cartRouter.put("/carts/local/update", authenticate, cartController.updateCartLocal);
 module.exports = cartRouter;

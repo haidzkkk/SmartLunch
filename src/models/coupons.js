@@ -36,9 +36,9 @@ const couponSchema = new mongoose.Schema(
         }
     },
     {
-        collection: 'coupons'
-    },
-    { timestamps: true, versionKey: false }
+        collection: 'coupons',
+        timestamps: { currentTime: () => Date.now() + 7 * 60 * 60 * 1000 }, versionKey: false 
+  }
 );
 
 let couponModel = mongoose.model('Coupon', couponSchema)

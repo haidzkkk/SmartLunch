@@ -22,7 +22,8 @@ const categorySchema =new mongoose.Schema({
   ]
 
 },
-  { timestamps: true, versionKey: false });
+  { 
+    timestamps: { currentTime: () => Date.now() + 7 * 60 * 60 * 1000 }, versionKey: false });
 
   categorySchema.plugin(mongoosePaginate);
   categorySchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
