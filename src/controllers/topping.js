@@ -1,6 +1,7 @@
 var Topping = require("../models/topping.js")
 var Product = require("../models/product.js")
 
+
 exports.getTopping = async (req, res) => {
   try {
     const topping = await Topping.find().populate("productId");
@@ -12,21 +13,43 @@ exports.getTopping = async (req, res) => {
   }
 };
 
-exports.getToppingById = async (req, res) => {
+// exports.getToppingById = async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
+//     const toppings = await Topping.find({ "productId._id": productId });
+
+//     if (!toppings || toppings.length === 0) {
+//       return res.status(404).json({ message: "Không tìm thấy topping cho sản phẩm này" });
+//     }
+
+//     return res.status(200).json(toppings);
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Đã xảy ra lỗi khi lấy danh sách topping",
+//       error: error.message
+//     });
+//   }
+//   };
+
+  exports.getToppingById = async (req, res) => {
     try {
       const id = req.params.id;
-      const topping = await Topping.findById(id);
-        
-      if(!topping){
+      const sizes = await Topping.find({productId: id});
+  
+      if(!sizes){
         return res.status(404).json({message: "Không tìm thấy topping"});
       }
-      return res.status(200).json(topping);
+      return res.status(200).json(
+        sizes
+      );
     } catch (error) {
       return res.status(400).json({
         message: error,
       })
     }
   };
+
+
 
   exports.getToppingByProductId = async (req, res) => {
     try {

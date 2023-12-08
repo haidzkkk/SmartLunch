@@ -102,11 +102,22 @@ exports.createSize = async (req, res, next) => {
 
 exports.removeSize = async (req, res) => {
   try {
+    // Thực hiện việc xóa kích thước dựa trên ID được truyền từ tham số đường dẫn (req.params.id)
     const size = await Size.findByIdAndDelete(req.params.id);
+
+    // Kiểm tra xem size có tồn tại không
+    if (!size) {
+      return res.status(404).json({
+        message: 'Size not found',
+      });
+    }
+
+    // Nếu xóa thành công, trả về 303 See Other và chuyển hướng đến trang danh sách kích thước
     res.status(303).set('Location', '/api/admin/size').send();
   } catch (error) {
+    // Xử lý lỗi và trả về 400 Bad Request nếu có lỗi xảy ra
     return res.status(400).json({
-      message: error,
+      message: error.message || 'An error occurred while deleting the size',
     });
   }
 };
