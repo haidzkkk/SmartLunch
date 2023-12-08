@@ -12,6 +12,14 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
+    .description-column {
+      max-width: 550px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
     table.table-striped {
       text-align: center;
     }
@@ -30,15 +38,15 @@
 <body>
   <div class="container">
     <h3>Thùng rác</h3>
-    <table id="datatable" class="table table-striped " style="width:100%">
+    <table id="datatable" class="table table-striped" style="width:100%">
       <thead>
         <tr>
-          <th style="color: #FF593E;text-align: center">Tên sản phẩm</th>
-          <th style="color: #FF593E;text-align: center">Giá</th>
-          <th style="color: #FF593E;text-align: center">Mô tả</th>
-          <th style="color: #FF593E;text-align: center">Danh mục</th>
-          <th style="color: #FF593E;text-align: center">Xóa</th>
-          <th style="color: #FF593E;text-align: center">Khôi phục</th>
+          <th style="color: black;text-align: center">Tên sản phẩm</th>
+          <th style="color: black;text-align: center">Giá</th>
+          <th style="color: black;text-align: center">Mô tả</th>
+          <th style="color: black;text-align: center">Danh mục</th>
+          <th style="color: black;text-align: center">Xóa</th>
+          <th style="color: black;text-align: center">Khôi phục</th>
         </tr>
       </thead>
       <tbody>
@@ -46,15 +54,15 @@
         <tr>
           <td>{{this.product_name}}</td>
           <td>{{this.product_price}}</td>
-          <td>{{this.description}}</td>
-         <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
-          <td><a href="/api/deletebyadmin/products/{{this._id}} "
-              data-confirm="Bạn có chắc chắn muốn xóa sản phẩm này không?" id="deleteForm"
-              style="text-decoration: none"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                fill="#FF593E" class="bi bi-x-octagon-fill" viewBox="0 0 16 16">
-                <path
-                  d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zm-6.106 4.5L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z" />
-              </svg></a></td>
+          <td class="description-column">{{this.description}}</td>
+          <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
+          <td>
+            <a href="/api/deletebyadmin/products/{{this._id}}" data-confirm="Bạn có chắc chắn muốn xóa sản phẩm này không?" id="deleteForm" style="text-decoration: none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF593E" class="bi bi-x-octagon-fill" viewBox="0 0 16 16">
+                <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zm-6.106 4.5L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z" />
+              </svg>
+            </a>
+          </td>
           <script>
             const deleteForm = document.getElementById('deleteForm');
 
@@ -65,38 +73,37 @@
               }
             });
           </script>
-          <td><a href="/api/products/restore/{{this._id}}" type="submit" id="productForm" style="text-decoration: none"><svg
-                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF593E" class="bi bi-recycle"
-                viewBox="0 0 16 16">
-                <path
-                  d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
-              </svg></a></td>
+          <td>
+            <a href="/api/products/restore/{{this._id}}" type="submit" id="productForm" style="text-decoration: none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF593E" class="bi bi-recycle" viewBox="0 0 16 16">
+                <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
+              </svg>
+            </a>
+          </td>
         </tr>
         {{/each}}
       </tbody>
     </table>
     <script>
       $(document).ready(function () {
-        $('#datatable').DataTable({
+        $('#datatable').DataTable({});
+        $.get('http://localhost:3000/api/categories', function (categories) {
+          const categoryMap = {};
+
+          categories.forEach(function (category) {
+            categoryMap[category._id] = category.category_name;
+          });
+
+          $('.category-cell').each(function () {
+            const categoryId = $(this).data('category-id');
+            const categoryName = categoryMap[categoryId];
+            console.log(categoryName)
+            $(this).text(categoryName);
+          });
         });
-            $.get('http://localhost:3000/api/categories', function (categories) {
-      const categoryMap = {};
-
-      categories.forEach(function (category) {
-        categoryMap[category._id] = category.category_name;
-      });
-
-      $('.category-cell').each(function () {
-        const categoryId = $(this).data('category-id');
-        const categoryName = categoryMap[categoryId];
-        console.log(categoryName)
-        $(this).text(categoryName);
-      });
-    });
       });
     </script>
     <script>
-      
       document.addEventListener("DOMContentLoaded", function () {
         const productForm = document.getElementById("productForm");
         console.log(productForm);
@@ -136,5 +143,21 @@
         });
       })
     </script>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const descriptionColumns = document.querySelectorAll(".description-column");
+
+      descriptionColumns.forEach((column) => {
+        const maxLength = 50; // Đặt độ dài tối đa bạn muốn hiển thị
+
+        if (column.textContent.length > maxLength) {
+          const truncatedText = column.textContent.substring(0, maxLength - 3) + "...";
+          column.textContent = truncatedText;
+        }
+      });
+    });
+  </script>
+</body>
 
 </html>
