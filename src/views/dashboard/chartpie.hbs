@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,15 @@
   <!-- Bạn cần thêm đường dẫn đến thư viện Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <!-- Địa điểm hiển thị biểu đồ -->
-    <div class="row mt-4">
+  <div class="row mt-4">
     <div class="col-md-6">
-  <canvas id="myPieChart" width="400" height="400"></canvas>
+      <canvas id="myPieChart" width="400" height="400"></canvas>
     </div>
     <div class="col-md-6">
-    <canvas id="myPieChart2" width="400" height="400"></canvas>
+      <canvas id="myPieChart2" width="400" height="400"></canvas>
     </div>
   </div>
 
@@ -24,8 +26,8 @@
     var data = {
       labels: ["Đơn thành công", "Đơn hủy"],
       datasets: [{
-        data: [{{statusCount.orderCount}}, {{statusCount.cancelCount}}],
-        backgroundColor: ["#FF0000", "#777777"]
+        data: [{{ statusCount.orderCount }}, {{ statusCount.cancelCount }}],
+      backgroundColor: ["#FF0000", "#777777"]
       }]
     };
 
@@ -48,13 +50,13 @@
     });
   </script>
 
-      <script>
+  <script>
     // Dữ liệu phần trăm và màu sắc
     var data = {
       labels: ["Thanh toán tiền mặt", "Thanh toán Paypal"],
       datasets: [{
-        data: [{{statusCount.cash}}, {{statusCount.paypal}}],
-        backgroundColor: ["#2a943d", "#2a3394"]
+        data: [{{ statusCount.cash }}, {{ statusCount.paypal }}],
+      backgroundColor: ["#2a943d", "#2a3394"]
       }]
     };
 
@@ -77,4 +79,5 @@
     });
   </script>
 </body>
+
 </html>
