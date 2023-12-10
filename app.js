@@ -30,6 +30,7 @@ var addressRouter = require('./src/routes/address.js');
 var recycleRouter = require('./src/routes/recycle.js');
 var adminRouter = require('./src/routes/admin.js');
 var bannerRouter = require('./src/routes/banner.js');
+var shopRouter = require('./src/routes/shopaddress.js');
 var statisticsRouter = require('./src/routes/statistics.js');
 var deliveryRouter = require('./src/routes/delivery.js')
 var notificationRouter = require('./src/routes/notification.js')
@@ -92,7 +93,7 @@ app.use('/api', bannerRouter);
 app.use('/api', deliveryRouter);
 app.use('/api', notificationRouter);
 app.use('/api', toppingRouter);
-
+app.use('/api', shopRouter);
 socketController.initializeSocketServer()
 app.listen(process.env.PORT, async () =>{
   await mongoose.connect(process.env.URL_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
