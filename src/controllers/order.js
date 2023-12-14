@@ -640,6 +640,23 @@ exports.getTop5shipperFail = async (req, res) => {
     }
 };
 
+
+exports.getOrderHistory = async (req, res) => {
+    try {
+        const orders = await Order.find({userId: req.user._id, status: "6526a6e6adce6a54f6f67d7d"})
+        var arrayProductOrder = []
+        orders.forEach((order) =>{
+            arrayProductOrder.push(...order.products)
+        })
+        console.log(arrayProductOrder.length);
+        return res.status(200).json(arrayProductOrder)
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
 const handleBoughtProduct = async (order) => {
     try {
         await order.populate('products.productId');

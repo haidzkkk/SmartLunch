@@ -31,6 +31,8 @@ routerOrder.get("/admin/oder_shipper/:id",routerController.getOderbyshipperUI)
 routerOrder.get("/getTop5shipper",routerController.getTop5shipperSucsses)
 routerOrder.get("/getTop5shipperFail",routerController.getTop5shipperFail)
 
+routerOrder.get("/order/user/history",authenticate, routerController.getOrderHistory)
+
 
 
 
