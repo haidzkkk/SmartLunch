@@ -39,7 +39,6 @@ exports.getCommentFromProduct = async (req, res) => {
     }
 };
 
-
 exports.getRatingFromProduct = async (req, res) => {
     try {
         const { productId } = req.params;

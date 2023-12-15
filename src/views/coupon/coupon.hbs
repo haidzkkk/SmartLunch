@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <title>Hiển thị dữ liệu API</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
@@ -92,12 +93,14 @@ a {
      text-decoration: none; 
 }
     </style>
+
 </head>
 
 <body>
     <div class="container">
         <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">+ Tạo danh mục</a>
         <a class="btn btn-danger fa-lg gradient-custom-2 mb-3" id="deleteAll">Xóa tất cả</a>
+
 
         <h3>Danh sách danh mục</h3>
         <table id="datatable" class="table table-striped table-bodered" style="width:100%">
@@ -150,6 +153,7 @@ a {
     <script>
         $(document).ready(function () {
             var table = $('#datatable').DataTable({});
+
 
             $('#select-all').click(function () {
                 $('.row-checkbox').prop('checked', this.checked);

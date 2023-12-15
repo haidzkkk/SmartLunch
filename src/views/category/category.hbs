@@ -95,10 +95,12 @@ a {
         <table id="datatable" class="table table-striped table-bodered" style="width:100%">
             <thead>
                 <tr>
+
                     <th style="text-align: center"> <input type="checkbox" id="select-all"></th>
                     <th style="color: #000000">Ảnh</th>
                     <th style="color: black">Tên danh mục</th>
                     <th style="color: black;">Tính năng </th>
+
                 </tr>
             </thead>
             <tbody>
@@ -107,6 +109,8 @@ a {
                    <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
                     <td><img src="{{this.category_image.url}}" alt="Ảnh sản phẩm" width="100px" height="60px"
                             id="img-preview"></td>
+
+
                     <td>{{this.category_name}}</td>
                  <td>
     <a href="javascript:void(0)" class="update-link" data-id="{{this._id}}" style="margin-left: 10px;">
