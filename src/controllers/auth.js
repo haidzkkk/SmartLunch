@@ -232,7 +232,7 @@ exports.signup = async (req, res) => {
         // Kiểm tra xem email đã được sử dụng chưa
         const userExist = await Auth.findOne({ email });
         if (userExist) {
-            return res.status(400).json({
+            return res.status(500).json({
                 message: "Email đã được sử dụng!"
             });
         }
@@ -439,12 +439,12 @@ exports.verifyOTPChangePassword = async (req, res) => {
 
                 if (expiresAt < Date.now()) {
                     await UserOTPVerification.deleteMany({ userId });
-                    return res.status(400).json("Mã đã hết hạn. Vui lòng yêu cầu lại.");
+                    return res.status(502).json("Mã đã hết hạn. Vui lòng yêu cầu lại.");
                 } else {
                     const validOTP = await bcrypt.compare(otp, hashedOTP);
 
                     if (!validOTP) {
-                        return res.status(400).json("Mã không hợp lệ. Kiểm tra hộp thư của bạn.");
+                        return res.status(500).json("Mã không hợp lệ. Kiểm tra hộp thư của bạn.");
                     } else {
                         // Thành công
                         await Auth.updateOne({ _id: userId }, { passwordChanged: true });
@@ -480,12 +480,12 @@ exports.verifyOTP = async (req, res) => {
 
                 if (expiresAt < Date.now()) {
                     await UserOTPVerification.deleteMany({ userId });
-                    throw new Error("Mã đã hết hạn. Vui lòng yêu cầu lại.");
+                    return res.status(502).json("Mã đã hết hạn. Vui lòng yêu cầu lại.");
                 } else {
                     const validOTP = await bcrypt.compare(otp, hashedOTP);
 
                     if (!validOTP) {
-                        throw new Error("Mã không hợp lệ. Kiểm tra hộp thư của bạn.");
+                        return res.status(500).json("Mã không hợp lệ. Kiểm tra hộp thư của bạn.");
                     } else {
                         // Thành công
                         await sendVerificationEmail(userId)
@@ -567,9 +567,11 @@ exports.signin = async (req, res) => {
 
         const isVerify = await user.verified;
         if (!isVerify) {
-            return res.status(400).json({
-                message: 'Please verify the account first'
-            })
+             // Gửi mã OTP qua email và xử lý phản hồi từ hàm này
+            const otpResponse = await sendOTPVerificationEmail(user);           
+            return res.status(500).json(
+                otpResponse
+            )
         }
 
         const isMatch = await bcrypt.compare(password, user.password)
@@ -631,13 +633,16 @@ exports.signinWithGG = async (req, res) => {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(body.googleId, 10);
+
         const newUser = new Auth({
             authType: 'google',
             googleId: body.googleId,
             first_name: body.first_name,
             last_name: body.last_name,
             email: body.email,
-            password: body.password,
+            password: hashedPassword,
+            verified:true,
             address: ""
         });
 
