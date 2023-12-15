@@ -17,5 +17,6 @@ exports.orderSchema = Joi.object({
     statusPayment: Joi.string().allow(null),
     address: Joi.string(),
     notes: Joi.string().allow(null),
+    data: Joi.string().allow(''),
     isPayment: Joi.boolean().allow(null),
 })

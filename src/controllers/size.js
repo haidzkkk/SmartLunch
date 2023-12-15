@@ -84,7 +84,7 @@ exports.createSize = async (req, res, next) => {
 
     // Lưu đối tượng Size vào cơ sở dữ liệu
     await newSize.save();
-
+    this.updatePriceProduct(product)
     // Định dạng lại phản hồi và chuyển hướng
     res.status(201).json({
       message: "Kích thước đã được tạo thành công",
@@ -105,6 +105,8 @@ exports.removeSize = async (req, res) => {
     // Thực hiện việc xóa kích thước dựa trên ID được truyền từ tham số đường dẫn (req.params.id)
     const size = await Size.findByIdAndDelete(req.params.id);
 
+    const product = await Product.findById(size.productId);
+    this.updatePriceProduct(product)
     // Kiểm tra xem size có tồn tại không
     if (!size) {
       return res.status(404).json({
@@ -133,4 +135,10 @@ exports.updateSize = async (req, res) => {
       message: error.message
     })
   }
+}
+
+exports.updatePriceProduct = async (product) => {
+  const sizes = await Size.find({ productId: product._id }).sort({ size_price: 1 });
+  product.product_price = sizes[0].size_price
+  product.save()
 }
