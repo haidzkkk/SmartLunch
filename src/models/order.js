@@ -87,6 +87,10 @@ const orderSchema = mongoose.Schema({
     type: Boolean,
     default: false
   },
+  data: {
+    type: String,
+    default: false
+  },
 },
 
   { 
