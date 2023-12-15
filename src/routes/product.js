@@ -44,6 +44,8 @@ router.get("/deletebyadmin/products/:id",authenticate,productController.removePr
 router.get("/remove/products/:id",authenticate, productController.remove);
 router.post("/updatebyadmin/products/:id",authenticate, upload.array("images", 10) ,productController.updateProduct);
 router.patch("/toggleActive/:productId", authenticate, productController.toggleActive);
+router.get("/removeProduct", authenticate, productController.removeAllProduct);
+router.patch("/restoreProductAll", authenticate, productController.restoreProductAll);
 
 
 module.exports = router;

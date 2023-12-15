@@ -153,10 +153,12 @@ function displayProducts(products) {
           var product = products[i];
           var productHtml = `
             <div class="product-container">
+            <img src="${product.image}" alt="Ảnh sản phẩm ${i + 1}" width="200px" height="200px">
           <p><strong>Tên sản phẩm ${i + 1}: </strong>${product.product_name || 'Không có tên sản phẩm'}</p>
           <p><strong>Giá sản phẩm: </strong>${product.product_price || 'Không có giá sản phẩm'}</p>
           <p><strong>Số lượng sản phẩm: </strong>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</p>
           <p><strong>Kích cỡ : </strong>${product.sizeName || 'Không có số lượng sản phẩm'}</p>
+        <p><strong>Toppings: </strong>${product.topping || 'No toppings'}</p>
         </div>
           `;
           productsSection.append(productHtml);
@@ -198,7 +200,7 @@ $('input[name="isPayment"]').on('change', function () {
 });
 
     function confirmOrder(idorder, isPaymentValue) {
-      var newStatus = isPaymentValue === 'true' ? '6560466ed13bcf53cec8deea' : '653bc0a72006e5791beab35b';
+      var newStatus = isPaymentValue === 'true' ? '654892778cd8c0661be05f7d' : '653bc0a72006e5791beab35b';
       // Gọi API PATCH khi nhấp vào radio button
       $.ajax({
         url: 'http://localhost:3000/api/order/' + idorder,

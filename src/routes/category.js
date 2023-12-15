@@ -25,6 +25,7 @@ router.get('/categorybyadmin/category', categoryController.getCategory);
 router.get('/admin/category/:id',authenticate, categoryController.getCategoryByIdUI);
 router.post("/updatebyadmin/category/:id", categoryController.updateCategoryUI);
 router.get("/remove/category/:id", categoryController.remove);
+router.get("/removeAll/category", categoryController.removeAll);
 
 
 module.exports = router;

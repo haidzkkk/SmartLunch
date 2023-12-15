@@ -291,3 +291,19 @@ exports.remove = async (req, res) => {
     });
   }
 };
+exports.removeAll = async (req, res) => {
+  try {
+    const categories = await Category.find();
+
+    // Lặp qua từng danh mục và xóa
+    for (const category of categories) {
+      await category.delete();
+    }
+
+    res.status(303).set('Location', '/api/admin/recycle_category').send();
+  } catch (error) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+};

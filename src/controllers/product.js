@@ -168,6 +168,25 @@ exports.restoreProduct = async (req, res) => {
     });
   }
 };
+exports.restoreProductAll = async (req, res) => {
+  try {
+    const ids = req.params.id.split(','); // Split the comma-separated IDs
+    const restoredProducts = await Product.restore({ _id: { $in: ids } });
+
+    if (!restoredProducts || restoredProducts.length === 0) {
+      return res.status(400).json({
+        message: "No products were restored. They may not exist or have been restored before.",
+      });
+    }
+
+    res.status(303).set('Location', '/api/admin/products').send();
+  } catch (error) {
+    console.error('Error restoring products:', error.stack);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
 
 exports.get = async (req, res) => {
   try {
@@ -352,6 +371,23 @@ exports.getProductByCategoryId = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: error.message,
+    });
+  }
+};
+exports.removeAllProduct = async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    // Loop through each product and delete
+    for (const product of products) {
+      await product.delete();  // Corrected method name to delete()
+    }
+
+    res.status(303).set('Location', '/api/admin/recycle').send();
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      error: error.message,
     });
   }
 };

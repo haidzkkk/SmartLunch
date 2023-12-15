@@ -83,6 +83,21 @@
 
     </form>
     <script>
+      function formatTime(timestamp) {
+      if (!timestamp) return '';
+
+      // Create a new Date object
+      var date = new Date(timestamp);
+
+      // Format the date in the desired way
+      var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
+
+      return formattedDate;
+    }
+
+    function padZero(num) {
+      return num < 10 ? '0' + num : num;
+    }
       document.getElementById('updateForm').addEventListener('submit', function (event) {
         const confirmDelete = confirm("Do you really want to update this?");
         if (!confirmDelete) {
@@ -95,6 +110,7 @@
           }
         }
       });
+      
     </script>
     <form action="http://localhost:3000/api/delete/coupons/{{data._id}}" method="get" id="deleteForm">
 
@@ -102,6 +118,8 @@
 
     </form>
     <dir class="m-5 pb-5"></dir>
+
+    
     <script>
       document.getElementById('deleteForm').addEventListener('submit', function (event) {
         const confirmDelete = confirm("Do you really want to delete this?");

@@ -5,7 +5,7 @@
   <title>Chi tiết đơn hàng</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
   <style>
-     body {
+    body {
       font-family: 'Arial', sans-serif;
       background-color: #f8f9fa;
     }
@@ -40,106 +40,116 @@
       color: #007bff;
     }
 
-    .radio-group {
+    .product-table {
+      width: 100%;
       margin-top: 15px;
     }
 
-    label {
-      margin-right: 10px;
+    .product-table th,
+    .product-table td {
+      border: 1px solid #dcdcdc;
+      padding: 10px;
+      text-align: left;
     }
 
-    input[type="radio"] {
-      margin-right: 5px;
+    .product-table img {
+      max-width: 100px;
+      max-height: 100px;
     }
+
     .product-container {
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+      border: 1px solid #dcdcdc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-.product-container p {
-  margin: 10px 0;
-}
+    .product-container p {
+      margin: 10px 0;
+    }
 
-.product-container strong {
-  font-weight: bold;
-  color: #333;
-}
+    .product-container strong {
+      font-weight: bold;
+      color: #333;
+    }
 
-.product-container:hover {
-  border-color: #007bff;
-}
+    .product-container:hover {
+      border-color: #007bff;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h3>Chi tiết đơn hàng</h3>
     <div id="order-details">
-  
       <p><strong>Tên: </strong><span id="name">Đang tải...</span></p>
       <p><strong>Số điện thoại: </strong><span id="phone">Đang tải...</span></p>
       <p><strong>Địa chỉ: </strong><span id="address">Đang tải...</span></p>
       <p><strong>Ghi chú: </strong><span id="notes">Đang tải...</span></p>
-
-      <!-- Thêm phần hiển thị sản phẩm -->
-      <div id="products-section"></div>
-       
-        <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
-        <p><strong>Giảm giá: </strong><span id="discount">Đang tải...</span></p>
-        <p><strong>Phí vận chuyển: </strong><span id="deliveryfee">Đang tải...</span></p>
-        <p><strong>Thành tiền: </strong><span style="color: red;" id="totalall">Đang tải...</span></p>
-        <p><strong>Đã thanh toán: </strong><span id="total_a">Đang tải...</span></p> 
-        <p><strong>Ngày Tạo: </strong><span id="create_day">Đang tải...</span></p> 
-
+      <p><strong>Tổng cộng: </strong><span id="total">Đang tải...</span></p>
+      <p><strong>Giảm giá: </strong><span id="discount">Đang tải...</span></p>
+      <p><strong>Phí vận chuyển: </strong><span id="deliveryfee">Đang tải...</span></p>
+      <p><strong>Thành tiền: </strong><span style="color: red;" id="totalall">Đang tải...</span></p>
+      <p><strong>Đã thanh toán: </strong><span id="total_a">Đang tải...</span></p> 
+      <p><strong>Ngày Tạo: </strong><span id="create_day">Đang tải...</span></p> 
       <p><strong>Trạng thái: <span id="status" class="status-text">Đang tải...</span></strong></p>
 
+      <!-- Bảng hiển thị sản phẩm -->
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th style="width: 150px;">Ảnh sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Kích cỡ</th>
+          </tr>
+        </thead>
+        <tbody id="products-section"></tbody>
+      </table>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-  // Trích xuất ID đơn hàng từ trang web
-  var idorder = window.location.href.split('/').pop(); // Lấy ID từ URL trang chi tiết
+    // Trích xuất ID đơn hàng từ trang web
+    var idorder = window.location.href.split('/').pop(); // Lấy ID từ URL trang chi tiết
 
-  // Hàm cập nhật trạng thái đơn hàng
-  function updateStatus() {
-    // Gửi yêu cầu AJAX để lấy trạng thái
-    $.ajax({
-      url: 'http://localhost:3000/api/order/' + idorder,
-      method: 'GET',
-      dataType: 'json',
-      success: function (data) {
-        // Cập nhật thông tin chi tiết trang
-        $('#name').text(data.address.recipientName || 'Không có tên');
-        $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
-        $('#address').text(data.address.addressLine || 'Không có địa chỉ');
-        $('#notes').text(data.notes || 'Không có ghi chú');
-        $('#total').text(data.total || 'Không có tổng cộng');
-        $('#discount').text(data.discount || 'Không có tổng cộng');
-        $('#deliveryfee').text(data.deliveryFee || 'Không có tổng cộng');
-        $('#totalall').text(data.totalAll || 'Không có tổng cộng');
-        $('#total_a').text(data.statusPayment.status_name || 'Không có tổng cộng');
-       $('#create_day').text(formatTime(data.createdAt) || 'Không có tổng cộng');
+    // Hàm cập nhật trạng thái đơn hàng
+    function updateStatus() {
+      // Gửi yêu cầu AJAX để lấy trạng thái
+      $.ajax({
+        url: 'http://localhost:3000/api/order/' + idorder,
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          // Cập nhật thông tin chi tiết trang
+          $('#name').text(data.address.recipientName || 'Không có tên');
+          $('#phone').text(data.address.phoneNumber || 'Không có số điện thoại');
+          $('#address').text(data.address.addressLine || 'Không có địa chỉ');
+          $('#notes').text(data.notes || 'Không có ghi chú');
+          $('#total').text(data.total || 'Không có tổng cộng');
+          $('#discount').text(data.discount || 'Không có tổng cộng');
+          $('#deliveryfee').text(data.deliveryFee || 'Không có tổng cộng');
+          $('#totalall').text(data.totalAll || 'Không có tổng cộng');
+          $('#total_a').text(data.statusPayment.status_name || 'Không có tổng cộng');
+          $('#create_day').text(formatTime(data.createdAt) || 'Không có tổng cộng');
 
+          displayProducts(data.products);
 
-           displayProducts(data.products);
-        
+          // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
+          var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
+          $('#status').text(statusText);
+        },
+        error: function (error) {
+          console.log('Lỗi:', error);
+          $('#status').text('Lỗi khi tải trạng thái');
+        }
+      });
+    }
 
-   
-        // Trích xuất trạng thái đơn hàng từ data (đảm bảo bạn có trường trạng thái trong dữ liệu đơn hàng)
-        var statusText = data.status ? data.status.status_name : 'Không có trạng thái';
-        $('#status').text(statusText);
-
-      },
-      error: function (error) {
-        console.log('Lỗi:', error);
-        $('#status').text('Lỗi khi tải trạng thái');
-      }
-    });
-  }
-  function displayProducts(products) {
+    function displayProducts(products) {
       var productsSection = $('#products-section');
       productsSection.empty(); // Xóa nội dung cũ
 
@@ -147,42 +157,41 @@
         for (var i = 0; i < products.length; i++) {
           var product = products[i];
           var productHtml = `
-            <div class="product-container">
-           <img src="${product.image}" alt="Ảnh sản phẩm ${i + 1}" width="200px" height="200px">
-          <p><strong>Tên sản phẩm ${i + 1}: </strong>${product.product_name || 'Không có tên sản phẩm'}</p>
-          <p><strong>Giá sản phẩm: </strong>${product.product_price || 'Không có giá sản phẩm'}</p>
-          <p><strong>Số lượng sản phẩm: </strong>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</p>
-          <p><strong>Kích cỡ : </strong>${product.sizeName || 'Không có số lượng sản phẩm'}</p>
-        </div>
+            <tr>
+              <td ><img src="${product.image}" alt="Ảnh sản phẩm ${i + 1}" class="img-fluid"  ></td>
+              <td>${product.product_name || 'Không có tên sản phẩm'}</td>
+              <td>${product.product_price || 'Không có giá sản phẩm'}</td>
+              <td>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</td>
+              <td>${product.sizeName || 'Không có kích cỡ'}</td>
+            </tr>
           `;
           productsSection.append(productHtml);
         }
       } else {
-        productsSection.append('<p>Không có sản phẩm</p>');
+        productsSection.append('<tr><td colspan="5">Không có sản phẩm</td></tr>');
       }
     }
-function formatTime(timestamp) {
-  if (!timestamp) return '';
 
-  // Create a new Date object
-  var date = new Date(timestamp);
+    function formatTime(timestamp) {
+      if (!timestamp) return '';
 
-  // Format the date in the desired way
-  var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
+      // Create a new Date object
+      var date = new Date(timestamp);
 
-  return formattedDate;
-}
+      // Format the date in the desired way
+      var formattedDate = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`;
 
-function padZero(num) {
-  return num < 10 ? '0' + num : num;
-}
+      return formattedDate;
+    }
 
-  // Gọi hàm cập nhật trạng thái khi trang được tải
-  $(document).ready(function () {
-    updateStatus();
-  });
-</script>
-</body>
-</html>
+    function padZero(num) {
+      return num < 10 ? '0' + num : num;
+    }
+
+    // Gọi hàm cập nhật trạng thái khi trang được tải
+    $(document).ready(function () {
+      updateStatus();
+    });
+  </script>
 </body>
 </html>

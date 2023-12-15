@@ -812,4 +812,44 @@ exports.createOrderCartLocal = async (req, res) => {
         });
     }
 }
-
+exports.getOrdersSortedByPrice = async (req, res) => {
+    try {
+      // Fetch orders from the database and sort by 'total' field in descending order
+      const orders = await Order.find()
+        .sort({ total: -1 })
+        .populate('userId')
+        .populate('status')
+        .populate({
+          path: 'address',
+          populate: { path: 'userId' }
+        })
+        .populate('statusPayment');
+  
+      res.json(orders);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+  exports.getOrdersSortedByName = async (req, res) => {
+    try {
+      // Lấy đơn hàng từ cơ sở dữ liệu và sắp xếp theo trường 'products.product_name' theo thứ tự chữ cái (tiếng Việt)
+      const orders = await Order.find()
+        .collation({ locale: 'vi', strength: 2 }) // Sử dụng collation để sắp xếp theo thứ tự chữ cái tiếng Việt
+        .sort({ 'products.product_name': 1 }) // 1 cho thứ tự chữ cái tăng dần, -1 cho thứ tự chữ cái giảm dần
+        .populate('userId')
+        .populate('status')
+        .populate({
+          path: 'address',
+          populate: { path: 'userId' }
+        })
+        .populate('statusPayment');
+  
+      res.json(orders);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Lỗi Server Nội Bộ' });
+    }
+  };
+  
+  
