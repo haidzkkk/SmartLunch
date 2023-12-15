@@ -142,7 +142,7 @@ exports.getOrderPie = async (req, res) => {
     const data = await response.json();
 
     // Khởi tạo đối tượng đếm số lượng sản phẩm cho mỗi trạng thái
-    let statusCount = { total: 0, specificStatusCount: 0,orderCount: 0,cancelCount:0 ,money: 0, cash: 0, paypal:0};
+    let statusCount = { total: 0, specificStatusCount: 0,orderCount: 0,cancelCount:0 ,money: 0, cash: 0, paypal:0, zalopay: 0};
 
     // Đếm số lượng sản phẩm cho mỗi trạng thái và kiểm tra trạng thái cụ thể
     data.forEach(order => {
@@ -157,6 +157,9 @@ exports.getOrderPie = async (req, res) => {
         }
         if(order.statusPayment === '654892778cd8c0661be05f7d'){
           statusCount.paypal++;
+        }
+        if(order.statusPayment === '6548929a8cd8c0661be05f80'){
+          statusCount.zalopay++;
         }
       }
       if (status === '653bc0a72006e5791beab35b') {
