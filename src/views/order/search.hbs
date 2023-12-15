@@ -28,12 +28,28 @@
   <div class="container section-container">
     <h3>Bảng đơn hàng  </h3>
     <input type="text" id="myInput" onkeyup="filterTable()" placeholder="Tìm kiếm ..." class="form-control mb-3">
-    <table class="table table-striped table-bordered" id="myTable">
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="filterButton" data-bs-toggle="dropdown"
+        aria-expanded="false" style="margin-left: 1050px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 2H18C19.1 2 20 2.9 20 4V7.32C20 7.87 19.55 8.32 19 8.32H5C4.45 8.32 4 7.87 4 7.32V4C4 2.9 4.9 2 6 2Z" fill="#0C0507"/>
+<path d="M4 10.3201V11.8801C4 12.9601 4.58 13.9601 5.53 14.4901L8.49 16.1601C9.12 16.5101 9.51 17.1801 9.51 17.9001V20.0001C9.51 21.1001 10.41 22.0001 11.51 22.0001H12.51C13.61 22.0001 14.51 21.1001 14.51 20.0001V17.9001C14.51 17.1801 14.9 16.5101 15.53 16.1601L18.49 14.4901C19.43 13.9601 20.02 12.9601 20.02 11.8801V10.3201C20.02 9.77007 19.57 9.32007 19.02 9.32007H5C4.45 9.32007 4 9.76007 4 10.3201Z" fill="#0C0507"/>
+</svg>
+
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="filterButton">
+        <li><a class="dropdown-item" href="#" onclick="filterTable1('total')">Giá</a></li>
+        <li><a class="dropdown-item" href="#" onclick="filterTable2('A-Z')">Từ A - Z</a></li>
+        <li><a class="dropdown-item" href="#" onclick="filterTable('favorite')">Yêu thích</a></li>
+        <!-- Add more filter items as needed -->
+      </ul>
+    </div>
+    <table class="table table-striped table-bordered" id="myTable" style="margin-top: 10px;">
       <thead>
         <tr>
           <th style="color: #000000">Mã đơn hàng </th>
           <th style="color: #000000">Điện thoại</th>
-          <th style="color: #000000">Địa chỉ</th>
+          <th style="color: #000000 ; width: 430px;">Địa chỉ</th>
           <th style="color: #000000">Giá</th>
           <th style="color: #000000">Trạng thái</th>
           <th style="color: #000000">Chi tiết</th>
@@ -49,7 +65,7 @@
       $.get('http://localhost:3000/api/getAllOrder', function (orders) {
         // Loop through orders and append to the table body
         orders.forEach(function (order) {
-          const product = order.products[0]; // Assuming there's only one product in the order
+          const product = order.products[0]; 
 
           const row = `
             <tr>
@@ -90,6 +106,70 @@
           }
         }
       }
+    }
+  </script>
+
+    <script>
+    function filterTable1(filterValue) {
+      // Replace the alert with your actual API call logic
+      $.get('http://localhost:3000/api/getOrdersSortedByCriteria', { filter: filterValue }, function (data) {
+        console.log("aaaaaaa" + data);
+
+        // Clear existing table rows
+        $('#tableBody').empty();
+
+        // Update table with the new data
+        data.forEach(function (order) {
+          const product = order.products[0]; 
+          const phoneNumber = order.address ? order.address.phoneNumber : '';
+          const addressLine = order.address ? order.address.addressLine : '';
+          const statusName = order.status ? order.status.status_name : '';
+
+          const row = `
+            <tr>
+              <td>${order._id}</td>
+              <td>${phoneNumber}</td>
+              <td>${addressLine}</td>
+              <td>${order.total}</td>
+              <td>${statusName}</td>
+              <td><button class="btn btn-primary detail-button" data-order-id="${order._id}">Chi tiết</button></td>
+            </tr>
+          `;
+          $('#tableBody').append(row);
+        });
+      });
+    }
+  </script>
+  <script>
+    function filterTable2(filterValue) {
+      // Replace the alert with your actual API call logic
+      $.get('http://localhost:3000/api/getOrdersSortedByCriteriaName', { filter: filterValue }, function (data) {
+        // Handle the API response and update the table accordingly
+        console.log("aaaaaaa" + data);
+
+        // Clear existing table rows
+        $('#tableBody').empty();
+
+        // Update table with the new data
+        data.forEach(function (order) {
+          const product = order.products[0]; 
+          const phoneNumber = order.address ? order.address.phoneNumber : '';
+          const addressLine = order.address ? order.address.addressLine : '';
+          const statusName = order.status ? order.status.status_name : '';
+
+          const row = `
+            <tr>
+              <td>${order._id}</td>
+              <td>${phoneNumber}</td>
+              <td>${addressLine}</td>
+              <td>${order.total}</td>
+              <td>${statusName}</td>
+              <td><button class="btn btn-primary detail-button" data-order-id="${order._id}">Chi tiết</button></td>
+            </tr>
+          `;
+          $('#tableBody').append(row);
+        });
+      });
     }
   </script>
 </body>

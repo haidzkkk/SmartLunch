@@ -67,15 +67,10 @@
 </style>
 <body>
  <a href="/api/search" class="btn btn-primary fa-lg gradient-custom-2 mb-3">Tìm kiếm đơn hàng</a>
- <a style="color: white;" class="btn btn-primary fa-lg gradient-custom-2 mb-3" id="confirmButton">Xác nhận</a>
-
-
  <h3>Bảng đơn hàng </h3>
   <div class="container mt-4">
-
-    <ul class="nav nav-tabs">
-
-      <li class="nav-item">
+    <ul class="nav nav-tabs" >
+      <li class="nav-item" >
         <a class="nav-link active" id="tab-confirmed" data-toggle="tab" href="#table-confirmed">Đang chờ xác nhận</a>
       </li>
       <li class="nav-item">
@@ -87,13 +82,8 @@
       <li class="nav-item">
         <a class="nav-link" id="tab-delivered" data-toggle="tab" href="#table-delivered">Giao hàng thành công</a>
       </li>
-   
-        <li class="nav-item">
-        <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Hủy đơn hàng </a>
-      </li>
-
-    <li class="nav-item">
-    <a class="nav-link" id="tab-delivered_refund_aaa" data-toggle="tab" href="#tab-delivered_refund">Hoàn hàng </a>
+   <li class="nav-item">
+  <a class="nav-link" id="tab-delivered_refund_ordel" data-toggle="tab" href="#tab-delivered_refund_order">Đơn hủy đơn hàng</a>
 </li>
     </ul>
 
@@ -105,13 +95,13 @@
            <th style="text-align: center;">
                 <input type="checkbox" id="select-all">
               </th>
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th class="name-column" style="width: 140px;">id</th>
               <th style="width: 120px;">Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
               
-              <th class="detail-column">Chi tiết </th>
+             
             
             </tr>
           </thead>
@@ -124,12 +114,12 @@
         <table class="table" id="table-pending">
           <thead>
             <tr>
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+              <th class="name-column" style="width: 140px;">id</th>
                <th >Điện thoại</th>
               <th>Địa chỉ</th>
               <th >Giá </th>
               <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
+             
             </tr>
           </thead>
           <tbody>
@@ -141,12 +131,12 @@
         <table class="table" id="table-confirmed-orders">
           <thead>
             <tr>
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+             <th class="name-column" style="width: 140px;">id</th>
               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
+            
             </tr>
           </thead>
           <tbody>
@@ -158,12 +148,11 @@
         <table class="table" id="table-delivered">
           <thead>
             <tr>
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+             <th class="name-column" style="width: 140px;">id</th>
                <th>Điện thoại</th>
               <th>Địa chỉ</th>
-              <th>Giá </th>
+              <th>Giá</th>
               <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -171,16 +160,17 @@
           </tbody>
         </table>
       </div>
+
+      
      <div class="tab-pane fade" id="tab-delivered_cancel">
     <table class="table" id="tab-delivered_cancel">
           <thead>
             <tr>
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+             <th class="name-column" style="width: 140px;">id</th>
               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -188,17 +178,16 @@
           </tbody>
         </table>
       </div>
-        <div class="tab-pane fade" id="tab-delivered_refund_order">
-        <table class="table" id="tab-delivered_refund_order">
+
+     <div class="tab-pane fade" id="tab-delivered_refund_order">
+    <table class="table" id="tab-delivered_refund_order">
           <thead>
             <tr>
-     
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
+             <th class="name-column" style="width: 140px;">id</th>
               <th>Điện thoại</th>
               <th>Địa chỉ</th>
               <th>Giá </th>
               <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
             </tr>
           </thead>
           <tbody>
@@ -206,30 +195,15 @@
           </tbody>
         </table>
       </div>
-    <div class="tab-pane fade" id="tab-delivered_refund">
-        <table class="table" id="tab-delivered_refund">
-          <thead>
-            <tr>
-    
-              <th class="name-column" style="width: 140px;">Tên sản phẩm</th>
-              <th>Điện thoại</th>
-              <th>Địa chỉ</th>
-              <th>Giá </th>
-              <th>Trạng thái </th>
-              <th class="detail-column">Chi tiết </th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dữ liệu sẽ được thêm sau khi yêu cầu AJAX được xử lý -->
-          </tbody>
-        </table>
-      </div>
- 
+
+     <a style="color: white;" class="btn btn-primary fa-lg gradient-custom-2 mb-3" id="confirmButton">Xác nhận</a>
+    <a style="color: white;" class="btn btn-primary fa-lg gradient-custom-2 mb-3" id="cancelButton">Hủy</a>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 
 
   <script>
@@ -265,39 +239,27 @@ function updateTable(tabId, tableId) {
         console.log("tabId:", tabId);
         console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
         if (order.status && order.status._id === statusTableMap[tabId]) {
-          var productName = order.products[0].product_name;
+         var productName = order._id;
           var phone = order.address.phoneNumber ;
           var status = order.status.status_name;
           var address = order.address.addressLine;
-          var total = order.totalAll;
+          var total = order.total;   
 
           var row = '<tr>';
           if (tabId === 'confirmed') {
             row += '<td style="text-align: center;"><input type="checkbox" class="product-checkbox" data-order-id="' + order._id + '" data-product-id="' + order.products[0]._id + '"></td>';
           }
-          row +=
-            '<td>' + productName + '</td>' +
-            '<td>' + phone + '</td>' +
-            '<td>' + address + '</td>' +
-            '<td>' + total + '</td>' +
-            '<td>' + status + '</td>';
+        row +=
+  '<td class="name-column" data-order-id="' + order._id + '">' + productName + '</td>' +
+  '<td class="phone-column" data-order-id="' + order._id + '">' + phone + '</td>' +
+  '<td class="address-column" data-order-id="' + order._id + '">' + address + '</td>' +
+  '<td>' + total + '</td>' +
+  '<td>' + status + '</td>';
 
-          if (tabId === 'tab-delivered_cancel') {
-            row += '<td><button class="btn btn-primary refund-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
-              '</tr>';
-          } else if (tabId === 'confirmed') {
-            row +=
-              '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
-              '</tr>';
-          } else {
-            row += '<td><button class="btn btn-primary detail-button" data-order-id="' + order._id + '">Chi tiết</button></td>' +
-              '</tr>';
-          }
-
+// Remove the "Chi tiết" button from the row
+row += '</tr>';
           $('#' + tableId + ' tbody').prepend(row);
-        } else {
-          console.log("bbbb");
-        }
+        } 
       });
       bindButtons(tabId);
     },
@@ -314,28 +276,28 @@ function updateTable(tabId, tableId) {
         $('.product-checkbox').prop('checked', isChecked);
       });
 
-    function bindButtons(tabId) {
-  console.log('Binding buttons click events for tab:', tabId);
-  if (tabId === 'tab-delivered_cancel') {
-    // Bind click event for the refund button
-    $('.refund-button').unbind('click');
-    $('.refund-button').on('click', function () {
-      var idorder = $(this).data('order-id');
-     window.location.href = 'http://localhost:3000/api/getByIdOder2/' + idorder;
+function bindButtons(tabId) {
+    console.log(tabId);
+    $('.phone-column, .address-column').on('click', function () {
+        var idorder = $(this).closest('tr').find('.name-column').data('order-id');
+        window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
     });
-  } else if (tabId === 'confirmed') {
-    bindConfirmButton();
-  } else {
-    // Bind click event for the detail button
-    $('.detail-button').unbind('click');
-    $('.detail-button').on('click', function () {
-      var idorder = $(this).data('order-id');
-      // Redirect to the detail page with order id
-      window.location.href = 'http://localhost:3000/api/getByIdOder/' + idorder;
-    });
-  }
 }
+function bindRowClickEvents(tabId) {
+  // Bind click event for each row to show details
+  $('#' + tabId + ' tbody tr').on('click', function () {
+    var orderId = $(this).find('.name-column').data('order-id'); // Assuming .name-column contains the order ID
+    showOrderDetails(orderId);
+  });
 
+  // Bind click event for phone and address columns
+  $('#' + tabId + ' tbody tr .phone-column, #' + tabId + ' tbody tr .address-column').on('click', function (event) {
+    event.stopPropagation(); // Prevent row click event from being triggered
+
+    var orderId = $(this).closest('tr').find('.name-column').data('order-id');
+    showOrderDetails(orderId);
+  });
+}
 
         $('#confirmButton').on('click', function () {
         var selectedProducts = [];
@@ -392,7 +354,6 @@ function confirmOrder(idorder) {
           data: { status: '65264c102d9b3bb388078976' },
           dataType: 'json',
           success: function (response) {
-            // After successfully confirming the order, update the table data
             var tabId = 'confirmed'; // Replace with the appropriate tabId
             var tableId = 'tab-' + tabId;
             
@@ -406,7 +367,15 @@ function confirmOrder(idorder) {
       }
 
 
-      // Bootstrap tab event
+   function toggleButtonsVisibility(tabId) {
+    // Toggle the visibility of buttons based on the active tab
+    if (tabId === 'tab-confirmed') {
+      $('#confirmButton, #cancelButton').show();
+    } else {
+      $('#confirmButton, #cancelButton').hide();
+    }
+  }
+
       $('.nav-tabs a').on('shown.bs.tab', function (e) {
         var tabId = $(e.target).attr('id').replace('tab-', '');
         console.log("tabId:", tabId);
@@ -427,8 +396,86 @@ function confirmOrder(idorder) {
 
       updateTables(tablesToUpdate);
        
+
+  // Show buttons only when the "Đang chờ xác nhận" tab is active
+  $('.nav-tabs a').on('click', function () {
+    var tabId = $(this).attr('id');
+    toggleButtonsVisibility(tabId);
+  });
+
+      $('#cancelButton').on('click', function () {
+  var selectedProducts = getSelectedOrders();
+  
+  if (selectedProducts.length > 0) {
+    // Show SweetAlert with the list of selected products
+    Swal.fire({
+      title: 'Hủy đơn hàng',
+      html: 'Bạn có chắc chắn muốn hủy đơn hàng cho những sản phẩm đã chọn không?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Hủy đơn',
+      cancelButtonText: 'Hủy bỏ'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If the user clicks "Hủy đơn", proceed to cancel the selected orders
+        cancelSelectedOrders(selectedProducts);
+      }
     });
+  } else {
+    // Show an alert if no product is selected
+    Swal.fire({
+      icon: 'info',
+      title: 'Chưa chọn sản phẩm',
+      text: 'Vui lòng chọn ít nhất một sản phẩm để hủy đơn hàng.'
+    });
+  }
+});
+
+function getSelectedOrders() {
+  var selectedProducts = [];
+
+  // Iterate through each checked checkbox and get order ID
+  $('.product-checkbox:checked').each(function () {
+    var orderId = $(this).data('order-id');
+    selectedProducts.push({ orderId: orderId });
+  });
+
+  return selectedProducts;
+}
+
+function cancelSelectedOrders(selectedProducts) {
+  // Iterate through the selected orders and cancel each order
+  selectedProducts.forEach(function (selectedProduct) {
+    var orderId = selectedProduct.orderId;
+    cancelOrder(orderId);
+  });
+
+  var tabId = 'tab-delivered_cancel'; 
+  var tableId = 'tab-' + tabId;
+  updateTable(tabId, tableId);
+}
+
+function cancelOrder(idorder) {
+  $.ajax({
+    url: 'http://localhost:3000/api/order/' + idorder,
+    method: 'PATCH',
+    data: { status: '653bc0a72006e5791beab35b' },
+    dataType: 'json',
+    success: function (response) {
+      var tabId = 'tab-delivered_cancel'; // Replace with the appropriate tabId
+      var tableId = 'tab-' + tabId;
+
+   updateTable(tabId, tableId);
+    window.location.href = 'http://localhost:3000/api/getAllorderUi';
+    },
+    error: function (error) {
+      console.log('Lỗi:', error);
+    }
+  });
+}
+});
   </script>
+
 
 
 </body>

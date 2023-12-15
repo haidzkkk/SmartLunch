@@ -55,9 +55,11 @@ exports.getTopping = async (req, res) => {
     try {
       const id = req.params.id;
       const toppings = await Topping.find({productId: id, isActive: true});
+
       if(!toppings){
         return res.status(404).json({message: "Không tìm thấy size"});
       }
+      
       return res.status(200).json(toppings );
     } catch (error) {
       return res.status(400).json({

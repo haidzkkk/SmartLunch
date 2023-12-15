@@ -14,6 +14,7 @@ router.post("/coupons/:id",authenticate,couponController.updateCoupons);
 router.get('/admin/coupons',authenticate, couponController.getCouponUI);
 router.get('/admin/coupons/:id',authenticate, couponController.getCouponIdUI);
 router.get('/admin/addCoupon',authenticate, couponController.getAddCouponUI);
+router.get('/admin/removeCoupon',authenticate, couponController.removeAll);
 
 
 module.exports = router;
