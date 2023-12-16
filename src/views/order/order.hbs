@@ -235,15 +235,12 @@ function updateTable(tabId, tableId) {
       var orders = Array.isArray(data) ? data : [];
       $('#' + tableId + ' tbody').empty();
       $.each(orders, function (index, order) {
-        console.log("ID status của order:", order.status ? order.status._id : null);
-        console.log("tabId:", tabId);
-        console.log("statusTableMap[tabId]:", statusTableMap[tabId]);
         if (order.status && order.status._id === statusTableMap[tabId]) {
          var productName = order._id;
           var phone = order.address.phoneNumber ;
           var status = order.status.status_name;
           var address = order.address.addressLine;
-          var total = order.total;   
+          var formattedTotal = formatPrice(order.totalAll); 
 
           var row = '<tr>';
           if (tabId === 'confirmed') {
@@ -253,7 +250,7 @@ function updateTable(tabId, tableId) {
   '<td class="name-column" data-order-id="' + order._id + '">' + productName + '</td>' +
   '<td class="phone-column" data-order-id="' + order._id + '">' + phone + '</td>' +
   '<td class="address-column" data-order-id="' + order._id + '">' + address + '</td>' +
-  '<td>' + total + '</td>' +
+  '<td >' + formattedTotal + '</td>' +
   '<td>' + status + '</td>';
 
 // Remove the "Chi tiết" button from the row
@@ -476,7 +473,21 @@ function cancelOrder(idorder) {
 });
   </script>
 
+<script>
+function formatPrice(price) {
+    // Parse the raw price as a float (assuming it's a number)
+    const numericPrice = parseFloat(price);
 
+    // Check if the numeric price is a valid number
+    if (!isNaN(numericPrice)) {
+        // Format the price using the toLocaleString method
+        return numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    } else {
+        // If the price is not a valid number, return it as is
+        return price;
+    }
+}
+</script>
 
 </body>
 

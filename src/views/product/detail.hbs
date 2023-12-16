@@ -155,7 +155,7 @@ input:checked + .slider:before {
 
 
               </div>
-              <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple >
+              <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*">
             </div>
               <div class="mb-3">
             <label class="form-label">Giá sản phẩm</label>
@@ -232,6 +232,21 @@ input:checked + .slider:before {
           }
         }
       });
+      const fileInput = document.getElementById("images");
+    const imgPreview = document.getElementById("img-preview");
+    fileInput.addEventListener('change', function () {
+      if (fileInput.files && fileInput.files[0]) {
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+          imgPreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        console.log("No image file selected");
+      }
+    });
     });
 
   </script>
@@ -290,14 +305,14 @@ $(document).ready(async function () {
          const sizePrice = $('<span>', {
           
           class: 'price-name',
-           text: `Giá: ${size.size_price}`,
+           text: `Giá: ${formatCurrency(size.size_price)}`,
         });
 
       const closeButton = $('<button>', {
     class: 'remove-button',
     text: '×',
     click: function() {
-        const confirmed = confirm("Are you sure you want to delete this size?");
+        const confirmed = confirm("Bạn có muốn xóa không ?");
         if (confirmed) {
             removeSize(this, size._id);
         }
@@ -336,7 +351,7 @@ $(document).ready(async function () {
 
             const toppingPrice = $('<span>', {
                 class: 'price_tooping',
-                text: `Giá: ${topping.price}`,
+                text: `Giá: ${formatCurrency(topping.price) }`,
             });
 
             const switchContainer = $('<label>', {
@@ -357,7 +372,7 @@ $(document).ready(async function () {
     class: 'remove-button',
     text: '×',
     click: function() {
-        const confirmed = confirm("Are you sure you want to delete this topping?");
+        const confirmed = confirm("Bạn có muốn xóa đồ ăn kèm không ?");
         if (confirmed) {
             removeTopping(this, topping._id);
         }
@@ -459,6 +474,21 @@ function toggleToppingStatus(toppingId, isChecked) {
             console.error('There was a problem with the fetch operation:', error);
         });
     }
+</script>
+  <script>
+function formatCurrency(price) {
+    // Parse the raw price as a float (assuming it's a number)
+    const numericPrice = parseFloat(price);
+
+    // Check if the numeric price is a valid number
+    if (!isNaN(numericPrice)) {
+        // Format the price using the toLocaleString method
+        return numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    } else {
+        // If the price is not a valid number, return it as is
+        return price;
+    }
+}
 </script>
 </body>
 </html>

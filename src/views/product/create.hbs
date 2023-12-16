@@ -69,10 +69,12 @@
                         <label class="form-label">Tên sản phẩm</label>
                         <input class="form-control" name="product_name" id="product_name" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mô tả</label>
-                        <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required"></textarea>
+                     <div class="mb-3">
+                        <label class="form-label">Ảnh sản phẩm</label>
+                        <img src="" alt="" class="form-control" id="img-preview" style="height: 200px; width: 200px">
+                        <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
                     </div>
+                 
                     <div class="mb-3">
                         <label class="form-label">Giá sản phẩm</label>
                         <input type="number" class="form-control" name="product_price" id="product_price" required>
@@ -84,13 +86,12 @@
                             <!-- Categories will be populated from the API -->
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh sản phẩm</label>
-                        <img src="" alt="" class="form-control" id="img-preview" style="height: 400px; width: 400px">
-                        <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
+                      <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" style="height: 300px;" name="description" id="description" required="required"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary fa-lg gradient-custom-2 mb-3"
-                            style="margin: auto;margin-top: 20px; padding: 20px;display: flex; justify-content: center;">Create
+                            style="margin: auto;margin-top: 20px; padding: 20px">Thêm sản phẩm mới
                     </button>
                 </div>
 
@@ -152,14 +153,9 @@
                         });
 
                         if (response.ok) {
-                            const productData = await response.json();
-                            console.log("Product created:", productData);
-
-                            if (window.location.href.includes('/api/admin/products')) {
                                 window.location.href = 'http://localhost:3000/api/admin/products';
-                            }
                         } else {
-                            console.error("Product creation failed");
+                           alert("Giá sản phẩm k được nhỏ hơn 0")
                         }
                     } catch (error) {
                         console.error("Error:", error);

@@ -32,7 +32,7 @@
         <input class="form-control" name="coupon_name" required>
         <div class="form-text"></div>
       </div>
-      <div class="mb-3">
+     <div class="mb-3">
         <label class="form-label">Image</label>
         <img src="" alt="" class="form-control" id="img-preview" style="height: 100px; width: 100px">
         <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
@@ -51,7 +51,7 @@
 
       <div class="row">
         <div class="col">
-          <label class="form-label">Giá để áp dụng mã khuyến mãi</label>
+          <label class="form-label">Số lượng</label>
           <input type="number" class="form-control" name="coupon_quantity" required>
           <div class="form-text"></div>
           <div class="form-text">Please enter a valid number</div>
@@ -67,7 +67,7 @@
 
       <div class="row">
         <div class="col">
-          <label class="form-label">Giá thấp nhất để áp dụng</label>
+          <label class="form-label">Giá để áp dụng mã khuyến mãi</label>
           <input type="number" class="form-control" name="min_purchase_amount" required>
           <div class="form-text"></div>
           <div class="form-text">Please enter a valid number</div>
@@ -89,67 +89,50 @@
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const addForm = document.getElementById("addForm");
+  document.addEventListener("DOMContentLoaded", function () {
+  const addForm = document.getElementById("addForm");
+
+  addForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formData = new FormData(addForm);
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(addForm.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Authorization": "Bearer " + token,
+        },
+      });
+
+         if (response.ok) {
+          window.location.href = 'http://localhost:3000/api/admin/coupons';
+         }else{
+          alert('Lỗi khi nhập thông tin.');
+         }
     
+    } catch (error) {
+      console.error("Error:", error);
+      alert('Lỗi khi thêm khuyến mãi.');
+    }
+  });
 
-      addForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const formData = new FormData(addForm);
-        const token = localStorage.getItem("accessToken");
-        console.log("Token:", addForm);
+  const fileInput = document.getElementById("images");
+  const imgPreview = document.getElementById("img-preview");
 
-        if (!token) {
-          // Handle the case where the token is missing or invalid
-          console.error("Token is missing or invalid");
-          return;
-        }
+  fileInput.addEventListener('change', function () {
+    if (fileInput.files && fileInput.files[0]) {
+      var reader = new FileReader();
 
-        try {
-          const response = await fetch(addForm.action, {
-            method: "POST",
-            body: formData,
-            headers: {
-              "Authorization": "Bearer " + token,
-            },
-          });
+      reader.onload = function (e) {
+        imgPreview.src = e.target.result;
+      };
 
-          if (response.ok) {
-            // Coupon created successfully, handle the response here
-            const couponData = await response.json();
-            console.log("Coupon created:", couponData);
-
-            // Redirect back to the previous page
-            if (window.location.href.includes('/api/admin/coupons') {
-              window.location.href = 'http://localhost:3000/api/admin/coupons';
-            }
-          } else {
-            // Handle errors, e.g., display an error message
-            console.error("Coupon creation failed");
-          }
-        } catch (error) {
-          // Handle network or other errors
-          console.error("Error:", error);
-        }
-      });
-
-      // Add code to preview the selected image if needed (as shown in your original code)
-      const fileInput = document.getElementById("images");
-      const imgPreview = document.getElementById("img-preview");
-
-      fileInput.addEventListener('change', function () {
-        if (fileInput.files && fileInput.files[0]) {
-          var reader = new FileReader();
-
-          reader.onload = function (e) {
-            imgPreview.src = e.target.result;
-          };
-
-          reader.readAsDataURL(fileInput.files[0]);
-        }
-      });
-    });
-  </script>
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+  });
+});
+</script>
 </body>
 
 </html>

@@ -112,26 +112,8 @@
       });
       
     </script>
-    <form action="http://localhost:3000/api/delete/coupons/{{data._id}}" method="get" id="deleteForm">
-
-      <button type="submit" onclick="abc()" class="btn btn-primary fa-lg gradient-custom-2 mb-3" style="float: right;margin-top: -30px">Xóa</button>
-
-    </form>
     <dir class="m-5 pb-5"></dir>
 
     
-    <script>
-      document.getElementById('deleteForm').addEventListener('submit', function (event) {
-        const confirmDelete = confirm("Do you really want to delete this?");
-        if (!confirmDelete) {
-          event.preventDefault();
-        } else {
-          if (window.location.href.includes('/api/admin/size')) {
-            window.location.href = 'http://localhost:3000/api/admin/coupons';
-          } else {
-          }
-        }
-      });
-    </script>
   </div>
 </body>
