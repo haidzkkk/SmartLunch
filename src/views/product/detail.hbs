@@ -124,6 +124,19 @@ input:checked + .slider:before {
     cursor: pointer;
   }
 
+.size-item {
+    margin-bottom: 10px; /* Điều chỉnh khoảng cách giữa các phần tử */
+}
+
+.size-name, .price-name, .remove-button {
+    display: block;
+    margin-bottom: 5px; /* Điều chỉnh khoảng cách giữa các phần tử trong mỗi size-item */
+}
+.size-name,
+.price-name{
+    margin-right: 140px;
+}
+
 
 </style>
 <body>
@@ -270,8 +283,14 @@ $(document).ready(async function () {
         });
 
         const sizeName = $('<span>', {
+         
           class: 'size-name',
           text: size.size_name,
+        });
+         const sizePrice = $('<span>', {
+          
+          class: 'price-name',
+           text: `Giá: ${size.size_price}`,
         });
 
       const closeButton = $('<button>', {
@@ -285,7 +304,7 @@ $(document).ready(async function () {
     }
 });
 
-        listItem.append(sizeName, closeButton);
+        listItem.append(sizeName,sizePrice,closeButton);
         sizeList.append(listItem);
       });
     } catch (error) {
@@ -312,12 +331,12 @@ $(document).ready(async function () {
 
             const toppingName = $('<span>', {
                 class: 'name',
-                text: `Name: ${topping.name}`,
+                text: `Tên: ${topping.name}`,
             });
 
             const toppingPrice = $('<span>', {
-                class: 'price',
-                text: `Price: ${topping.price}`,
+                class: 'price_tooping',
+                text: `Giá: ${topping.price}`,
             });
 
             const switchContainer = $('<label>', {
@@ -333,12 +352,25 @@ $(document).ready(async function () {
                 }
             });
 
+            
+      const closeButton = $('<button>', {
+    class: 'remove-button',
+    text: '×',
+    click: function() {
+        const confirmed = confirm("Are you sure you want to delete this topping?");
+        if (confirmed) {
+            removeTopping(this, topping._id);
+        }
+    }
+});
+
+
             const switchSlider = $('<span>', {
                 class: 'slider round',
             });
 
             switchContainer.append(switchInput, switchSlider);
-            listItem.append(toppingName, toppingPrice, switchContainer);
+            listItem.append(toppingName, toppingPrice, switchContainer,closeButton);
             toppingList.append(listItem);
         });
     } catch (error) {
@@ -384,6 +416,33 @@ function toggleToppingStatus(toppingId, isChecked) {
 
     function callApiToDeleteSize(sizeId) {
         var apiUrl = 'http://localhost:3000/api/delete/size/' + sizeId;
+
+        fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+</script>
+
+<script>
+   function removeTopping(button, sizeId) {
+    var listItem = $(button).parent();
+    callApiToDeleteTopping(sizeId);
+    listItem.remove();
+  }
+
+    function callApiToDeleteTopping(sizeId) {
+        var apiUrl = 'http://localhost:3000/api/topping/delete/' + sizeId;
 
         fetch(apiUrl, {
             method: 'DELETE',

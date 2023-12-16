@@ -212,10 +212,11 @@ a {
                     <label for="name" class="form-label">Tên đồ ăn kèm </label>
                     <input type="text" class="form-control" id="name" required>
                   </div>
-                  <div class="mb-3">
-                    <label for="size" class="form-label">Giá đồ ăn kèm</label>
-                    <input type="number" class="form-control" id="size" required>
-                  </div>
+                 <div class="mb-3">
+    <label for="size" class="form-label">Giá đồ ăn kèm</label>
+    <input type="number" class="form-control" id="size" required>
+    <div id="error-message" style="color: red;"></div>
+</div>
                   <input type="hidden" id="productId" value="{{this._id}}">
                   <button type="button" class="btn btn-primary" onclick="addTopping()">Thêm</button>
                   <button type="button" class="btn btn-primary" onclick="HuyTopping()">Hủy</button>
@@ -243,7 +244,7 @@ a {
                 <form id="sizeForm">
                   <div class="mb-3">
                     <label for="sizeName" class="form-label">Tên kích cỡ</label>
-                    <input type="text" class="form-control" id="size_name" required>
+                    <input type="text" class="form-control" id="size_name" maxlength="1" required>
                   </div>
                   <div class="mb-3">
                     <label for="priceSize" class="form-label">Giá kích cỡ</label>
@@ -506,13 +507,14 @@ function navigateToDetailPage(categoryId) {
       window.location.href = 'http://localhost:3000/api/admin/products';
     },
     error: function (xhr, status, error) {
-      console.error('Error adding size:', error);
+      console.error('Lỗi khi thêm kích thước', error);
      
-      alert('Error adding size. Please check the console for more details.');
+      alert('Giá không nhỏ hơn 0, tên kích thước không được trùng.');
     }
   });
 }
 </script>
+
 </body>
 
 </html>
