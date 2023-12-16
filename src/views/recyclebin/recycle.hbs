@@ -55,7 +55,7 @@
         {{#each data}}
         <tr>
           <td>{{this.product_name}}</td>
-          <td>{{this.product_price}}</td>
+          <td class="formatted-price">{{ this.product_price }}</td>
           <td class="description-column">{{this.description}}</td>
           <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
           <td>
@@ -160,6 +160,29 @@
       });
     });
   </script>
+  <script>
+  // Wait for the DOM to be ready
+$(document).ready(function () {
+    // Select all elements with class 'formatted-price'
+    $('.formatted-price').each(function () {
+        // Get the raw price from the text content of the element
+        const rawPrice = $(this).text();
+
+        // Parse the raw price as a float (assuming it's a number)
+        const numericPrice = parseFloat(rawPrice);
+
+        // Check if the numeric price is a valid number
+        if (!isNaN(numericPrice)) {
+            // Format the price using the toLocaleString method
+            const formattedPrice = numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
+            // Update the text content of the element with the formatted price
+            $(this).text(formattedPrice);
+        }
+    });
+});
+
+</script>
 </body>
 
 </html>

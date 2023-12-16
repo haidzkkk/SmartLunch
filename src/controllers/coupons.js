@@ -22,38 +22,56 @@ exports.getCouponIdUI = async (req, res) => {
 
 
 exports.createCoupons = async (req, res) => {
-    try {
-        const body = req.body;
-        const files = req.files;
-    
-        console.log("Received form data:", body);
-    
-        // Upload images and handle the response
-        var images = await uploadImage(files);
-        if (images[0] == null) {
+  try {
+      const body = req.body;
+      const files = req.files;
+
+      // Validate discount_amount, coupon_quantity, and min_purchase_amount
+      if (body.discount_amount < 0 || body.coupon_quantity < 0 || body.min_purchase_amount < 0) {
+        // Redirect to the error page
+        return res.status(400).redirect('error.html');
+      }
+
+      // Check if the coupon name is already used
+      const existingCoupon = await Coupon.findOne({ name: body.coupon_name });
+      if (existingCoupon) {
           return res.status(400).json({
-            message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+              message: "Tên mã khuyến mãi đã tồn tại, vui lòng chọn tên khác.",
           });
-        }
-        body.coupon_images = images
-        console.log("Received form data:", images);
-        // Create a new coupon in the database
-        const createdCoupon = await Coupon.create(body);
-    
-        if (!createdCoupon) {
-            return res.status(400).json({
-                message: "Failed to create the coupon.",
-            });
-        }
-    
-        res.status(303).set('Location', '/api/admin/coupons').send();
-    } catch (error) {
-        console.error("Error creating coupon:", error);
-        return res.status(500).json({
-            message: "Internal server error.",
-        });
-    }
+      }
+
+      console.log("Received form data:", body);
+
+      // Upload images and handle the response
+      var images = await uploadImage(files);
+      if (images[0] == null) {
+          return res.status(400).json({
+              message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+          });
+      }
+      body.coupon_images = images;
+
+      console.log("Received form data:", images);
+
+      // Create a new coupon in the database
+      const createdCoupon = await Coupon.create(body);
+
+      if (!createdCoupon) {
+          return res.status(400).json({
+              message: "Failed to create the coupon.",
+          });
+      }
+
+      res.status(303).set('Location', '/api/admin/coupons').send();
+  } catch (error) {
+      console.error("Error creating coupon:", error);
+      return res.status(500).json({
+          message: "Internal server error.",
+      });
+  }
 };
+
+
 
 exports.updateCoupon = async (req, res) => {
     try {
@@ -150,17 +168,14 @@ exports.updateCoupons = async (req, res) => {
 
 exports.removeAll = async (req, res) => {
     try {
-      const categories = await Coupon.find();
-  
-      // Lặp qua từng danh mục và xóa
-      for (const category of categories) {
-        await category.delete();
-      }
-  
+      // Use deleteMany to remove all documents in the Coupon collection
+      await Coupon.deleteMany({});
+    
       res.status(303).set('Location', '/api/admin/coupon').send();
     } catch (error) {
-      return res.status(400).json({
-        message: error,
+      return res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
       });
     }
   };
