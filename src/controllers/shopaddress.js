@@ -1,4 +1,5 @@
 const Address = require('../models/address');
+const Auth = require('../models/auth'); 
 const NodeGeocoder = require('node-geocoder');
 const fetch = require('node-fetch');
 const options = {
@@ -43,6 +44,20 @@ exports.getAddress = async (req, res) => {
         })
     }
 }
+
+exports.getAddressAdmin = async (req, res) => {
+    try {
+        var admin = await Auth.findOne({ role: 'admin' })
+        const adminAddress = await Address.findOne({userId: admin._id}).populate("userId");
+        return res.status(200).json(
+            adminAddress
+        )
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).json({
+            message: error.message
+        })
+    }
 
 exports.add = async (req, res) => {
     try {

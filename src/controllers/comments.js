@@ -10,26 +10,36 @@ var { uploadImage } = require('../controllers/upload');
 
 exports.getCommentFromProduct = async (req, res) => {
     try {
-        const limitPosition = req.query.limitPosition
         const { productId } = req.params;
+        const {
+            limitPosition,
+            isImage,   
+            rate,   
+            isSort
+        } = req.query
 
-        if (!limitPosition) {
+        const queryConditions = {
+            productId: productId,
+          };
 
-        }
+          if (isImage && isImage.toLowerCase() === 'true') {
+            queryConditions.images = { $ne: [] };
+          }
+          if (rate !== null && rate !== undefined) {
+            queryConditions.rating = parseInt(rate);
+          }
+          let sortDirection = -1;
+          if (isSort && isSort.toLowerCase() === 'false') {
+            sortDirection = 1; 
+          }
 
-        const comments = await Comment.find({ productId: productId })
+        const comments = await Comment.find(queryConditions)
             .populate("userId")
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: sortDirection })
             .limit(limitPosition)
             .exec();
-
-        console.log(productId + " 0 " + comments);
-
-        if (!comments || comments.length === 0) {
-            return res.status(404).json({
-                message: 'Không tìm thấy theo sản phẩm bình luận',
-            });
-        }
+        
+        console.log(comments.length);
 
         return res.status(200).json(comments);
     } catch (error) {
