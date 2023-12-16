@@ -70,38 +70,58 @@ exports.getTopping = async (req, res) => {
 
   exports.createTopping = async (req, res, next) => {
     try {
-      const toppingBody = req.body;
-  
-      // Kiểm tra sự tồn tại của sản phẩm
-      const product = await Product.findById(toppingBody.productId);
-      if (!product) {
-        return res.status(404).json({
-          message: "Sản phẩm không tồn tại",
+        const toppingBody = req.body;
+
+        // Kiểm tra sự tồn tại của sản phẩm
+        const product = await Product.findById(toppingBody.productId);
+        if (!product) {
+            return res.status(404).json({
+                message: "Sản phẩm không tồn tại",
+            });
+        }
+
+        // Kiểm tra xem tên topping đã tồn tại chưa
+        const existingTopping = await Topping.findOne({
+            name: toppingBody.name,
+            productId: toppingBody.productId,
         });
-      }
-  
-      // Tạo một đối tượng Size mới
-      const newTopping = new Topping({
-        name: toppingBody.name,
-        price: toppingBody.price,
-        productId: toppingBody.productId,
-      });
-  
-      // Lưu đối tượng Size vào cơ sở dữ liệu
-      await newTopping.save();
-  
-      // Định dạng lại phản hồi và chuyển hướng
-      res.status(201).json({
-        message: "topping đã được tạo thành công",
-        data: newTopping,
-      });
+
+        if (existingTopping) {
+            return res.status(400).json({
+                message: "Tên topping đã tồn tại cho sản phẩm này",
+            });
+        }
+
+        // Kiểm tra giá của topping
+        if (toppingBody.price <= 0) {
+            return res.status(400).json({
+                message: "Giá của topping phải lớn hơn 0",
+            });
+        }
+
+        // Tạo một đối tượng Topping mới
+        const newTopping = new Topping({
+            name: toppingBody.name,
+            price: toppingBody.price,
+            productId: toppingBody.productId,
+        });
+
+        // Lưu đối tượng Topping vào cơ sở dữ liệu
+        await newTopping.save();
+
+        // Định dạng lại phản hồi và chuyển hướng
+        res.status(201).json({
+            message: "Topping đã được tạo thành công",
+            data: newTopping,
+        });
     } catch (err) {
-      return res.status(500).json({
-        message: "Có lỗi xảy ra khi tạo topping",
-        error: err.message,
-      });
+        return res.status(500).json({
+            message: "Có lỗi xảy ra khi tạo topping",
+            error: err.message,
+        });
     }
-  };
+};
+
 
   exports.updateTopping = async (req, res) => {
     try {

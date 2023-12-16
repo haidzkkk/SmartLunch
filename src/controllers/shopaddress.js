@@ -55,9 +55,9 @@ exports.add = async (req, res) => {
           shop_detail
         } = req.body;
 
-        // const addressString = 'Phường An Hải Bắc, Quận Sơn Trà, Thành phố Đà Nẵng';
+         const addressString = 'Phường An Hải Bắc, Quận Sơn Trà, Thành phố Đà Nẵng';
 //   const geocodeResult = await geocoder.geocode(addressString);
-        const geocodeResult = await geocoder.geocode(`${ward}, ${district}, ${city}`);
+        const geocodeResult = await geocoder.geocode(addressString);
         if (!geocodeResult || geocodeResult.length === 0) {
             return res.status(400).json({ error: 'Invalid address. Geocoding failed.' });
           }
