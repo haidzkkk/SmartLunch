@@ -6,5 +6,9 @@ router.get('/admin/shopaddress', addressController.getAddressUI);
 router.get('/shopaddress', addressController.getAddress);
 router.get('/shopaddress/address', addressController.getAddressAdmin);
 router.post('/shopaddress', addressController.updateAddress);
+// router.post('/shopaddress', addressController.updateAddress);
+router.post('/shopaddress', addressController.add);
+
+
 
 module.exports = router;

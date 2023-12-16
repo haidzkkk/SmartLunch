@@ -15,7 +15,7 @@
     <div class="col-md-6">
       <canvas id="myPieChart" width="400" height="400"></canvas>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6" style="margin-top: 30px;">
       <canvas id="myPieChart2" width="400" height="400"></canvas>
     </div>
   </div>
@@ -53,10 +53,10 @@
   <script>
     // Dữ liệu phần trăm và màu sắc
     var data = {
-      labels: ["Thanh toán tiền mặt", "Thanh toán Paypal"],
+      labels: ["Thanh toán tiền mặt", "Thanh toán Paypal","Thanh toán ZaloPay"],
       datasets: [{
-        data: [{{ statusCount.cash }}, {{ statusCount.paypal }}],
-      backgroundColor: ["#2a943d", "#2a3394"]
+        data: [{{ statusCount.cash }}, {{ statusCount.paypal }},{{ statusCount.zalopay }}],
+      backgroundColor: ["#2a943d", "#2a3394","#777777"]
       }]
     };
 

@@ -7,7 +7,8 @@ const { response } = require("express");
 exports.getProductUI = async (req, res) => {
   const response = await fetch('http://localhost:3000/api/productbyadmin/products');
   const data = await response.json();
-  res.render('product/product', { data,layout :"Layouts/home" });
+  const formattedPrice = (this.product_price || 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  res.render('product/product', { data,formattedPrice,layout :"Layouts/home" });
 };
 
 exports.getProductCreateUI = async (req, res) => {
@@ -244,6 +245,13 @@ exports.addProduct = async (req, res) => {
       });
     }
 
+    // Check if the price is not less than or equal to 0
+    if (body.product_price < 0) {
+      return res.status(400).json({
+        message: "Giá sản phẩm phải lớn hơn 0",
+      });
+    }
+
     var images = await uploadImage(files);
     if (images[0] == null) {
       return res.status(400).json({
@@ -266,6 +274,7 @@ exports.addProduct = async (req, res) => {
   }
 };
 
+
 exports.updateProduct = async (req, res) => {
   try {
     const id = req.params.id;
@@ -280,21 +289,21 @@ exports.updateProduct = async (req, res) => {
       });
     }
    
-// var images = await uploadImage(files);
-//     if (images[0] == null) {
-//       return res.status(400).json({
-//         message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
-//       });
-//     }
-//     body.images = images;
-    
+    // Check if files (images) are provided
+    if (files && files.length > 0) {
+      var images = await uploadImage(files);
+      if (images[0] == null) {
+        return res.status(400).json({
+          message: "Thêm sản phẩm thất bại, chưa có ảnh tải lên",
+        });
+      }
+      body.images = images;
+    }
 
-    const product = await Product.findByIdAndUpdate(id,body);
-    if (product.length === 0) {
-      
+    const product = await Product.findByIdAndUpdate(id, body);
+    if (!product) {
       return res.status(400).json({
-        message: "Thêm sản phẩm thất bại",
-        
+        message: "Cập nhật sản phẩm thất bại",
       });
     }
     
@@ -305,6 +314,7 @@ exports.updateProduct = async (req, res) => {
     });
   }
 };
+
 
 
 exports.toggleActive = async (req, res) => {

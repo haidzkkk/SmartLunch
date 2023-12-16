@@ -98,7 +98,7 @@ a {
 
 <body>
     <div class="container">
-        <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">+ Tạo danh mục</a>
+        <a href="/api/admin/addCoupon" class="btn btn-primary fa-lg gradient-custom-2 mb-3">+ Thêm khuyến mãi</a>
         <a class="btn btn-danger fa-lg gradient-custom-2 mb-3" id="deleteAll">Xóa tất cả</a>
 
 
@@ -202,55 +202,56 @@ a {
             $(".update-link").click(function (event) {
     event.stopPropagation();
     var categoryId = $(this).data("id");
-
-    // Sample: Redirect to the update page with the category ID
     window.location.href = "/api/admin/coupons/" + categoryId;
 });
 
-            // Thêm sự kiện click cho nút Delete
-            $(".delete-link").click(function (event) {
-                event.stopPropagation();
-                var categoryId = $(this).data("id");
+          $(".delete-link").click(function (event) {
+  event.stopPropagation();
+  var categoryId = $(this).data("id");
 
-                $.ajax({
-                    url: "http://localhost:3000/api/delete/coupons/" + categoryId,
-                    method: "GET",
-                    success: function (response) {
-                        // Xử lý thành công
-                        alert("Xóa thành công");
-                        window.location.href = "http://localhost:3000/api/admin/coupons";
-                    },
-                    error: function (error) {
-                        // Xử lý lỗi
-                        alert("Xóa thất bại");
-                    }
-                });
-            });
+  // Hiển thị hộp thoại xác nhận
+  var isConfirmed = confirm("Bạn có chắc chắn muốn xóa không?");
 
+  if (isConfirmed) {
+    // Nếu người dùng xác nhận, thực hiện xóa
+    $.ajax({
+      url: "http://localhost:3000/api/delete/coupons/" + categoryId,
+      method: "GET",
+      success: function (response) {
+        // Xử lý thành công
+        alert("Xóa thành công");
+        window.location.href = "http://localhost:3000/api/admin/coupons";
+      },
+      error: function (error) {
+        // Xử lý lỗi
+        alert("Xóa thất bại");
+      }
+    });
+  } else {
+    alert("Xóa đã bị hủy");
+  }
+});
             function deleteAllCategories(allIds) {
-                // Hiển thị hộp thoại xác nhận trước khi thực hiện xóa tất cả
                 var confirmDelete = confirm("Bạn có chắc chắn muốn xóa tất cả không?");
 
                 // Nếu người dùng chấp nhận xóa tất cả
                 if (confirmDelete) {
                     $.ajax({
-                        url: "http://localhost:3000/api/removeCoupon",
+                        url: "http://localhost:3000/api/admin/removeCoupon",
                         method: "GET",
                         contentType: "application/json",
                         data: JSON.stringify({ ids: allIds }),
                         success: function (response) {
                             // Xử lý thành công
-                            alert("Xóa tất cả thành công");
-                            // Sau khi xóa, có thể làm mới hoặc làm bất kỳ thao tác cần thiết khác
+                
                             window.location.reload();
                         },
                         error: function (error) {
-                            // Xử lý lỗi
-                            alert("Xóa tất cả thất bại");
+                         
+                             window.location.reload();
                         }
                     });
                 }
-                // Người dùng từ chối xóa tất cả
                 else {
                     alert("Đã hủy xóa tất cả");
                 }

@@ -148,7 +148,7 @@ a {
            <td>{{this._id}}</td>
           <td><img src="{{this.images.0.url}}" alt="Product Image" width="100px" height="60px" id="img-preview"></td>
           <td>{{this.product_name}}</td>
-          <td>{{this.product_price}} VND</td>
+         <td class="formatted-price">{{ this.product_price }}</td>
           <td class="category-cell" data-category-id="{{this.categoryId}}">Loading...</td>
           
         <td>
@@ -158,7 +158,6 @@ a {
   </label>
 </td>
        <td>
-   
      <a href="javascript:void(0)"  data-id="{{this._id}}" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#sizeModal">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M16.9702 12.25V16.75C16.9702 20.5 15.4702 22 11.7202 22H7.22021C3.47021 22 1.97021 20.5 1.97021 16.75V12.25C1.97021 8.5 3.47021 7 7.22021 7H11.7202C15.4702 7 16.9702 8.5 16.9702 12.25Z" stroke="#0C0507" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -197,7 +196,7 @@ a {
         </tr>
         <div class="row">
       <div class="col">
-        <!-- Size Modal -->
+
         <div class="modal" tabindex="-1" role="dialog" id="toppingModal">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -212,10 +211,11 @@ a {
                     <label for="name" class="form-label">Tên đồ ăn kèm </label>
                     <input type="text" class="form-control" id="name" required>
                   </div>
-                  <div class="mb-3">
-                    <label for="size" class="form-label">Giá đồ ăn kèm</label>
-                    <input type="number" class="form-control" id="size" required>
-                  </div>
+                 <div class="mb-3">
+    <label for="size" class="form-label">Giá đồ ăn kèm</label>
+    <input type="number" class="form-control" id="size" required>
+    <div id="error-message" style="color: red;"></div>
+</div>
                   <input type="hidden" id="productId" value="{{this._id}}">
                   <button type="button" class="btn btn-primary" onclick="addTopping()">Thêm</button>
                   <button type="button" class="btn btn-primary" onclick="HuyTopping()">Hủy</button>
@@ -243,7 +243,7 @@ a {
                 <form id="sizeForm">
                   <div class="mb-3">
                     <label for="sizeName" class="form-label">Tên kích cỡ</label>
-                    <input type="text" class="form-control" id="size_name" required>
+                    <input type="text" class="form-control" id="size_name" maxlength="1" required>
                   </div>
                   <div class="mb-3">
                     <label for="priceSize" class="form-label">Giá kích cỡ</label>
@@ -395,22 +395,27 @@ function navigateToDetailPage(categoryId) {
                 var categoryId = $(this).data("id");
             });
 
-       $(".delete-link").click(function (event) {
+$(".delete-link").click(function (event) {
     event.preventDefault();  // Prevent the default link behavior
     event.stopPropagation();
     var categoryId = $(this).data("id");
 
-    $.ajax({
-        url: "http://localhost:3000/api/remove/products/" + categoryId,
-        method: "GET",
-        success: function (response) {
-            alert("Xóa thành công");
-            window.location.href = "http://localhost:3000/api/admin/products";
-        },
-        error: function (error) {
-            alert("Xóa thất bại");
-        }
-    });
+    // Show a confirmation dialog
+    var confirmDelete = confirm("Bạn có muốn xóa không ?");
+
+    // If the user clicks OK in the confirmation dialog
+    if (confirmDelete) {
+        $.ajax({
+            url: "http://localhost:3000/api/remove/products/" + categoryId,
+            method: "GET",
+            success: function (response) {
+                window.location.href = "http://localhost:3000/api/admin/products";
+            },
+            error: function (error) {
+                alert("Xóa thất bại");
+            }
+        });
+    }
 });
 
 function deleteAllCategories(allIds) {
@@ -484,6 +489,7 @@ function navigateToDetailPage(categoryId) {
    
     $('#sizeModal').modal('hide');
   }
+  
   function addSize() {
   const sizeName = document.getElementById('size_name').value;
   const priceSize = document.getElementById('size_price').value;
@@ -506,13 +512,37 @@ function navigateToDetailPage(categoryId) {
       window.location.href = 'http://localhost:3000/api/admin/products';
     },
     error: function (xhr, status, error) {
-      console.error('Error adding size:', error);
-     
-      alert('Error adding size. Please check the console for more details.');
+      console.error('Lỗi khi thêm kích thước', error);
+    
+      alert('Giá không nhỏ hơn 0, tên kích thước không được trùng.');
     }
   });
 }
 </script>
+<script>
+  // Wait for the DOM to be ready
+$(document).ready(function () {
+    // Select all elements with class 'formatted-price'
+    $('.formatted-price').each(function () {
+        // Get the raw price from the text content of the element
+        const rawPrice = $(this).text();
+
+        // Parse the raw price as a float (assuming it's a number)
+        const numericPrice = parseFloat(rawPrice);
+
+        // Check if the numeric price is a valid number
+        if (!isNaN(numericPrice)) {
+            // Format the price using the toLocaleString method
+            const formattedPrice = numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
+            // Update the text content of the element with the formatted price
+            $(this).text(formattedPrice);
+        }
+    });
+});
+
+</script>
+
 </body>
 
 </html>
