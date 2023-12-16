@@ -1,4 +1,6 @@
 const Address = require('../models/shopaddress'); 
+const Address2 = require('../models/address'); 
+const Auth = require('../models/auth'); 
 
 
 exports.getAddressUI = async (req, res) => {
@@ -33,6 +35,21 @@ exports.getAddress = async (req, res) => {
            
         )
     } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+    }
+}
+exports.getAddressAdmin = async (req, res) => {
+    try {
+        var admin = await Auth.findOne({ role: 'admin' })
+        const adminAddress = await Address2.findOne({userId: admin._id}).populate("userId");
+        console.log(adminAddress);
+        return res.status(200).json(
+            adminAddress
+        )
+    } catch (error) {
+        console.log(error.message);
         return res.status(400).json({
             message: error.message
         })
