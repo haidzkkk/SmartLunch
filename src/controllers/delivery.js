@@ -46,10 +46,15 @@ exports.createDeliveryOrder = async (req, res) => {
         formData.image = images[0];
 
         const deliveryOrder = await DeliveryOrder.create(formData);
+        let isPayment = false;
+        if(String(formData.status) === "6526a6e6adce6a54f6f67d7d"){ 
+            isPayment = true;
+        }
 
         const updatedOrder = await Order.findByIdAndUpdate(
             formData.orderCode,
-            { status: formData.status },
+            { status: formData.status,
+                isPayment: isPayment },
             { new: true }
         ).populate('status');
 
