@@ -75,6 +75,7 @@
               }
             });
           </script>
+
           <td>
             <a href="/api/products/restore/{{this._id}}" type="submit" id="productForm" style="text-decoration: none">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF593E" class="bi bi-recycle" viewBox="0 0 16 16">
@@ -105,6 +106,7 @@
         });
       });
     </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const productForm = document.getElementById("productForm");
@@ -112,30 +114,17 @@
         productForm.addEventListener("submit", async (event) => {
           event.preventDefault();
           const formData = new FormData(productForm);
-          const token = localStorage.getItem("accessToken");
-
-          console.log("aaa" + token);
-          if (!token) {
-            // Handle the case where the token is missing or invalid
-            console.error("Token is missing or invalid");
-            return;
-          }
-
           try {
             const response = await fetch(productForm.action, {
               method: "POST",
               body: formData,
-              headers: {
-                "Authorization": "Bearer " + token,
-              },
+           
             });
 
             if (response.ok) {
-              // Product created successfully, handle the response here
-              const productData = await response.json();
-              console.log("Product created:", productData);
+      
             } else {
-              // Handle errors, e.g., display an error message
+           
               console.error("Product creation failed");
             }
           } catch (error) {
@@ -151,7 +140,7 @@
       const descriptionColumns = document.querySelectorAll(".description-column");
 
       descriptionColumns.forEach((column) => {
-        const maxLength = 50; // Đặt độ dài tối đa bạn muốn hiển thị
+        const maxLength = 50; 
 
         if (column.textContent.length > maxLength) {
           const truncatedText = column.textContent.substring(0, maxLength - 3) + "...";
@@ -163,20 +152,11 @@
   <script>
   // Wait for the DOM to be ready
 $(document).ready(function () {
-    // Select all elements with class 'formatted-price'
     $('.formatted-price').each(function () {
-        // Get the raw price from the text content of the element
         const rawPrice = $(this).text();
-
-        // Parse the raw price as a float (assuming it's a number)
         const numericPrice = parseFloat(rawPrice);
-
-        // Check if the numeric price is a valid number
         if (!isNaN(numericPrice)) {
-            // Format the price using the toLocaleString method
             const formattedPrice = numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-
-            // Update the text content of the element with the formatted price
             $(this).text(formattedPrice);
         }
     });
