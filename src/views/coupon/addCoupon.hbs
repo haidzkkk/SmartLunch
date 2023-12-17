@@ -37,49 +37,9 @@
         <img src="" alt="" class="form-control" id="img-preview" style="height: 100px; width: 100px">
         <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Code Khuyến mãi</label>
-        <input class="form-control" name="coupon_code" required>
-        <div class="form-text"></div>
-      </div>
+      <!-- ... Other form fields ... -->
 
-      <div class="mb-3">
-        <label class="form-label">Nội dung</label>
-        <input class="form-control" name="coupon_content" required>
-        <div class="form-text"></div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label class="form-label">Số lượng</label>
-          <input type="number" class="form-control" name="coupon_quantity" required>
-          <div class="form-text"></div>
-          <div class="form-text">Please enter a valid number</div>
-        </div>
-
-        <div class="col">
-          <label class="form-label">Chiết khấu</label>
-          <input type="number" class="form-control" name="discount_amount" required>
-          <div class="form-text"></div>
-          <div class="form-text">Please enter a valid number</div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label class="form-label">Giá để áp dụng mã khuyến mãi</label>
-          <input type="number" class="form-control" name="min_purchase_amount" required>
-          <div class="form-text"></div>
-          <div class="form-text">Please enter a valid number</div>
-        </div>
-        <div class="col">
-          <label class="form-label">Ngày Tạo</label>
-          <input type="datetime-local" class="form-control" name="expiration_date" required>
-          <div class="form-text"></div>
-        </div>
-      </div>
-
-     <button type="submit" class="btn" style="margin: 20px;">Tạo</button>
+      <button type="submit" class="btn" style="margin: 20px;">Tạo</button>
     </form>
     <div class="m-5 pb-5"></div>
   </div>
@@ -90,49 +50,49 @@
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
-  const addForm = document.getElementById("addForm");
+    const addForm = document.getElementById("addForm");
 
-  addForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const formData = new FormData(addForm);
-    const token = localStorage.getItem("accessToken");
-    try {
-      const response = await fetch(addForm.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Authorization": "Bearer " + token,
-        },
-      });
+    addForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(addForm);
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await fetch(addForm.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Authorization": "Bearer " + token,
+          },
+        });
 
-         if (response.ok) {
+        if (response.ok) {
           window.location.href = 'http://localhost:3000/api/admin/coupons';
-         }else{
+        } else {
           alert('Lỗi khi nhập thông tin.');
-         }
-    
-    } catch (error) {
-      console.error("Error:", error);
-      alert('Lỗi khi thêm khuyến mãi.');
-    }
+        }
+
+      } catch (error) {
+        console.error("Error:", error);
+        alert('Lỗi khi thêm khuyến mãi.');
+      }
+    });
+
+    const fileInput = document.getElementById("images");
+    const imgPreview = document.getElementById("img-preview");
+
+    fileInput.addEventListener('change', function () {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          imgPreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
   });
-
-  const fileInput = document.getElementById("images");
-  const imgPreview = document.getElementById("img-preview");
-
-  fileInput.addEventListener('change', function () {
-    if (fileInput.files && fileInput.files[0]) {
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-        imgPreview.src = e.target.result;
-      };
-
-      reader.readAsDataURL(fileInput.files[0]);
-    }
-  });
-});
-</script>
+  </script>
 </body>
 
 </html>
