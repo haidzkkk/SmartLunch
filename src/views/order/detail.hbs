@@ -172,7 +172,8 @@
             <td>${formatCurrency(product.product_price) || 'Không có giá sản phẩm'}</td>
               <td>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</td>
               <td>${product.sizeName || 'Không có kích cỡ'}</td>
-              <td>${nameTopping || 'Không có đồ ăn kèm'}</td>
+                <p><strong>Toppings: </strong>${product.toppings.name || 'No toppings'}</p>
+
             </tr>
           `;
           productsSection.append(productHtml);

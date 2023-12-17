@@ -136,20 +136,11 @@
                 productForm.addEventListener("submit", async (event) => {
                     event.preventDefault();
                     const formData = new FormData(productForm);
-                    const token = localStorage.getItem("accessToken");
-
-                    if (!token) {
-                        console.error("Token is missing or invalid");
-                        return;
-                    }
 
                     try {
                         const response = await fetch(productForm.action, {
                             method: "POST",
                             body: formData,
-                            headers: {
-                                "Authorization": "Bearer " + token,
-                            },
                         });
 
                         if (response.ok) {
