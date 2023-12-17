@@ -75,6 +75,25 @@ exports.createSize = async (req, res, next) => {
 
     console.log("Size Body:", sizeBody);
 
+    // Kiểm tra xem kích thước đã tồn tại chưa
+    const existingSize = await Size.findOne({
+      size_name: sizeBody.size_name,
+      productId: sizeBody.productId,
+    });
+
+    if (existingSize) {
+      return res.status(400).json({
+        message: "Kích thước đã tồn tại cho sản phẩm này",
+      });
+    }
+
+    // Kiểm tra giá của kích thước
+    if (sizeBody.size_price <= 0) {
+      return res.status(400).json({
+        message: "Giá của kích thước phải lớn hơn 0",
+      });
+    }
+
     // Tạo một đối tượng Size mới
     const newSize = new Size({
       size_name: sizeBody.size_name,
