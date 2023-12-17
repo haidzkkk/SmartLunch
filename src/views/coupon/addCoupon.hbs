@@ -37,7 +37,47 @@
         <img src="" alt="" class="form-control" id="img-preview" style="height: 100px; width: 100px">
         <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*" multiple required>
       </div>
-      <!-- ... Other form fields ... -->
+<div class="mb-3">
+        <label class="form-label">Code Khuyến mãi</label>
+        <input class="form-control" name="coupon_code" required>
+        <div class="form-text"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Nội dung</label>
+        <input class="form-control" name="coupon_content" required>
+        <div class="form-text"></div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Số lượng</label>
+          <input type="number" class="form-control" name="coupon_quantity" required>
+          <div class="form-text"></div>
+          <div class="form-text">Please enter a valid number</div>
+        </div>
+
+        <div class="col">
+          <label class="form-label">Chiết khấu</label>
+          <input type="number" class="form-control" name="discount_amount" required>
+          <div class="form-text"></div>
+          <div class="form-text">Please enter a valid number</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Giá để áp dụng mã khuyến mãi</label>
+          <input type="number" class="form-control" name="min_purchase_amount" required>
+          <div class="form-text"></div>
+          <div class="form-text">Please enter a valid number</div>
+        </div>
+        <div class="col">
+          <label class="form-label">Ngày Tạo</label>
+          <input type="datetime-local" class="form-control" name="expiration_date" required>
+          <div class="form-text"></div>
+        </div>
+      </div>
 
       <button type="submit" class="btn" style="margin: 20px;">Tạo</button>
     </form>
@@ -55,17 +95,17 @@
     addForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const formData = new FormData(addForm);
-    
+
       try {
         const response = await fetch(addForm.action, {
           method: "POST",
           body: formData,
-       
+         
         });
 
         if (response.ok) {
           window.location.href = 'http://localhost:3000/api/admin/coupons';
-        } else {
+        }else{
           alert('Lỗi khi nhập thông tin.');
         }
 
