@@ -158,14 +158,14 @@ a {
   </label>
 </td>
        <td>
-     <a href="javascript:void(0)"  data-id="{{this._id}}" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#sizeModal">
+    <a href="javascript:void(0)" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#sizeModal" class="icon-size">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M16.9702 12.25V16.75C16.9702 20.5 15.4702 22 11.7202 22H7.22021C3.47021 22 1.97021 20.5 1.97021 16.75V12.25C1.97021 8.5 3.47021 7 7.22021 7H11.7202C15.4702 7 16.9702 8.5 16.9702 12.25Z" stroke="#0C0507" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M21.9702 5.85V9.15C21.9702 11.9 20.8702 13 18.1202 13H16.9702V12.25C16.9702 8.5 15.4702 7 11.7202 7H10.9702V5.85C10.9702 3.1 12.0702 2 14.8202 2H18.1202C20.8702 2 21.9702 3.1 21.9702 5.85Z" stroke="#0C0507" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 
     </a>
-     <a href="javascript:void(0)" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#toppingModal">
+     <a href="javascript:void(0)" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#toppingModal" class="icon-topping">
      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"style="margin-left: 10px;">
 <path d="M8.80994 2L5.18994 5.63" stroke="#0C0507" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M15.1899 2L18.8099 5.63" stroke="#0C0507" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -194,9 +194,8 @@ a {
     </a>
 </td>
         </tr>
-        <div class="row">
+    <div class="row">
       <div class="col">
-
         <div class="modal" tabindex="-1" role="dialog" id="toppingModal">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -216,10 +215,9 @@ a {
     <input type="number" class="form-control" id="size" required>
     <div id="error-message" style="color: red;"></div>
 </div>
-                  <input type="hidden" id="productId" value="{{this._id}}">
+                     <input type="hidden" class="product-id-for-topping">
                   <button type="button" class="btn btn-primary" onclick="addTopping()">Thêm</button>
                   <button type="button" class="btn btn-primary" onclick="HuyTopping()">Hủy</button>
-
                 </form>
               </div>
             </div>
@@ -227,38 +225,38 @@ a {
         </div>
       </div>
     </div>
-  </div>
 
-   <div class="row">
-      <div class="col">
+
+<div class="row">
+    <div class="col">
         <div class="modal" tabindex="-1" role="dialog" id="sizeModal">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Thêm kích cỡ</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-              
-                <form id="sizeForm">
-                  <div class="mb-3">
-                    <label for="sizeName" class="form-label">Tên kích cỡ</label>
-                    <input type="text" class="form-control" id="size_name" maxlength="1" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="priceSize" class="form-label">Giá kích cỡ</label>
-                    <input type="number" class="form-control" id="size_price" required>
-                  </div>
-                  <input type="hidden" id="productId" value="{{this._id}}">
-                  <button type="button" class="btn btn-primary" onclick="addSize()">Thêm</button>
-                   <button type="button" class="btn btn-primary" onclick="HuySize()">Hủy</button>
-                </form>
-              </div>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thêm kích cỡ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="size-form">
+                            <div class="mb-3">
+                                <label for="sizeName" class="form-label">Tên kích cỡ</label>
+                                <input type="text" class="form-control size-name" maxlength="5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="priceSize" class="form-label">Giá kích cỡ</label>
+                                <input type="number" class="form-control size-price" required>
+                            </div>
+                            <!-- Hidden input to store the product ID -->
+                            <input type="hidden" class="product-id-for-size">
+                            <button type="button" class="btn btn-primary" onclick="addSize()">Thêm</button>
+                            <button type="button" class="btn btn-primary" onclick="HuySize()">Hủy</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+
         {{/each}}
       </tbody>
       
@@ -434,7 +432,6 @@ function deleteAllCategories(allIds) {
             }
         });
 }
-          
             function updateSelectAllCheckbox() {
                 $('#select-all').prop('checked', $('.row-checkbox:checked').length === table.rows().count());
             }
@@ -450,14 +447,26 @@ function navigateToDetailPage(categoryId) {
     </script>
 
 <script>
+
+     $(document).ready(function () {
+        // Add click event for the icon to open the dialog
+        $('.icon-topping').click(function () {
+            // Retrieve the product ID and set it in the hidden input
+            var productId = $(this).data('id');
+            $('.product-id-for-topping').val(productId);
+            // Show the dialog
+            $('#toppingModal').modal('show');
+        });
+    });
+    
    function HuyTopping() {
     // Đóng modal khi nút "Hủy" được bấm
     $('#toppingModal').modal('hide');
   }
   function addTopping() {
-    const toppingName = document.getElementById('name').value;
-    const toppingPrice = document.getElementById('size').value;
-    const productId = document.getElementById('productId').value;
+      const productId = $('.product-id-for-topping').val();
+      const toppingName = $('#name').val();
+const toppingPrice = $('#size').val();
     console.log(productId)
 
     const toppingData = {
@@ -484,41 +493,59 @@ function navigateToDetailPage(categoryId) {
     });
   }
 </script>
+
+
 <script>
+   $(document).ready(function () {
+        // Add click event for the icon to open the dialog
+        $('.icon-size').click(function () {
+            // Retrieve the product ID and set it in the hidden input
+            var productId = $(this).data('id');
+            $('.product-id-for-size').val(productId);
+            // Show the dialog
+            $('#sizeModal').modal('show');
+        });
+    });
+    
    function HuySize() {
-   
     $('#sizeModal').modal('hide');
   }
   
-  function addSize() {
-  const sizeName = document.getElementById('size_name').value;
-  const priceSize = document.getElementById('size_price').value;
-  const productId = document.getElementById('productId').value;
+   function addSize() {
+  const productId = $('.product-id-for-size').val();
+        const sizeName = $('.size-name').val();
+        const priceSize = $('.size-price').val();
 
-  const sizeData = {
-    size_name: sizeName,
-    size_price: priceSize,
-    productId: productId
-  };
+        const sizeData = {
+            size_name: sizeName,
+            size_price: priceSize,
+            productId: productId
+        };
 
-  $.ajax({
-    type: 'POST',
-    url: 'http://localhost:3000/api/size',
-    contentType: 'application/json',
-    data: JSON.stringify(sizeData),
-    success: function (response) {
-      console.log('Size added successfully:', response);
-      $('#sizeModal').modal('hide');
-      window.location.href = 'http://localhost:3000/api/admin/products';
-    },
-    error: function (xhr, status, error) {
-      console.error('Lỗi khi thêm kích thước', error);
-    
-      alert('Giá không nhỏ hơn 0, tên kích thước không được trùng.');
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/api/size',
+            contentType: 'application/json',
+            data: JSON.stringify(sizeData),
+            success: function (response) {
+                console.log('Size added successfully:', response);
+                $('#sizeModal').modal('hide');
+                window.location.href = 'http://localhost:3000/api/admin/products';
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi khi thêm kích thước', error);
+                alert('Giá không nhỏ hơn 0, tên kích thước không được trùng.');
+            }
+        });
     }
-  });
+
+function setProductIdForSize(productId) {
+    selectProduct(productId); // Sử dụng hàm mới để chọn sản phẩm và cập nhật id
+    $('.product-id').val(getCurrentProductId());
+    $('#sizeModal').modal('show');
 }
 </script>
+
 <script>
   // Wait for the DOM to be ready
 $(document).ready(function () {
