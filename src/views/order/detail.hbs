@@ -104,6 +104,7 @@
             <th>Giá sản phẩm</th>
             <th>Số lượng</th>
             <th>Kích cỡ</th>
+            <th>Đồ ăn kèm</th>
           </tr>
         </thead>
         <tbody id="products-section"></tbody>
@@ -158,6 +159,12 @@
       if (products && products.length > 0) {
         for (var i = 0; i < products.length; i++) {
           var product = products[i];
+
+          var nameTopping= ""
+          for (var j = 0; j < product.toppings.length; j++) {
+               nameTopping += `${product.toppings[j].name} x${product.toppings[j]._quantity} `
+          }
+
           var productHtml = `
             <tr>
               <td ><img src="${product.image}" alt="Ảnh sản phẩm ${i + 1}" class="img-fluid"  ></td>
@@ -166,6 +173,7 @@
               <td>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</td>
               <td>${product.sizeName || 'Không có kích cỡ'}</td>
                 <p><strong>Toppings: </strong>${product.toppings.name || 'No toppings'}</p>
+              <td>${nameTopping || 'Không có đồ ăn kèm'}</td>
             </tr>
           `;
           productsSection.append(productHtml);

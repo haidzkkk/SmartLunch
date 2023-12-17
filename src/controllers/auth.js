@@ -528,7 +528,7 @@ const sendVerificationEmail = async (userId) => {
             <h1>Chúc mừng bạn đã đăng ký thành công Ứng dụng Smart Lunch!</h1>
             <p>Xin chào ${currentUser.first_name} ${currentUser.last_name},</p>
             <p>Chúc mừng bạn đã đăng ký thành công vào Ứng dụng Smart Lunch. Chúng tôi rất vui mừng chào đón bạn vào cộng đồng của chúng tôi.</p>
-            <img src="https://s3-alpha.figma.com/thumbnails/27c9e084-27b0-4504-a185-99d6ff07d40b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZDMGHAUS%2F20230924%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230924T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8e17ad0692b05ecda466f0a577b79d19143fa16a3dd462853d609743dc1766e8" alt="Smart Lunch Logo">
+            <img src="https://res.cloudinary.com/dkp3zshrt/image/upload/v1702825746/p6di1bxoxht40bl9j88z.png" alt="Smart Lunch Logo" style="width: 66.6667%;">
             <p>Chúc bạn có một trải nghiệm tuyệt vời với phiên bản hoàn toàn mới này!</p>
         `,
     };

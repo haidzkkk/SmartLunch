@@ -84,7 +84,8 @@ exports.createSize = async (req, res, next) => {
 
     // Lưu đối tượng Size vào cơ sở dữ liệu
     await newSize.save();
-    
+    this.updatePriceProduct(product)
+
     // Định dạng lại phản hồi và chuyển hướng
     res.status(201).json({
       message: "Kích thước đã được tạo thành công",
@@ -98,6 +99,7 @@ exports.createSize = async (req, res, next) => {
     });
   }
 };
+
 
 
 

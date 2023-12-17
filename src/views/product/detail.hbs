@@ -148,19 +148,18 @@ input:checked + .slider:before {
          <label class="form-label">Id sản phẩm</label>
           <input class="form-control" name="product_name" id="product_name" required="required" value="{{data._id}}">
           <form action="http://localhost:3000/api/updatebyadmin/products/{{data._id}}" method="post" id="updateForm" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label class="form-label">Ảnh</label>
-              <div class="d-flex flex-column ">
-            <img src="{{data.images.0.url}}" alt="" style="width:100px; height: 100px;">
-
-
-              </div>
-              <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*">
-            </div>
+   
+ <div class="mb-3">
+   <label class="form-label">Ảnh </label>
+    <img src="{{data.images.0.url}}" alt="" style="width:100px; height: 100px;">
+    <input type="file" class="form-control mt-3" id="images" name="images" accept="image/*">
+</div>
               <div class="mb-3">
             <label class="form-label">Giá sản phẩm</label>
             <input type="number" class="form-control" name="product_price" id="product_price" required="required" value="{{data.product_price}}">
-            <div id="emailHelp" class="form-text"></div>
+            <div id="emailHelp" class="form-text">
+
+            </div>
            
           </div>
           <div class="mb-3">
@@ -251,36 +250,7 @@ input:checked + .slider:before {
 
   </script>
 
-  <script>
-let slideIndex = 1;
-showSlides(slideIndex);
 
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-  let i;
-  let slides = document.getElementsByClassName("mySlides");
-  let dots = document.getElementsByClassName("demo");
-  let captionText = document.getElementById("caption");
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  captionText.innerHTML = dots[slideIndex-1].alt;
-}
-  </script>
 
     <script>
 $(document).ready(async function () {
