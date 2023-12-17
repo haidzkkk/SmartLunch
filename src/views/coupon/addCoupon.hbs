@@ -55,12 +55,14 @@
     addForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const formData = new FormData(addForm);
-    
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await fetch(addForm.action, {
           method: "POST",
           body: formData,
-       
+          headers: {
+            "Authorization": "Bearer " + token,
+          },
         });
 
         if (response.ok) {
