@@ -162,7 +162,7 @@ exports.restoreProduct = async (req, res) => {
         message: "Sản phẩm không tồn tại hoặc đã được khôi phục trước đó.",
       });
     }
-    res.status(303).set('Location', '/api/admin/products').send();
+    res.status(303).set('Location', '/api/admin/recycle').send();
   } catch (error) {
     return res.status(400).json({
       message: error.message,
