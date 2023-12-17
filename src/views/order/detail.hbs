@@ -173,7 +173,7 @@
               <td>${product.purchase_quantity || 'Không có số lượng sản phẩm'}</td>
               <td>${product.sizeName || 'Không có kích cỡ'}</td>
                 <p><strong>Toppings: </strong>${product.toppings.name || 'No toppings'}</p>
-
+              <td>${nameTopping || 'Không có đồ ăn kèm'}</td>
             </tr>
           `;
           productsSection.append(productHtml);
